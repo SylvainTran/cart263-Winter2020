@@ -11,7 +11,8 @@ to overlap another circle (food) in order to grow bigger.
 const PLAYER_SIZE_GAIN = 50;
 const PLAYER_SIZE_LOSS = 1;
 const YELLOW_GRASS_COLOR = '#cccc55';
-const FADED_BLUE = '#55cccc';
+const FADED_BLUE_COLOR = '#55cccc';
+const GOLD_COLOR = "#ffd000";
 const MINIMUM_SIZE = 0;
 
 // Player is an object defined by its properties
@@ -29,9 +30,17 @@ let food = {
   x: 0,
   y: 0,
   size: 64,
-  color: FADED_BLUE
+  color: FADED_BLUE_COLOR
 }
 
+let score = {
+  x: window.innerWidth/2,
+  y: window.innerHeight/2,
+  size: 200,
+  color: GOLD_COLOR,
+  value: 0,
+  increaseValue: 1
+}
 // preload()
 //
 // Not needed
@@ -70,6 +79,7 @@ function draw() {
   checkCollision();
   displayPlayer();
   displayFood();
+  displayScore();
 }
 
 // updatePlayer()
@@ -96,6 +106,7 @@ function checkCollision() {
   let d = dist(player.x, player.y, food.x, food.y);
   if (d < player.size / 2 + food.size / 2) {
     player.size = constrain(player.size + PLAYER_SIZE_GAIN, MINIMUM_SIZE, player.maxSize);
+    increaseScore();
     positionFood();
   }
 }
@@ -132,4 +143,23 @@ function displayFood() {
 function positionFood() {
   food.x = random(0, width);
   food.y = random(0, height);
+}
+
+// increaseScore()
+//
+// Increase the score after the player has eaten a food
+function increaseScore() {
+  score.value += score.increaseValue;
+}
+
+// displayScore()
+//
+// Increase the score after the player has eaten a food
+function displayScore() {
+  push();
+  fill(score.color);
+  textSize(score.size);
+  textAlign(CENTER, CENTER);
+  text(score.value, score.x, score.y);
+  pop();
 }

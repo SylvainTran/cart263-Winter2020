@@ -13,7 +13,12 @@ const PLAYER_SIZE_LOSS = 1;
 const YELLOW_GRASS_COLOR = '#cccc55';
 const FADED_BLUE_COLOR = '#55cccc';
 const GOLD_COLOR = "#ffd000";
+const WHITE_COLOR = "#ffffff";
+const ORANGE_COLOR = "#ffc06e";
 const MINIMUM_SIZE = 0;
+// Simple FSM
+let PlayerState = null;
+let currentPlayerState = null;
 
 // Player is an object defined by its properties
 let player = {
@@ -21,7 +26,6 @@ let player = {
   y: 0,
   maxSize: 64,
   size: 64,
-  active: true,
   color: YELLOW_GRASS_COLOR
 }
 
@@ -41,6 +45,27 @@ let score = {
   value: 0,
   increaseValue: 1
 }
+
+let titleScreen = {
+  textSize: 100,
+  color: WHITE_COLOR,
+  bgColor: ORANGE_COLOR,
+  menu: ["Refreshing Game", "Click anywhere to play"],
+  titleTextPos: window.innerHeight/2,
+  instrucTextPos: window.innerHeight/2 + 200
+}
+
+let gameScreen = {}
+
+let gameOverScreen = {
+  textSize: 100,
+  color: WHITE_COLOR,
+  bgColor: ORANGE_COLOR,
+  menu: ["GAME OVER", "Click anywhere to replay"],
+  titleTextPos: window.innerHeight/2,
+  instrucTextPos: window.innerHeight/2 + 200
+}
+
 // preload()
 //
 // Not needed
@@ -58,6 +83,9 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   positionFood();
   noCursor();
+  // Object deconstruction
+  PlayerState = new HashTable({Title: "Title", Active: "Active", GameOver: "GameOver"});
+  currentPlayerState = PlayerState.getItem('Title');
 }
 
 
@@ -66,20 +94,43 @@ function setup() {
 // Move the player, check for collisions, display player and food
 
 function draw() {
-  // Make sure the player is still alive - if not, we don't run
-  // the rest of the draw loop
-  if (!player.active) {
-    // By using "return" the draw() function exits immediately
-    return;
-  }
-
-  // Otherwise we handle the game
-  background(0);
-  updatePlayer();
-  checkCollision();
-  displayPlayer();
-  displayFood();
-  displayScore();
+  // Simple FSM
+  switch(currentPlayerState) {
+    case "Title":
+      push();
+      background(titleScreen.bgColor);
+      textSize(titleScreen.textSize);
+      textAlign(CENTER, CENTER);
+      fill(titleScreen.color);
+      text(titleScreen.menu[0], window.innerWidth/2, titleScreen.titleTextPos);
+      text(titleScreen.menu[1], window.innerWidth/2, titleScreen.instrucTextPos);
+      pop();
+      startGame();
+      break;
+    case "Active":
+      push();
+      background(0);
+      updatePlayer();
+      checkCollision();
+      displayPlayer();
+      displayFood();
+      displayScore();
+      pop();
+      break;
+    case "GameOver":
+      push();
+      background(gameOverScreen.bgColor);
+      textSize(gameOverScreen.textSize);
+      textAlign(CENTER, CENTER);
+      fill(gameOverScreen.color);
+      text(gameOverScreen.menu[0], window.innerWidth/2, gameOverScreen.titleTextPos);
+      text(gameOverScreen.menu[1], window.innerWidth/2, gameOverScreen.instrucTextPos);
+      pop();
+      startGame();
+      break;
+    default:
+      break;
+  }  
 }
 
 // updatePlayer()
@@ -93,7 +144,7 @@ function updatePlayer() {
   // Shrink the player and use constrain() to keep it to reasonable bounds
   player.size = constrain(player.size - PLAYER_SIZE_LOSS, MINIMUM_SIZE, player.maxSize);
   if (player.size === MINIMUM_SIZE) {
-    player.active = false;
+    currentPlayerState = PlayerState.getItem('GameOver');
   }
 }
 
@@ -162,4 +213,15 @@ function displayScore() {
   textAlign(CENTER, CENTER);
   text(score.value, score.x, score.y);
   pop();
+}
+
+// startGame()
+//
+// Resets the game
+function startGame() {
+  if(mouseIsPressed) {
+    currentPlayerState = PlayerState.getItem('Active');
+    score.value = 0;
+    player.size = player.maxSize;
+  }
 }

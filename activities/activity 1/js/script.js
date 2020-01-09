@@ -21,21 +21,9 @@ let PlayerState = null;
 let currentPlayerState = null;
 
 // Player is an object defined by its properties
-let player = {
-  x: 0,
-  y: 0,
-  maxSize: 64,
-  size: 64,
-  color: YELLOW_GRASS_COLOR
-}
-
+let player = null;
 // Food is an object defined by its properties
-let food = {
-  x: 0,
-  y: 0,
-  size: 64,
-  color: FADED_BLUE_COLOR
-}
+let food = null;
 
 let score = {
   x: window.innerWidth/2,
@@ -50,7 +38,7 @@ let titleScreen = {
   textSize: 100,
   color: WHITE_COLOR,
   bgColor: ORANGE_COLOR,
-  menu: ["Refreshing Game", "Click anywhere to play"],
+  menu: ["The Fresh Game", "Click anywhere to play"],
   titleTextPos: window.innerHeight/2,
   instrucTextPos: window.innerHeight/2 + 200
 }
@@ -66,24 +54,17 @@ let gameOverScreen = {
   instrucTextPos: window.innerHeight/2 + 200
 }
 
-// preload()
-//
-// Not needed
-
-function preload() {
-
-}
-
-
 // setup()
 //
 // Create the canvas, position the food, remove the cursor
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  positionFood();
+  player = new Player(0, 0, 64, YELLOW_GRASS_COLOR, 64);
+  food = new Food(0, 0, 64, FADED_BLUE_COLOR);
+  food.positionFood();
   noCursor();
-  // Object deconstruction
+  // Object deconstruction... on strings. Should become actual objects later, using more complex FSM version
   PlayerState = new HashTable({Title: "Title", Active: "Active", GameOver: "GameOver"});
   currentPlayerState = PlayerState.getItem('Title');
 }
@@ -110,10 +91,11 @@ function draw() {
     case "Active":
       push();
       background(0);
-      updatePlayer();
-      checkCollision();
-      displayPlayer();
-      displayFood();
+      player.updatePlayer();
+      console.log(player.x + " " + player.y);
+      player.checkCollision();
+      player.display();
+      food.display();
       displayScore();
       pop();
       break;
@@ -131,69 +113,6 @@ function draw() {
     default:
       break;
   }  
-}
-
-// updatePlayer()
-//
-// Set the position to the mouse location
-// Shrink the player
-// Set it to inactive if it reaches a size of zero
-function updatePlayer() {
-  player.x = mouseX;
-  player.y = mouseY;
-  // Shrink the player and use constrain() to keep it to reasonable bounds
-  player.size = constrain(player.size - PLAYER_SIZE_LOSS, MINIMUM_SIZE, player.maxSize);
-  if (player.size === MINIMUM_SIZE) {
-    currentPlayerState = PlayerState.getItem('GameOver');
-  }
-}
-
-// checkCollision()
-//
-// Calculate distance of player to food
-// Check if the distance is small enough to be an overlap of the two circles
-// If so, grow the player and reposition the food
-function checkCollision() {
-  let d = dist(player.x, player.y, food.x, food.y);
-  if (d < player.size / 2 + food.size / 2) {
-    player.size = constrain(player.size + PLAYER_SIZE_GAIN, MINIMUM_SIZE, player.maxSize);
-    increaseScore();
-    positionFood();
-  }
-}
-
-// displayPlayer()
-//
-// Draw the player in its current position, using its size and color
-// Use push() and pop() around it all to avoid affecting the rest of the program
-// with drawing commands
-function displayPlayer() {
-  push();
-  noStroke();
-  fill(player.color);
-  ellipse(player.x, player.y, player.size);
-  pop();
-}
-
-// displayFood()
-//
-// Draw the food in its current position, using its size and color
-// Use push() and pop() around it all to avoid affecting the rest of the program
-// with drawing commands
-function displayFood() {
-  push();
-  noStroke();
-  fill(food.color);
-  ellipse(food.x, food.y, food.size);
-  pop();
-}
-
-// positionFood()
-//
-// Set the food's position properties to random numbers within the canvas dimensions
-function positionFood() {
-  food.x = random(0, width);
-  food.y = random(0, height);
 }
 
 // increaseScore()

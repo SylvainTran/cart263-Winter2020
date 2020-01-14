@@ -25,10 +25,19 @@ function setup() {
 }
 
 function paint(e) {
-  e.target.style.backgroundColor = "white";
+  let r = Math.floor(Math.random() * 255);
+  let g = Math.floor(Math.random() * 255);
+  let b = Math.floor(Math.random() * 255);
+
+  console.log(r);
+
+  e.target.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
   setTimeout(resetPixel, delayToReset, e);
 }
 
 function resetPixel(e) {
   e.target.style.backgroundColor = "black";
 }
+
+// Challenges
+// Choose the painting color randomly each time the user paints a pixel (remember we use Math.random() in regular JavaScript to get a number between 0 and 1)

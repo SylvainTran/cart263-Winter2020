@@ -20,6 +20,7 @@ function setup() {
     let pixel = document.createElement("DIV");
     pixel.setAttribute("class", "pixel");
     pixel.addEventListener("mouseover", paint);
+    pixel.addEventListener("click", removePaint)
     document.body.appendChild(pixel);
   }
 }
@@ -39,5 +40,10 @@ function resetPixel(e) {
   e.target.style.backgroundColor = "black";
 }
 
+function removePaint(e) {
+  e.target.style.opacity = "0";
+}
+
 // Challenges
 // Choose the painting color randomly each time the user paints a pixel (remember we use Math.random() in regular JavaScript to get a number between 0 and 1)
+// Add an event listener to all pixels for click that calls a function remove which removes the target pixel from the screen (in order to leave a "hole" you'll need to set the pixel's opacity to 0 rather than actually remove it)

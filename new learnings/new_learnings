@@ -1,0 +1,40 @@
+1-14-2020
+
+New learnings:
+
+// Two ways of adding a callback to the window
+window.onload = setup;
+window.addEventListener('load', setup);
+
+// Selecting certain things using CSS
+querySelector()
+querySelectorAll()
+
+// DOM with css
+// Changing the style... access in camelCase 
+heading.style.backgroundColor = "rgb(0, 0, 0)"; // instead of background-color
+
+// Template strings
+let temp = '${variable name}px';
+
+// Event handlers
+
+
+
+// Get computed style
+https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle
+
+// requestAnimationFrame
+https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+
+// event as arg to check for specific buttons
+function enlargePage(e) {
+	if(e.keyCode === "enter") {
+		// Do something
+	}
+}
+
+// Game publishers: https://ninichimusic.com/blog/16-indie-friendly-indie-game-publishers
+
+
+// wrappers to remove child of parent ??

@@ -12,6 +12,7 @@ to match your project! Write JavaScript to do amazing things below!
 window.onload = setup;
 const numberOfPixels = 1000;
 const delayToReset = 1000;
+let rotation = 0;
 
 function setup() {
   console.log("Setup called");

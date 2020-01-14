@@ -14,6 +14,8 @@ const numberOfPixels = 1000;
 const delayToReset = 1000;
 let rotation = 0;
 
+document.addEventListener("keydown", rotate);
+
 function setup() {
   console.log("Setup called");
 
@@ -45,6 +47,23 @@ function removePaint(e) {
   e.target.style.opacity = "0";
 }
 
+function rotate(e) {
+  if(e.keyCode === 37) { // Left
+    let pixels = document.querySelectorAll('.pixel');
+    let currentRotation = document.
+    let allPixelsStyle = window.getComputedStyle(document.body)
+    pixels.forEach((pixel, i) => {
+      pixel.getComputedStyle.
+      pixel.style.transform = `rotate(1);`"
+    });
+
+  }
+  else(e.keyCode === 39) {
+
+  } // Right
+}
 // Challenges
 // Choose the painting color randomly each time the user paints a pixel (remember we use Math.random() in regular JavaScript to get a number between 0 and 1)
 // Add an event listener to all pixels for click that calls a function remove which removes the target pixel from the screen (in order to leave a "hole" you'll need to set the pixel's opacity to 0 rather than actually remove it)
+
+// Add an event listener to the document for keydown that calls a function rotate that

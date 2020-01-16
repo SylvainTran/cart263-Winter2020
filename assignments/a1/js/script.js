@@ -12,7 +12,9 @@ to match your project! Write JavaScript to do amazing things below!
 window.onload = setup;
 const numberOfPixels = 1000;
 const delayToReset = 1000;
+const rotationValue = 1; // in degrees
 let rotation = 0;
+let pixels;
 
 document.addEventListener("keydown", rotate);
 
@@ -26,14 +28,13 @@ function setup() {
     pixel.addEventListener("click", removePaint)
     document.body.appendChild(pixel);
   }
+  pixels = document.querySelectorAll('.pixel');
 }
 
 function paint(e) {
   let r = Math.floor(Math.random() * 255);
   let g = Math.floor(Math.random() * 255);
   let b = Math.floor(Math.random() * 255);
-
-  console.log(r);
 
   e.target.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
   setTimeout(resetPixel, delayToReset, e);
@@ -49,21 +50,17 @@ function removePaint(e) {
 
 function rotate(e) {
   if(e.keyCode === 37) { // Left
-    let pixels = document.querySelectorAll('.pixel');
-    let currentRotation = document.
-    let allPixelsStyle = window.getComputedStyle(document.body)
-    pixels.forEach((pixel, i) => {
-      pixel.getComputedStyle.
-      pixel.style.transform = `rotate(1);`"
+    // Counter-clockwise 
+    rotation -= rotationValue;
+    pixels.forEach(pixel => {
+      pixel.style.transform = `rotate(${rotation}deg)`
     });
-
   }
-  else(e.keyCode === 39) {
-
-  } // Right
+  else if(e.keyCode === 39) { // Right
+    // Clockwise
+    rotation += rotationValue;
+    pixels.forEach((pixel) => {
+      pixel.style.transform = `rotate(${rotation}deg)`
+    }); 
+  } 
 }
-// Challenges
-// Choose the painting color randomly each time the user paints a pixel (remember we use Math.random() in regular JavaScript to get a number between 0 and 1)
-// Add an event listener to all pixels for click that calls a function remove which removes the target pixel from the screen (in order to leave a "hole" you'll need to set the pixel's opacity to 0 rather than actually remove it)
-
-// Add an event listener to the document for keydown that calls a function rotate that

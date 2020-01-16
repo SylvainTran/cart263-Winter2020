@@ -20,6 +20,9 @@ let currentKey = "";
 document.addEventListener("keydown", rotate);
 document.addEventListener("keydown", typed);
 
+// setup
+//
+// Setups the div DOM nodes along with their class, listener events. Stores all pixel divs in 'pixels'.
 function setup() {
   console.log("Setup called");
 
@@ -27,12 +30,16 @@ function setup() {
     let pixel = document.createElement("DIV");
     pixel.setAttribute("class", "pixel");
     pixel.addEventListener("mouseover", paint);
+    pixel.addEventListener("mouseover", addText);
     pixel.addEventListener("click", removePaint)
     document.body.appendChild(pixel);
   }
   pixels = document.querySelectorAll('.pixel');
 }
 
+// paint(e)
+//
+// Changes the background style of the target div to a random rgb value, resets color after a timeout.
 function paint(e) {
   let r = Math.floor(Math.random() * 255);
   let g = Math.floor(Math.random() * 255);
@@ -42,14 +49,23 @@ function paint(e) {
   setTimeout(resetPixel, delayToReset, e);
 }
 
+// resetPixel(e)
+//
+// Resets background color.
 function resetPixel(e) {
   e.target.style.backgroundColor = "black";
 }
 
+// removePaint(e)
+//
+// Changes the opacity of the e.target to 0 to create an erased effect.
 function removePaint(e) {
   e.target.style.opacity = "0";
 }
 
+// rotate(e)
+//
+// Rotates all pixels left or right in degrees.
 function rotate(e) {
   if(e.keyCode === 37) { // Left
     // Counter-clockwise 
@@ -67,7 +83,18 @@ function rotate(e) {
   } 
 }
 
+// typed(e)
+//
+// Updates the currentKey with the keydown keyCode pressed.
 function typed(e) {
   currentKey = e.keyCode;
   console.log(currentKey);
+}
+
+// addText(e)
+//
+// Replaces the emptiness inside the div's text node child with the currentKey pressed.
+function addText(e) {
+  e.target.innerHTML = currentKey;
+  console.log(e.target.innerHTML + "Working");
 }

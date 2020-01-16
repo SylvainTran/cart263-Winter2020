@@ -15,6 +15,7 @@ const delayToReset = 1000;
 const rotationValue = 1; // in degrees
 let rotation = 0;
 let pixels;
+let currentKey = "";
 
 document.addEventListener("keydown", rotate);
 

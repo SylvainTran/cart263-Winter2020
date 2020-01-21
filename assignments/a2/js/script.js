@@ -12,6 +12,8 @@ to match your project! Write JavaScript to do amazing things below!
 let $spans;
 const INTERVAL_LENGTH = 500;
 const PROBABILITY_THRESHOLD = 0.1;
+let secretsFound = 0;
+let secretsTotal = 5;
 
 $(document).ready(setup);
 

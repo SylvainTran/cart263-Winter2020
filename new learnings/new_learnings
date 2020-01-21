@@ -38,3 +38,6 @@ function enlargePage(e) {
 
 
 // wrappers to remove child of parent ??
+
+// JQuery
+// CDN cached to save time

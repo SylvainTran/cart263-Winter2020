@@ -1,0 +1,19 @@
+body {
+
+}
+
+div {
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.redacted {
+  background-color: black;
+  color: transparent;
+  user-select: none;
+}
+
+.revealed {
+  background-color: transparent;
+  color: red;
+}

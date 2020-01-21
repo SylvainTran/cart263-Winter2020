@@ -22,12 +22,10 @@ function setup() {
 }
 
 function update() {
-  console.log("Updating");
   $spans.each(updateSpans);
 } 
 
 function updateSpans() {
-  console.log("Updating each $spans");
   if(Math.random() <= PROBABILITY_THRESHOLD) {
     $(this).removeClass("redacted");
     $(this).addClass("revealed");
@@ -35,7 +33,6 @@ function updateSpans() {
 }
 
 function spansClicked() {
-  console.log("Clicked a span");
   $(this).removeClass("revealed"); 
   $(this).addClass("redacted");
 }

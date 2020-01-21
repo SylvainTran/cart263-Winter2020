@@ -17,3 +17,7 @@ div {
   background-color: transparent;
   color: red;
 }
+
+.foundSecret {
+  background-color: yellowgreen;
+}

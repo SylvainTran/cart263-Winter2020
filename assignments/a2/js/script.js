@@ -20,7 +20,7 @@ $(document).ready(setup);
 
 function setup() {
   setInterval(update, INTERVAL_LENGTH);
-  $spans = $('span').not(".secret");
+  $spans = $('span').not(".secret, #foundSecrets, #totalSecrets");
   $spans.on("click", spansClicked);
   $secrets = $(".secret");
   $secrets.on("mouseover", mouseOverSecret);

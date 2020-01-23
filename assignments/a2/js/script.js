@@ -2,11 +2,13 @@
 
 /********************************************************************
 
-Title of Project
-Author Name
+Assignment 2 - Raving Redactionist Redux
+Sylvain Tran
 
-This is a template. Fill in the title, author, and this description
-to match your project! Write JavaScript to do amazing things below!
+My Raving Redactionist Redux
+...
+...
+Art is never finished, only abandoned
 
 *********************************************************************/
 let $spans;
@@ -18,6 +20,9 @@ let secretsTotal = 5;
 
 $(document).ready(setup);
 
+// setup
+//
+// Setups the update intervals, the spans' click and secret mouseover events and updates the secretsTotal
 function setup() {
   setInterval(update, INTERVAL_LENGTH);
   $spans = $('span').not(".secret, #foundSecrets, #totalSecrets");
@@ -28,15 +33,23 @@ function setup() {
   updateTotalSecrets();
 }
 
+// update
+//
+// Callback function that is called by INTERVAL_LENGTH, calling updateSpans for each span in the $spans JQuery Object 
 function update() {
   $spans.each(updateSpans);
 } 
 
+// updateTotalSecrets
+//
 // Updates the span container for total secrets with the number of spans with a secret class
 function updateTotalSecrets() {
   $('#totalSecrets').text(secretsTotal);
 }
 
+// updateSpans()
+//
+// Randomly (as per PROBABILITY_THRESHOLD's probability value) removes the target event's span class "redacted" and reveals it
 function updateSpans() {
   if(Math.random() <= PROBABILITY_THRESHOLD) {
     $(this).removeClass("redacted");
@@ -44,11 +57,16 @@ function updateSpans() {
   } 
 }
 
+// spansClicked()
+//
+// Removes revealed class and adds redacted class on a span with the revealed class
 function spansClicked() {
   $(this).removeClass("revealed"); 
   $(this).addClass("redacted");
 }
 
+// mouseOverSecret()
+//
 // Event handler for mouseover a span with class secret
 function mouseOverSecret() {
   $(this).addClass("foundSecret");
@@ -56,6 +74,9 @@ function mouseOverSecret() {
   updateSecretsFound();
 }
 
+// updateSecretsFound()
+//
+// Updates the text nodes of span with id = 'secretsFound'  
 function updateSecretsFound() {
   secretsFound++;
   $('#foundSecrets').text(secretsFound);

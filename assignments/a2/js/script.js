@@ -21,11 +21,18 @@ function setup() {
   setInterval(update, INTERVAL_LENGTH);
   $spans = $('span');
   $spans.on("click", spansClicked);
+  secretsTotal = $('.secret').length;
+  updateTotalSecrets();
 }
 
 function update() {
   $spans.each(updateSpans);
 } 
+
+// Updates the span container for total secrets with the number of spans with a secret class
+function updateTotalSecrets() {
+  $('#totalSecrets').text(secretsTotal);
+}
 
 function updateSpans() {
   if(Math.random() <= PROBABILITY_THRESHOLD) {

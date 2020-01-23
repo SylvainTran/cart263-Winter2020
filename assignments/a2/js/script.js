@@ -22,7 +22,7 @@ function setup() {
   setInterval(update, INTERVAL_LENGTH);
   $spans = $('span').not(".secret");
   $spans.on("click", spansClicked);
-  $secrets = $('.secret');
+  $secrets = $(".secret");
   $secrets.on("mouseover", mouseOverSecret);
   secretsTotal = $secrets.length;
   updateTotalSecrets();
@@ -52,5 +52,11 @@ function spansClicked() {
 // Event handler for mouseover a span with class secret
 function mouseOverSecret() {
   $(this).addClass("foundSecret");
-  $(this).off("mouseover", ".secret", mouseOverSecret);
+  $(this).off();
+  updateSecretsFound();
+}
+
+function updateSecretsFound() {
+  secretsFound++;
+  $('#foundSecrets').text(secretsFound);
 }

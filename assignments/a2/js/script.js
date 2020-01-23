@@ -52,4 +52,5 @@ function spansClicked() {
 // Event handler for mouseover a span with class secret
 function mouseOverSecret() {
   $(this).addClass("foundSecret");
+  $(this).off("mouseover", ".secret", mouseOverSecret);
 }

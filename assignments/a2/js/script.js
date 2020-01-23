@@ -10,6 +10,7 @@ to match your project! Write JavaScript to do amazing things below!
 
 *********************************************************************/
 let $spans;
+let $secrets;
 const INTERVAL_LENGTH = 500;
 const PROBABILITY_THRESHOLD = 0.1;
 let secretsFound = 0;
@@ -21,7 +22,9 @@ function setup() {
   setInterval(update, INTERVAL_LENGTH);
   $spans = $('span');
   $spans.on("click", spansClicked);
-  secretsTotal = $('.secret').length;
+  $secrets = $('.secret');
+  $secrets.on("mouseover", mouseOverSecret);
+  secretsTotal = $secrets.length;
   updateTotalSecrets();
 }
 
@@ -44,4 +47,9 @@ function updateSpans() {
 function spansClicked() {
   $(this).removeClass("revealed"); 
   $(this).addClass("redacted");
+}
+
+// Event handler for mouseover a span with class secret
+function mouseOverSecret() {
+  $(this).addClass("foundSecret");
 }

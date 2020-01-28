@@ -2,10 +2,33 @@
 
 /********************************************************************
 
-Title of Project
-Author Name
+Project 1
+Sylvain Tran
 
-This is a template. Fill in the title, author, and this description
-to match your project! Write JavaScript to do amazing things below!
 
 *********************************************************************/
+
+$(document).ready(setup);
+
+
+//setup
+//
+//Setups the game scene
+function setup() {
+  $('#dialog').dialog({
+    buttons: [
+      {
+        text: "Yes",
+        click: sendPoem
+      },
+      {
+        text: "No"
+      }
+    ]
+  });
+}
+
+
+function sendPoem() {
+  console.log("sending a poem");
+}

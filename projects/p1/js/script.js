@@ -10,6 +10,8 @@ Sylvain Tran
 
 $(document).ready(setup);
 let $calendar;
+let hours = 8;
+let minutes = 0;
 
 //setup
 //
@@ -29,6 +31,7 @@ function setup() {
       }
     ]
   });
+  setInterval(updateCalendar, 10 * 1000); // Each 10 seconds is one hour
 }
 
 
@@ -42,5 +45,17 @@ function closeDialog() {
 
 
 function updateCalendar() {
-
+  if(minutes < 60) {
+    minutes += 10;
+  }
+  else {
+    minutes = 0;
+    if(hours < 17) {
+      hours++;
+    }
+    else {
+      hours = 8; // restart the day to beginning of shift at 8am
+    }
+  }
+  $calendar.text(hours + " : " + minutes);
 }

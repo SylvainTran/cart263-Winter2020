@@ -29,6 +29,7 @@ function setup() {
   setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
   $dialogLoveMail = $('.dialog');
   setInterval(showPoemDialog, 1000);
+  $('#tofuFlattener').draggable({axis: "x"});
 }
 
 

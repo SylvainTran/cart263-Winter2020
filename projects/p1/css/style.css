@@ -17,3 +17,15 @@ body {
 .dialog {
   visibility: hidden;
 }
+
+#tofuFlattener {
+  background-color: beige;
+  height: 10vw;
+  width: 25vw;
+  position: absolute;
+  bottom: 0;
+  left: 40%;
+  text-align: center;
+  line-height: 5vw;
+  font-size: 5vw;
+}

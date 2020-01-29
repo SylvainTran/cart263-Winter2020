@@ -17,7 +17,8 @@ const MINS_IN_HOUR = 60;
 const MINS_TICK_INCREASE = 10;
 const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
-const PROBABILITY_THRESHOLD = 0.1; // probability to spawn the poem dialog
+const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
+let poemDialogList = [];
 
 //setup
 //
@@ -60,7 +61,7 @@ function updateCalendar() {
 
 //showPoemDialog
 //
-//Shows up the poem dialog at random times during the work shift
+//Shows the poem dialog at random times during the work shift
 function showPoemDialog() {
   let randomNumber = Math.random();
   console.log(randomNumber);
@@ -71,10 +72,10 @@ function showPoemDialog() {
 
 function createPoemDialog() {
   let poemDialog = document.createElement("div");
+
   $(poemDialog).addClass(".dialog");
   $(poemDialog).attr("title", "Love Mail");
   $(poemDialog).text("Send her a poem?");
-
   $(poemDialog).dialog({
     buttons: [
       {
@@ -87,4 +88,5 @@ function createPoemDialog() {
       }
     ]
   }); 
+  poemDialogList.push(poemDialog);
 }

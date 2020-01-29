@@ -9,4 +9,11 @@ body {
   position: absolute;
   right: 0;
   top: 0;
+  text-align: center;
+  line-height: 10vw;
+  font-size: 5vw;
+}
+
+.dialog {
+  visibility: hidden;
 }

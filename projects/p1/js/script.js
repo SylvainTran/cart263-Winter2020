@@ -10,8 +10,14 @@ Sylvain Tran
 
 $(document).ready(setup);
 let $calendar;
-let hours = 8;
-let minutes = 0;
+let $dialogLoveMail;
+let currentHour = 8;
+let currentMinutes = 0;
+const MINS_IN_HOUR = 60;
+const MINS_TICK_INCREASE = 10;
+const END_OF_SHIFT = 17; // in currentHour
+const BEGIN_SHIFT = 8;
+const PROBABILITY_THRESHOLD = 0.1; // probability to spawn the poem dialog
 
 //setup
 //
@@ -19,19 +25,9 @@ let minutes = 0;
 function setup() {
   $calendar = $('#calendar');
   $calendar.draggable();
-  $('#dialog').dialog({
-    buttons: [
-      {
-        text: "Yes",
-        click: sendPoem
-      },
-      {
-        text: "No",
-        click: closeDialog
-      }
-    ]
-  });
-  setInterval(updateCalendar, 10 * 1000); // Each 10 seconds is one hour
+  setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
+  $dialogLoveMail = $('.dialog');
+  setInterval(showPoemDialog, 1000);
 }
 
 
@@ -43,19 +39,52 @@ function closeDialog() {
   console.log("closing dialog");
 }
 
-
+//updateCalendar
+//
+// Updates the currentHour and currentMinutes of the day
 function updateCalendar() {
-  if(minutes < 60) {
-    minutes += 10;
+  if(currentMinutes < MINS_IN_HOUR) {
+    currentMinutes += MINS_TICK_INCREASE;
   }
   else {
-    minutes = 0;
-    if(hours < 17) {
-      hours++;
+    currentMinutes = 0;
+    if(currentHour < END_OF_SHIFT) {
+      currentHour++;
     }
     else {
-      hours = 8; // restart the day to beginning of shift at 8am
+      currentHour = BEGIN_SHIFT; // restart the day to beginning of shift at 8am
     }
   }
-  $calendar.text(hours + " : " + minutes);
+  $calendar.text(currentHour + " : " + currentMinutes);
+}
+
+//showPoemDialog
+//
+//Shows up the poem dialog at random times during the work shift
+function showPoemDialog() {
+  let randomNumber = Math.random();
+  console.log(randomNumber);
+  if(randomNumber <= PROBABILITY_THRESHOLD) {
+    createPoemDialog();
+  }
+}
+
+function createPoemDialog() {
+  let poemDialog = document.createElement("div");
+  $(poemDialog).addClass(".dialog");
+  $(poemDialog).attr("title", "Love Mail");
+  $(poemDialog).text("Send her a poem?");
+
+  $(poemDialog).dialog({
+    buttons: [
+      {
+        text: "Yes",
+        click: sendPoem
+      },
+      {
+        text: "No",
+        click: closeDialog
+      }
+    ]
+  }); 
 }

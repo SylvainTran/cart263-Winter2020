@@ -19,6 +19,7 @@ const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
 const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
 let poemDialogList = [];
+let progressBarValue = 0;
 
 //setup
 //
@@ -30,6 +31,9 @@ function setup() {
   $dialogLoveMail = $('.dialog');
   setInterval(showPoemDialog, 1000);
   $('#tofuFlattener').draggable({axis: "x"});
+  $("#progressbar").progressbar({
+    value: progressBarValue
+  });
 }
 
 

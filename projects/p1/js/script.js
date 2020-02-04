@@ -20,6 +20,7 @@ const BEGIN_SHIFT = 8;
 const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
 let poemDialogList = [];
 let progressBarValue = 0;
+const tofuLaborValue = 0.01;
 
 //setup
 //
@@ -34,8 +35,11 @@ function setup() {
   $("#progressbar").progressbar({
     value: progressBarValue
   });
+  $('#tofuFlattener').on("drag", function(event, ui){
+      progressBarValue += tofuLaborValue;
+      updateProgressBar();
+  });
 }
-
 
 function sendPoem() {
   console.log("sending a poem");
@@ -49,6 +53,7 @@ function closeDialog() {
 //
 // Updates the currentHour and currentMinutes of the day
 function updateCalendar() {
+  console.log(progressBarValue);
   if(currentMinutes < MINS_IN_HOUR) {
     currentMinutes += MINS_TICK_INCREASE;
   }
@@ -98,4 +103,8 @@ function createPoemDialog() {
     ]
   }); 
   poemDialogList.push(poemDialog);
+}
+
+function updateProgressBar(){
+  $('#progressbar').progressbar( "option", "value", progressBarValue);
 }

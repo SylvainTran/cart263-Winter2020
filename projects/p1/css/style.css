@@ -18,6 +18,15 @@ body {
   visibility: hidden;
 }
 
+
+.replyMessageBox {
+  background-color: pink;
+  text-align: center;
+  line-height: 2vw;
+  height: 5vw;
+  width: 10vw;
+}
+
 #tofuFlattener {
   background-color: beige;
   height: 10vw;

@@ -5,6 +5,8 @@
 Project 1: The Butcher Poet
 Sylvain Tran
 
+references: 
+thrashcan pic: https://twitter.com/pixel_trash_gif
 
 *********************************************************************/
 
@@ -42,10 +44,23 @@ function setup() {
     progressBarValue = clampTofuJobValues(progressBarValue + tofuLaborValue, minValueForTofuJob, maxValueForTofuJob);
     updateProgressBar();
   });
+  $("#thrashcan").droppable({
+    drop: removeDiv
+  })
 }
 
 function sendPoem() {
   console.log("sending a poem");
+  createDialog("Reply from CuriousCat53", "You've got a new message!", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);  
+}
+
+function checkPhoneMessage() {
+  console.log("checking phone message");
+  let replyMessageBox = document.createElement("div");
+  $(replyMessageBox).draggable();
+  $(replyMessageBox).addClass("replyMessageBox");
+  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "awww, you're so sweet thanks :-)");
+  $('body').append(replyMessageBox);
 }
 
 function closeDialog() {
@@ -83,7 +98,6 @@ function showPoemDialog() {
   }
 }
 
-
 //createPoemDialog
 //
 //Creates the poem dialog
@@ -106,6 +120,26 @@ function createPoemDialog() {
     ]
   }); 
   poemDialogList.push(poemDialog);
+}
+
+function createDialog(title, text, button1, button2, button1Event, button2Event) {
+  let newDialog = document.createElement("div");
+
+  $(newDialog).addClass(".dialog");
+  $(newDialog).attr("title", title);
+  $(newDialog).text(text);
+  $(newDialog).dialog({
+    buttons: [
+      {
+        text: button1,
+        click: button1Event
+      },
+      {
+        text: button2,
+        click: button2Event
+      }
+    ]
+  }); 
 }
 
 //updateProgressBar
@@ -139,3 +173,8 @@ function clampTofuJobValues(value, min, max){
 function resetTofuJob() {
   progressBarValue = minValueForTofuJob;
 }
+
+function removeDiv(event, ui) {
+  $('.replyMessageBox').remove();
+}
+

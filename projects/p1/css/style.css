@@ -1,5 +1,5 @@
 body {
-
+  background-image: url('../assets/images/subwayTentacles.jpg');
 }
 
 #calendar {
@@ -24,7 +24,7 @@ body {
   text-align: center;
   line-height: 2vw;
   height: 5vw;
-  width: 10vw;
+  width: 30vw;
 }
 
 #commutingJob {
@@ -36,4 +36,11 @@ body {
   left: 40%;
   text-align: center;
   font-size: 5vw;
+}
+
+.main__ui__gameplay-instructions {
+  background-color: lime;
+  color: blue;
+  height: 2vw;
+  width: 35vw;
 }

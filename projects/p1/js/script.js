@@ -53,7 +53,7 @@ function setup() {
 //
 //Creates a fake reply dialog
 function sendPoem() {
-  createDialog("Reply from CuriousCat53", "You've got a new message!", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);
+  createDialog("Reply from CuriousCat53", "You've got a new message! Don't be late commuting.", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);
 
 }
 
@@ -66,7 +66,7 @@ function checkPhoneMessage(event) {
   let replyMessageBox = document.createElement("div");
   $(replyMessageBox).draggable();
   $(replyMessageBox).addClass("replyMessageBox");
-  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "awww, you're so sweet thanks :-)");
+  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "awww, you're so sweet thanks :-) Where are you, btw? Are you still commuting? :o");
   $('body').append(replyMessageBox);
 }
 

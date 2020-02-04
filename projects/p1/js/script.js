@@ -10,6 +10,7 @@ references:
 thrashcan pic: https://twitter.com/pixel_trash_gif
 subway background: https://www.creativereview.co.uk/illustrated-story-new-york-subway-map/
 subway routine bg: https://www.c42d.com/subway-startup-survey-summer-2018-edition/
+animated subway bg: https://imgur.com/t/pixel_art/KkxJYDW
 
 *********************************************************************/
 
@@ -33,7 +34,7 @@ const minValueForCommutingJob = 0;
 function setup() {
   $calendar = $('#calendar');
   $calendar.draggable();
-  setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
+  //setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
   setInterval(showPoemDialog, 1000);
   $('#commutingJob').draggable({axis: "x"});
   $("#progressbar").progressbar({
@@ -43,6 +44,8 @@ function setup() {
   $('#commutingJob').on("drag", function(event, ui){
     progressBarValue = clampCommutingJobValues(progressBarValue + commutingLaborValue, minValueForCommutingJob, maxValueForCommutingJob);
     updateProgressBar();
+    updateCalendar();
+    $('#calendar').toggle( "bounce", { times: 1 }, "slow" );
   });
   $("#thrashcan").droppable({
     drop: removeDiv
@@ -74,7 +77,6 @@ function checkPhoneMessage(event) {
 //
 // Updates the currentHour and currentMinutes of the day
 function updateCalendar() {
-  console.log(progressBarValue);
   if(currentMinutes < MINS_IN_HOUR) {
     currentMinutes += MINS_TICK_INCREASE;
   }
@@ -163,4 +165,8 @@ function removeDiv(event, ui) {
 
 function closeDialog() {
   $(this).dialog("close");
+}
+
+function moveSubway() {
+
 }

@@ -27,6 +27,8 @@ let progressBarValue = 0;
 const commutingLaborValue = 0.1;
 const maxValueForCommutingJob = 100;
 const minValueForCommutingJob = 0;
+let subwayMetroPosX = 0;
+let subwayMetroETA = 120;
 
 //setup
 //
@@ -46,10 +48,20 @@ function setup() {
     updateProgressBar();
     updateCalendar();
     $('#calendar').toggle( "bounce", { times: 1 }, "slow" );
+    moveSubway();
+    if(subwayMetroETA <= 0) {
+      subwayMetroETA = 120;
+      subwayMetroPosX = 0;
+      progressBarValue = 0;
+    }
+    subwayMetroETA -= 0.1;
+    $('#subwayMetro').text("ETA " + Math.floor(subwayMetroETA) + " Mins");
+    animateSubway();
   });
   $("#thrashcan").droppable({
     drop: removeDiv
   })
+  setInterval(revertColor, 1000);
 }
 
 //sendPoem
@@ -113,7 +125,7 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
   $(newDialog).attr("title", title);
   $(newDialog).text(text);
   $(newDialog).dialog({
-    position: { my: "left top", at: "left bottom"},
+    position: { my: "left top", at: "right bottom"},
     buttons: [
       {
         text: button1,
@@ -168,5 +180,25 @@ function closeDialog() {
 }
 
 function moveSubway() {
+  subwayMetroPosX++;
+  if(subwayMetroPosX > window.innerWidth) {
+    subwayMetroPosX = 0;
+  }
+  else {
+    $("#subwayMetro").css("left", subwayMetroPosX);
+  }
+}
 
+function animateSubway() {
+  $("#subwayMetro" ).animate({
+    color: "black",
+    backgroundColor: "rgb( 0, 255, 255 )"
+  });
+}
+
+function revertColor(){
+  $("#subwayMetro" ).animate({
+    color: "black",
+    backgroundColor: "rgb( 255, 255, 0 )"
+  });
 }

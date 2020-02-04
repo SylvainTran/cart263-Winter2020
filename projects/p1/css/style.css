@@ -17,6 +17,8 @@ body {
 }
 
 #thrashcan img {
+  position: relative;
+  margin-top: 10%;
   width: 15vw;
   height: 15vw;
   opacity: 0.5;
@@ -26,13 +28,13 @@ body {
   visibility: hidden;
 }
 
-
 .replyMessageBox {
   background-color: pink;
   text-align: center;
+  margin: auto;
   line-height: 2vw;
-  height: 5vw;
-  width: 30vw;
+  height: 7vw;
+  width: 40%;
 }
 
 #commutingJob {
@@ -45,14 +47,16 @@ body {
   text-align: center;
   font-size: 5vw;
   opacity: 0.5;
+  line-height: 10vw;
 }
 
 .main__ui__gameplay-instructions {
   background-color: beige;
   color: black;
-  height: 2vw;
+  height: 6vw;
   width: 15vw;
   opacity: 0.5;
+  text-align: center;
 }
 
 #subwayMetro {
@@ -60,4 +64,8 @@ body {
   height: 5vw;
   width: 10vw;
   opacity: 0.5;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 5vw;
 }

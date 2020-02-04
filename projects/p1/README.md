@@ -2,15 +2,15 @@
 
 Project 1: Happiness is Sisyphus?
 
-# Universality angle
-Sisyphus is everyone of us. Who has not toiled in vain? For project 1, my objective is to create an experience that makes the user reflect about the meaning of happiness and the place of work in it (main goal), (stretch goal) and the consequences of failure as external events out of a person's locus of control (stretch goal).
+# Commuting The Unrequited Love
 
-To be continued.
+A game on the floating moment behind the real moment of commuting as a job, and the connection of that invisible job with unrequited love
+
+Commuting is a universal job, for most people in the lower and middle/working class of modernized societies. Commuting can represent a form of unrecognized, invisible labor, which is the more striking with long commuting hours (>3h daily). To commute requires movement. This is tied to the naturally provided universal capacity of bipedal movement, which preceded the development of the cortex. As for the reason behind "getting somewhere to work" in the urbanized world, it is connected with the geographic distribution of work following the industrial revolution, making a lot of people commute to far working locations (like offices) away from home. This in itself would not constitute a completely satisfying relationship to the theme of Sisyphus, whose boulder-rolling task represents meaningless labor, because commuting serves a purpose after all -- to reach a meaningful place for labor -- but the experience analyzed behind the moment under the moment of commuting, when nothing is do-able (regardless of any entertainment or activity undertaken) except to wait to be somewhere, to be in a different place, to get there in order to start labor for a few mere hours only to start commuting over again; that is the experience that this game experience is targeting. The angle behind the necessity of getting in a different place to start a time-dominant activity such as labor, can be applied to seemingly tangential ideas like unrequited love. The perception of the unrequited lover against the object of his affections is that of a time-bound commuter in wait of getting in a certain place in order for the whole experience to be completed. It is unrequited love then, because of the discrepancy or the lag behind being in-wait and the moment of perceived completion or culmination of efforts.
 
 
-# The Butcher Poet
-A commentary on the futility of unrequited love and powerless social status
+Capturing the spatial qualities of the "invisible moment" during commuting using spatial mouse movement constrained in a region.
 
-The story is thus: a young man of relative unimportance worked at the Poggy Chops Market as a junior butcher. His days were a blur of chicken, pork and beef butchering, himself being hidden from view to all but the dead that keep him company. He would have all the reasons to leave and seek a less futile existence, but the one thing that keeps him at the job beyond all else: a pretty and fair cashier girl, with eyes and hair of ruby. Therefore our butcher in love seeks, between moments of absolute glorious butchering, the inspiration to send the ruby girl some poetry, made from combining some verbal qualities he finds her to have despite his abject condition. These are sent to her during the break of his shift, and he finds her to be quick to reply, moments later, telling him words of honey but never bringing about love returned. Thus for all eternity, like Sisyphus rolling the boulder up, and restarting again, maybe out of scorn, maybe out of love. For what is unrequited love but the resolute determination of repeating the same act over and over again, yet expecting a different result each time?
-
-This project is a commentary on the futility of unrequited love and powerless social status.
+- Dragging the commuting action box advances time.
+- Time advances the routine.
+- The routine doesn't care if you are experiencing unrequited love. (Random spawn)

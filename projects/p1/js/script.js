@@ -111,6 +111,7 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
   $(newDialog).attr("title", title);
   $(newDialog).text(text);
   $(newDialog).dialog({
+    position: { my: "left top", at: "left bottom"},    
     buttons: [
       {
         text: button1,

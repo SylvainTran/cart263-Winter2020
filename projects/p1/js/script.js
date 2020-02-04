@@ -20,7 +20,9 @@ const BEGIN_SHIFT = 8;
 const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
 let poemDialogList = [];
 let progressBarValue = 0;
-const tofuLaborValue = 0.01;
+const tofuLaborValue = 0.1;
+const maxValueForTofuJob = 100;
+const minValueForTofuJob = 0;
 
 //setup
 //
@@ -33,11 +35,12 @@ function setup() {
   setInterval(showPoemDialog, 1000);
   $('#tofuFlattener').draggable({axis: "x"});
   $("#progressbar").progressbar({
-    value: progressBarValue
+    value: progressBarValue,
+    max: maxValueForTofuJob
   });
   $('#tofuFlattener').on("drag", function(event, ui){
-      progressBarValue += tofuLaborValue;
-      updateProgressBar();
+    progressBarValue = clampTofuJobValues(progressBarValue + tofuLaborValue, minValueForTofuJob, maxValueForTofuJob);
+    updateProgressBar();
   });
 }
 
@@ -105,6 +108,34 @@ function createPoemDialog() {
   poemDialogList.push(poemDialog);
 }
 
+//updateProgressBar
+//
+// Updates the progress bar on drag event of the tofu flattener and resets the progress value if > max
 function updateProgressBar(){
   $('#progressbar').progressbar( "option", "value", progressBarValue);
+  if(progressBarValue >= maxValueForTofuJob) {
+    resetTofuJob();
+  }  
+}
+
+//clampTofuJobValues
+//
+//clamps a provided tofu flattening job value arg within the provided min max args
+function clampTofuJobValues(value, min, max){
+  if(value > max) {
+    return max;
+  }
+  else if(value < min) {
+    return min;
+  }
+  else{
+    return value;
+  }
+}
+
+//resetTofuJob
+//
+//Resets the tofu job progress bar at the top
+function resetTofuJob() {
+  progressBarValue = minValueForTofuJob;
 }

@@ -75,6 +75,10 @@ function showPoemDialog() {
   }
 }
 
+
+//createPoemDialog
+//
+//Creates the poem dialog
 function createPoemDialog() {
   let poemDialog = document.createElement("div");
 

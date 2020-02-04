@@ -2,11 +2,14 @@
 
 /********************************************************************
 
-Project 1: The Butcher Poet
+Project 1: How long do we spend commuting every day, doing almost nothing?
 Sylvain Tran
+
 
 references:
 thrashcan pic: https://twitter.com/pixel_trash_gif
+subway background: https://www.creativereview.co.uk/illustrated-story-new-york-subway-map/
+subway routine bg: https://www.c42d.com/subway-startup-survey-summer-2018-edition/
 
 *********************************************************************/
 
@@ -20,9 +23,9 @@ const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
 const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
 let progressBarValue = 0;
-const tofuLaborValue = 0.1;
-const maxValueForTofuJob = 100;
-const minValueForTofuJob = 0;
+const commutingLaborValue = 0.1;
+const maxValueForCommutingJob = 100;
+const minValueForCommutingJob = 0;
 
 //setup
 //
@@ -32,13 +35,13 @@ function setup() {
   $calendar.draggable();
   setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
   setInterval(showPoemDialog, 1000);
-  $('#tofuFlattener').draggable({axis: "x"});
+  $('#commutingJob').draggable({axis: "x"});
   $("#progressbar").progressbar({
     value: progressBarValue,
-    max: maxValueForTofuJob
+    max: maxValueForCommutingJob
   });
-  $('#tofuFlattener').on("drag", function(event, ui){
-    progressBarValue = clampTofuJobValues(progressBarValue + tofuLaborValue, minValueForTofuJob, maxValueForTofuJob);
+  $('#commutingJob').on("drag", function(event, ui){
+    progressBarValue = clampCommutingJobValues(progressBarValue + commutingLaborValue, minValueForCommutingJob, maxValueForCommutingJob);
     updateProgressBar();
   });
   $("#thrashcan").droppable({
@@ -123,18 +126,18 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
 
 //updateProgressBar
 //
-// Updates the progress bar on drag event of the tofu flattener and resets the progress value if > max
+// Updates the progress bar on drag event of the Commuting flattener and resets the progress value if > max
 function updateProgressBar(){
   $('#progressbar').progressbar( "option", "value", progressBarValue);
-  if(progressBarValue >= maxValueForTofuJob) {
-    resetTofuJob();
+  if(progressBarValue >= maxValueForCommutingJob) {
+    resetCommutingJob();
   }
 }
 
-//clampTofuJobValues
+//clampCommutingJobValues
 //
-//clamps a provided tofu flattening job value arg within the provided min max args
-function clampTofuJobValues(value, min, max){
+//clamps a provided Commuting flattening job value arg within the provided min max args
+function clampCommutingJobValues(value, min, max){
   if(value > max) {
     return max;
   }
@@ -146,11 +149,11 @@ function clampTofuJobValues(value, min, max){
   }
 }
 
-//resetTofuJob
+//resetCommutingJob
 //
-//Resets the tofu job progress bar at the top
-function resetTofuJob() {
-  progressBarValue = minValueForTofuJob;
+//Resets the Commuting job progress bar at the top
+function resetCommutingJob() {
+  progressBarValue = minValueForCommutingJob;
 }
 
 function removeDiv(event, ui) {

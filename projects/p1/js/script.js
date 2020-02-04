@@ -5,14 +5,13 @@
 Project 1: The Butcher Poet
 Sylvain Tran
 
-references: 
+references:
 thrashcan pic: https://twitter.com/pixel_trash_gif
 
 *********************************************************************/
 
 $(document).ready(setup);
 let $calendar;
-let $dialogLoveMail;
 let currentHour = 8;
 let currentMinutes = 0;
 const MINS_IN_HOUR = 60;
@@ -20,7 +19,6 @@ const MINS_TICK_INCREASE = 10;
 const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
 const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
-let poemDialogList = [];
 let progressBarValue = 0;
 const tofuLaborValue = 0.1;
 const maxValueForTofuJob = 100;
@@ -33,7 +31,6 @@ function setup() {
   $calendar = $('#calendar');
   $calendar.draggable();
   setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
-  $dialogLoveMail = $('.dialog');
   setInterval(showPoemDialog, 1000);
   $('#tofuFlattener').draggable({axis: "x"});
   $("#progressbar").progressbar({
@@ -49,22 +46,25 @@ function setup() {
   })
 }
 
+//sendPoem
+//
+//Creates a fake reply dialog
 function sendPoem() {
-  console.log("sending a poem");
-  createDialog("Reply from CuriousCat53", "You've got a new message!", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);  
+  createDialog("Reply from CuriousCat53", "You've got a new message!", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);
+
 }
 
-function checkPhoneMessage() {
-  console.log("checking phone message");
+//checkPhoneMessage(event, ui)
+//
+//Creates a very realistic phone message div
+function checkPhoneMessage(event) {
+  // Removes the option
+  $(event.target.parentElement).remove();
   let replyMessageBox = document.createElement("div");
   $(replyMessageBox).draggable();
   $(replyMessageBox).addClass("replyMessageBox");
   $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "awww, you're so sweet thanks :-)");
   $('body').append(replyMessageBox);
-}
-
-function closeDialog() {
-  console.log("closing dialog");
 }
 
 //updateCalendar
@@ -94,34 +94,13 @@ function showPoemDialog() {
   let randomNumber = Math.random();
   console.log(randomNumber);
   if(randomNumber <= PROBABILITY_THRESHOLD) {
-    createPoemDialog();
+    createDialog("Love Mail", "Send her a poem?", "Yes", "No", sendPoem, closeDialog);
   }
 }
 
-//createPoemDialog
+//createDialog(title, text, button1, button2, button1Event, button2Event)
 //
-//Creates the poem dialog
-function createPoemDialog() {
-  let poemDialog = document.createElement("div");
-
-  $(poemDialog).addClass(".dialog");
-  $(poemDialog).attr("title", "Love Mail");
-  $(poemDialog).text("Send her a poem?");
-  $(poemDialog).dialog({
-    buttons: [
-      {
-        text: "Yes",
-        click: sendPoem
-      },
-      {
-        text: "No",
-        click: closeDialog
-      }
-    ]
-  }); 
-  poemDialogList.push(poemDialog);
-}
-
+//creates a generic dialog with the provided args
 function createDialog(title, text, button1, button2, button1Event, button2Event) {
   let newDialog = document.createElement("div");
 
@@ -139,7 +118,7 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
         click: button2Event
       }
     ]
-  }); 
+  });
 }
 
 //updateProgressBar
@@ -149,7 +128,7 @@ function updateProgressBar(){
   $('#progressbar').progressbar( "option", "value", progressBarValue);
   if(progressBarValue >= maxValueForTofuJob) {
     resetTofuJob();
-  }  
+  }
 }
 
 //clampTofuJobValues
@@ -175,6 +154,9 @@ function resetTofuJob() {
 }
 
 function removeDiv(event, ui) {
-  $('.replyMessageBox').remove();
+  $(ui.draggable).remove();
 }
 
+function closeDialog() {
+  $(this).dialog("close");
+}

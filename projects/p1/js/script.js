@@ -64,8 +64,9 @@ function setup() {
     strugglingManSound.play();
   });
   $("#thrashcan").droppable({
+    tolerance: "intersect",
     drop: removeDiv
-  })
+  });
   setInterval(revertColor, 1000);
   $(document).one('mousedown', playMusic);
 }

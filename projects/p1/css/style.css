@@ -15,7 +15,9 @@ body {
   line-height: 10vw;
   font-size: 5vw;
 }
-
+#thrashcan {
+  width: 15vw;
+}
 #thrashcan img {
   position: relative;
   margin-top: 10%;

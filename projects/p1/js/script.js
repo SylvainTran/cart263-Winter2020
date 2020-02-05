@@ -2,7 +2,10 @@
 
 /********************************************************************
 
-Project 1: How long do we spend commuting every day, doing almost nothing?
+Project 1: Commuting The Unrequited Love 
+How long do we spend commuting every day, doing almost nothing?
+And how is this connected to unrequited love?
+
 Sylvain Tran
 
 
@@ -20,6 +23,7 @@ let $clock;
 let currentHour = 8;
 let currentMinutes = 0;
 const MINS_IN_HOUR = 60;
+const HOUR_OFFSET = 10;
 const MINS_TICK_INCREASE = 10;
 const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
@@ -119,7 +123,7 @@ function checkPhoneMessage(event) {
 //
 // Updates the currentHour and currentMinutes of the day
 function updateClock() {
-  if(currentMinutes < MINS_IN_HOUR) {
+  if(currentMinutes < MINS_IN_HOUR - HOUR_OFFSET) {
     currentMinutes += MINS_TICK_INCREASE;
   }
   else {

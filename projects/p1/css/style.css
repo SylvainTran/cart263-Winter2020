@@ -43,8 +43,10 @@ body {
   background-color: pink;
   text-align: center;
   margin: auto;
-  line-height: 2vw;
-  height: 7vw;
+  line-height: 3vw;
+  font-size: 2vw;
+  position: relative;
+  bottom: 25vw;
   width: 40%;
 }
 

@@ -35,6 +35,7 @@ const strugglingManSound = new Audio("../p1/assets/sounds/strugglingMan.wav");
 const subwayMetroPosXValue = 10;
 const subwayMetroETAIncrement = 1;
 const distanceToDestination = 350;
+const intervalToCallNewDialog = 1000;
 
 //setup
 //
@@ -42,8 +43,8 @@ const distanceToDestination = 350;
 function setup() {
   $calendar = $('#calendar');
   $calendar.draggable();
-  setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
-  setInterval(showPoemDialog, 3000);
+  setInterval(updateCalendar, 1 * intervalToCallNewDialog); 
+  setInterval(showPoemDialog, intervalToCallNewDialog);
   $('#commutingJob').draggable({axis: "x", containment: "parent"});
   $("#progressbar").progressbar({
     value: progressBarValue,
@@ -79,7 +80,7 @@ function playMusic() {
 //
 //Creates a fake reply dialog
 function sendPoem() {
-  createDialog("Reply from CuriousCat53", "You've got a new message! Don't be late commuting.", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);
+  createDialog("Reply from CuriousCat53", "You've got a new message! Don't be distracted while commuting.", "Check new message", "Ignore notification", checkPhoneMessage, closeDialog);
 }
 
 //checkPhoneMessage(event, ui)
@@ -91,7 +92,7 @@ function checkPhoneMessage(event) {
   let replyMessageBox = document.createElement("div");
   $(replyMessageBox).draggable();
   $(replyMessageBox).addClass("replyMessageBox");
-  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "awww, you're so sweet thanks :-) Where are you, btw? Are you still commuting? :o");
+  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "CuriousCat53 has deleted your message.");
   $('body').append(replyMessageBox);
 }
 

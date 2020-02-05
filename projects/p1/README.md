@@ -4,9 +4,9 @@ Project 1: Happiness is Sisyphus?
 
 # Commuting is the Unrequited Love
 
-### A game on the floating moment behind the real moment of commuting as a job, and the connection of that invisible job with unrequited love
+### A game on the floating moment behind the real moment of commuting as a job, and the connection of that invisible job with unrequited love.
 
-Commuting is a universal job, for most people in the lower and middle/working class of modernized societies. Commuting can represent a form of unrecognized, invisible labor, which is the more striking with long commuting hours (>3h daily). To commute requires movement. This is tied to the naturally provided universal capacity of bipedal movement, which preceded the development of the cortex. As for the reason behind "getting somewhere to work" in the urbanized world, it is connected with the geographic distribution of urban work following the industrial revolution, making a lot of workers commute to far working locations (like offices) away from home. 
+Commuting is a universal job, for most people in the lower and middle/working class of modernized societies. Commuting can represent a form of unrecognized, invisible labor, which is the more striking with long commuting hours (>2h daily). To commute requires movement. This is tied to the naturally provided universal capacity of bipedal movement, which preceded the development of the cortex. As for the reason behind "getting somewhere to work" in the urbanized world, it is connected with the geographic distribution of urban work following the industrial revolution, making a lot of workers commute to far working locations (like offices) away from home. 
 
 This in itself would not constitute a completely satisfying relationship to the theme of Sisyphus, whose boulder-rolling task represents meaningless labor, because commuting serves a purpose after all -- to reach a meaningful place for labor -- but the experience analyzed behind the moment under the moment of commuting, when nothing is do-able (regardless of any entertainment or activity undertaken) except to wait to be somewhere, to be in a different place, to get there in order to start labor for a few mere hours only to start commuting over again; that is the experience that this game experience is targeting. 
 

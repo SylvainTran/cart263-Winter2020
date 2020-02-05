@@ -15,62 +15,81 @@ LA subway sound: ciccarelli on freesound.org (https://freesound.org/people/cicca
 *********************************************************************/
 
 $(document).ready(setup);
-let $calendar;
+// The clock at the top and its settings
+let $clock;
 let currentHour = 8;
 let currentMinutes = 0;
 const MINS_IN_HOUR = 60;
 const MINS_TICK_INCREASE = 10;
 const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
-const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
+// The useless progress bar in the centre 
 let progressBarValue = 0;
+// The commuting job handler settings
 const commutingLaborValue = 10;
 const maxValueForCommutingJob = 1300;
 const minValueForCommutingJob = 0;
+// The message dialog settings
+const MESSAGE_PROBABILITY_THRESHOLD = 0.2; // probability to spawn the text dialog
+const intervalToCallNewDialog = 1000;
+// The metro car moving across the screen by the commuting job handler
 let subwayMetroPosX = 0;
 let subwayMetroETA = 120;
 let subwayMetroETADefault = 120;
-const subwaySounds = new Audio("../p1/assets/sounds/subwaySounds.wav");
-const strugglingManSound = new Audio("../p1/assets/sounds/strugglingMan.wav");
 const subwayMetroPosXValue = 10;
 const subwayMetroETAIncrement = 1;
 const distanceToDestination = 350;
-const intervalToCallNewDialog = 1000;
+// Sound effects
+const subwaySounds = new Audio("../p1/assets/sounds/subwaySounds.wav");
+const strugglingManSound = new Audio("../p1/assets/sounds/strugglingMan.wav");
+// Colors
+const cyanColor = "rgb( 255, 255, 0 )";
+const yellow = "rgb( 0, 255, 255 )";
 
 //setup
 //
 //Setups the game scene
 function setup() {
-  $calendar = $('#calendar');
-  $calendar.draggable();
-  setInterval(updateCalendar, 1 * intervalToCallNewDialog); 
-  setInterval(showPoemDialog, intervalToCallNewDialog);
-  $('#commutingJob').draggable({axis: "x", containment: "parent"});
+  // clock related setting up
+  $clock = $('#clock');
+  $clock.draggable();
+  setInterval(updateClock, 1 * intervalToCallNewDialog); 
+  // Dialog spawner
+  setInterval(handleMessageDialog, intervalToCallNewDialog);
+  // Useless progress bar
   $("#progressbar").progressbar({
     value: progressBarValue,
     max: maxValueForCommutingJob
   });
+  // Commuting job handler 
+  $('#commutingJob').draggable({axis: "x", containment: "parent"});
   $('#commutingJob').on("drag", function(event, ui){
     progressBarValue = clampCommutingJobValues(progressBarValue + commutingLaborValue, minValueForCommutingJob, maxValueForCommutingJob);
     updateProgressBar();
-    updateCalendar();
-    $('#calendar').toggle( "bounce", { times: 1 }, "slow" );
+    // clock related updates
+    updateClock();
+    $('#clock').toggle( "bounce", { times: 1 }, "slow" );
+    // Subway related updates
     moveSubway();
     $('#subwayMetro').text("ETA " + Math.floor(subwayMetroETA) + " Lifetimes");
-    animateSubway();
-    revertColor();
+    animateSubway(cyanColor);
+    animateSubway(yellow);
     adjustDesiredDestination();
+    // Sound effects
     strugglingManSound.currentTime = 0;
     strugglingManSound.play();
+    $(document).one('mousedown', playMusic);
   });
+  // Thrash can drop event
   $("#thrashcan").droppable({
     tolerance: "intersect",
     drop: removeDiv
   });
-  setInterval(revertColor, 1000);
-  $(document).one('mousedown', playMusic);
 }
 
+//playMusic
+//
+//Sets music in arg to looping or not, and plays it
 function playMusic() {
   subwaySounds.loop = true;
   subwaySounds.play();
@@ -83,23 +102,23 @@ function sendPoem() {
   createDialog("Reply from CuriousCat53", "You've got a new message! Don't be distracted while commuting.", "Check new message", "Ignore notification", checkPhoneMessage, closeDialog);
 }
 
-//checkPhoneMessage(event, ui)
+//checkPhoneMessage(event)
 //
 //Creates a very realistic phone message div
 function checkPhoneMessage(event) {
-  // Removes the option
+  // Removes the option to annoy the user
   $(event.target.parentElement).remove();
   let replyMessageBox = document.createElement("div");
   $(replyMessageBox).draggable();
   $(replyMessageBox).addClass("replyMessageBox");
-  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "<br>" + "CuriousCat53 has deleted your message.");
+  $(replyMessageBox).append("Message received at: " + currentHour + ":" + currentMinutes + "." + "<br>" + "CuriousCat53 has deleted your message.");
   $('body').append(replyMessageBox);
 }
 
-//updateCalendar
+//updateClock
 //
 // Updates the currentHour and currentMinutes of the day
-function updateCalendar() {
+function updateClock() {
   if(currentMinutes < MINS_IN_HOUR) {
     currentMinutes += MINS_TICK_INCREASE;
   }
@@ -113,15 +132,15 @@ function updateCalendar() {
     }
   }
   let finalTime = currentHour + ":" + currentMinutes;
-  $calendar.text(finalTime);
+  $clock.text(finalTime);
 }
 
-//showPoemDialog
+//handleMessageDialog
 //
 //Shows the poem dialog at random times during the work shift
-function showPoemDialog() {
+function handleMessageDialog() {
   let randomNumber = Math.random();
-  if(randomNumber <= PROBABILITY_THRESHOLD) {
+  if(randomNumber <= MESSAGE_PROBABILITY_THRESHOLD) {
     createDialog("Love Mail", "Send her a poem?", "Yes", "No", sendPoem, closeDialog);
   }
 }
@@ -182,16 +201,26 @@ function resetCommutingJob() {
   progressBarValue = minValueForCommutingJob;
 }
 
+//removeDiv
+//
+//Removes the dragged ui
 function removeDiv(event, ui) {
   $(ui.draggable).remove();
 }
 
+//closeDialog
+//
+//Closes this dialog
 function closeDialog() {
   $(this).dialog("close");
 }
 
+//moveSubway
+//
+//Moves the div subway uselessly across the screen when the user drags the commuting handler
 function moveSubway() {
   subwayMetroPosX += subwayMetroPosXValue;
+  // Resets position when exceeding the size of the inner window
   if(subwayMetroPosX > window.innerWidth) {
     subwayMetroPosX = 0;
   }
@@ -199,6 +228,7 @@ function moveSubway() {
     $("#subwayMetro").css("left", subwayMetroPosX);
   }
   subwayMetroETA -= subwayMetroETAIncrement;
+  //Resets the ETA when hitting 0 (or below)
   if(subwayMetroETA <= 0) {
     subwayMetroETA = subwayMetroETADefault;
     subwayMetroPosX = 0;
@@ -206,20 +236,19 @@ function moveSubway() {
   }
 }
 
-function animateSubway() {
+//animateSubway
+//
+//Animates the subway's color to the value provided in arg
+function animateSubway(rgbValues) {
   $("#subwayMetro" ).animate({
     color: "black",
-    backgroundColor: "rgb( 0, 255, 255 )"
+    backgroundColor: rgbValues
   });
 }
 
-function revertColor(){
-  $("#subwayMetro" ).animate({
-    color: "black",
-    backgroundColor: "rgb( 255, 255, 0 )"
-  });
-}
-
+//adjustDesiredDestination
+//
+//Adjusts the metro car's distance from the desired destination
 function adjustDesiredDestination() {
   let currentMetroPos = $("#subwayMetro").css("left");
   let newPosX = parseInt(currentMetroPos) + distanceToDestination + "px";

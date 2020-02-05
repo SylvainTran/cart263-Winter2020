@@ -15,15 +15,24 @@ body {
   line-height: 10vw;
   font-size: 5vw;
 }
+
 #thrashcan {
   width: 15vw;
 }
+
 #thrashcan img {
   position: relative;
   margin-top: 10%;
   width: 15vw;
   height: 15vw;
   opacity: 0.5;
+}
+
+#parentContainer {
+  position: absolute;
+  bottom: 0;
+  margin: 25%;
+  width: 60vw;
 }
 
 .dialog {
@@ -43,8 +52,8 @@ body {
   background-color: beige;
   height: 10vw;
   width: 25vw;
-  position: absolute;
-  bottom: 0;
+  position: relative;
+  top: 0%;
   left: 40%;
   text-align: center;
   font-size: 5vw;
@@ -56,10 +65,11 @@ body {
 .main__ui__gameplay-instructions {
   background-color: beige;
   color: black;
-  height: 6vw;
+  height: 10vw;
   width: 15vw;
   opacity: 0.5;
   text-align: center;
+  font-size: 1.5vw;
 }
 
 #subwayMetro {
@@ -72,6 +82,7 @@ body {
   line-height: 5vw;
   position: relative;
   top: 7vw;
+  font-size: 1.5vw;
 }
 
 #desiredDestination {
@@ -85,4 +96,5 @@ body {
   position: relative;
   top: -31vw;
   right: 1vw;
+  font-size: 1.5vw;
 }

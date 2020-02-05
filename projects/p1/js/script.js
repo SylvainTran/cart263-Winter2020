@@ -34,7 +34,7 @@ const subwaySounds = new Audio("../p1/assets/sounds/subwaySounds.wav");
 const strugglingManSound = new Audio("../p1/assets/sounds/strugglingMan.wav");
 const subwayMetroPosXValue = 10;
 const subwayMetroETAIncrement = 1;
-const distanceToDestination = 250;
+const distanceToDestination = 350;
 
 //setup
 //
@@ -44,13 +44,12 @@ function setup() {
   $calendar.draggable();
   setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
   setInterval(showPoemDialog, 3000);
-  $('#commutingJob').draggable({axis: "x"});
+  $('#commutingJob').draggable({axis: "x", containment: "parent"});
   $("#progressbar").progressbar({
     value: progressBarValue,
     max: maxValueForCommutingJob
   });
   $('#commutingJob').on("drag", function(event, ui){
-    console.log(progressBarValue);
     progressBarValue = clampCommutingJobValues(progressBarValue + commutingLaborValue, minValueForCommutingJob, maxValueForCommutingJob);
     updateProgressBar();
     updateCalendar();

@@ -46,7 +46,7 @@ body {
   line-height: 3vw;
   font-size: 2vw;
   position: relative;
-  bottom: 25vw;
+  bottom: 100vw;
   width: 40%;
 }
 
@@ -99,4 +99,20 @@ body {
   top: -31vw;
   right: 1vw;
   font-size: 1.5vw;
+}
+
+#reachingMan img{
+  position: relative;
+  top: -31vw;
+  left: 50vw;
+  height: 25vw;
+  width: 25vw;
+}
+
+#uninterestedGirl img{
+  position: relative;
+  top: -56vw;
+  left: 60vw;
+  height: 25vw;
+  width: 25vw;
 }

@@ -154,10 +154,8 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
 //
 // Updates the progress bar on drag event of the Commuting flattener and resets the progress value if > max
 function updateProgressBar(){
-  console.log("Updating progress bar");
   $('#progressbar').progressbar( "option", "value", progressBarValue);
   if(progressBarValue >= maxValueForCommutingJob) {
-    console.log("Exceeding mx progress value");
     resetCommutingJob();
   }
 }

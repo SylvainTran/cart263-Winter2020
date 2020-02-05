@@ -48,6 +48,7 @@ body {
   font-size: 5vw;
   opacity: 0.5;
   line-height: 10vw;
+  cursor: grabbing;
 }
 
 .main__ui__gameplay-instructions {

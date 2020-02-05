@@ -11,7 +11,7 @@ thrashcan pic: https://twitter.com/pixel_trash_gif
 subway background: https://www.creativereview.co.uk/illustrated-story-new-york-subway-map/
 subway routine bg: https://www.c42d.com/subway-startup-survey-summer-2018-edition/
 animated subway bg: https://imgur.com/t/pixel_art/KkxJYDW
-
+LA subway sound: ciccarelli on freesound.org (https://freesound.org/people/ciccarelli/sounds/112337/)
 *********************************************************************/
 
 $(document).ready(setup);
@@ -24,11 +24,17 @@ const END_OF_SHIFT = 17; // in currentHour
 const BEGIN_SHIFT = 8;
 const PROBABILITY_THRESHOLD = 0.2; // probability to spawn the poem dialog
 let progressBarValue = 0;
-const commutingLaborValue = 0.1;
-const maxValueForCommutingJob = 100;
+const commutingLaborValue = 10;
+const maxValueForCommutingJob = 1300;
 const minValueForCommutingJob = 0;
 let subwayMetroPosX = 0;
 let subwayMetroETA = 120;
+let subwayMetroETADefault = 120;
+const subwaySounds = new Audio("../p1/assets/sounds/subwaySounds.wav");
+const strugglingManSound = new Audio("../p1/assets/sounds/strugglingMan.wav");
+const subwayMetroPosXValue = 10;
+const subwayMetroETAIncrement = 1;
+const distanceToDestination = 250;
 
 //setup
 //
@@ -36,32 +42,37 @@ let subwayMetroETA = 120;
 function setup() {
   $calendar = $('#calendar');
   $calendar.draggable();
-  //setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
-  setInterval(showPoemDialog, 1000);
+  setInterval(updateCalendar, 1 * 1000); // Each 10 seconds is one hour
+  setInterval(showPoemDialog, 3000);
   $('#commutingJob').draggable({axis: "x"});
   $("#progressbar").progressbar({
     value: progressBarValue,
     max: maxValueForCommutingJob
   });
   $('#commutingJob').on("drag", function(event, ui){
+    console.log(progressBarValue);
     progressBarValue = clampCommutingJobValues(progressBarValue + commutingLaborValue, minValueForCommutingJob, maxValueForCommutingJob);
     updateProgressBar();
     updateCalendar();
     $('#calendar').toggle( "bounce", { times: 1 }, "slow" );
     moveSubway();
-    if(subwayMetroETA <= 0) {
-      subwayMetroETA = 120;
-      subwayMetroPosX = 0;
-      progressBarValue = 0;
-    }
-    subwayMetroETA -= 0.1;
-    $('#subwayMetro').text("ETA " + Math.floor(subwayMetroETA) + " Mins");
+    $('#subwayMetro').text("ETA " + Math.floor(subwayMetroETA) + " Lifetimes");
     animateSubway();
+    revertColor();
+    adjustDesiredDestination();
+    strugglingManSound.currentTime = 0;
+    strugglingManSound.play();
   });
   $("#thrashcan").droppable({
     drop: removeDiv
   })
   setInterval(revertColor, 1000);
+  $(document).one('mousedown', playMusic);
+}
+
+function playMusic() {
+  subwaySounds.loop = true;
+  subwaySounds.play();
 }
 
 //sendPoem
@@ -69,7 +80,6 @@ function setup() {
 //Creates a fake reply dialog
 function sendPoem() {
   createDialog("Reply from CuriousCat53", "You've got a new message! Don't be late commuting.", "Check new message", "Ignore her", checkPhoneMessage, closeDialog);
-
 }
 
 //checkPhoneMessage(event, ui)
@@ -101,7 +111,8 @@ function updateCalendar() {
       currentHour = BEGIN_SHIFT; // restart the day to beginning of shift at 8am
     }
   }
-  $calendar.text(currentHour + " : " + currentMinutes);
+  let finalTime = currentHour + ":" + currentMinutes;
+  $calendar.text(finalTime);
 }
 
 //showPoemDialog
@@ -109,7 +120,6 @@ function updateCalendar() {
 //Shows the poem dialog at random times during the work shift
 function showPoemDialog() {
   let randomNumber = Math.random();
-  console.log(randomNumber);
   if(randomNumber <= PROBABILITY_THRESHOLD) {
     createDialog("Love Mail", "Send her a poem?", "Yes", "No", sendPoem, closeDialog);
   }
@@ -143,8 +153,10 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
 //
 // Updates the progress bar on drag event of the Commuting flattener and resets the progress value if > max
 function updateProgressBar(){
+  console.log("Updating progress bar");
   $('#progressbar').progressbar( "option", "value", progressBarValue);
   if(progressBarValue >= maxValueForCommutingJob) {
+    console.log("Exceeding mx progress value");
     resetCommutingJob();
   }
 }
@@ -159,7 +171,7 @@ function clampCommutingJobValues(value, min, max){
   else if(value < min) {
     return min;
   }
-  else{
+  else {
     return value;
   }
 }
@@ -180,12 +192,18 @@ function closeDialog() {
 }
 
 function moveSubway() {
-  subwayMetroPosX++;
+  subwayMetroPosX += subwayMetroPosXValue;
   if(subwayMetroPosX > window.innerWidth) {
     subwayMetroPosX = 0;
   }
   else {
     $("#subwayMetro").css("left", subwayMetroPosX);
+  }
+  subwayMetroETA -= subwayMetroETAIncrement;
+  if(subwayMetroETA <= 0) {
+    subwayMetroETA = subwayMetroETADefault;
+    subwayMetroPosX = 0;
+    progressBarValue = 0;
   }
 }
 
@@ -201,4 +219,10 @@ function revertColor(){
     color: "black",
     backgroundColor: "rgb( 255, 255, 0 )"
   });
+}
+
+function adjustDesiredDestination() {
+  let currentMetroPos = $("#subwayMetro").css("left");
+  let newPosX = parseInt(currentMetroPos) + distanceToDestination + "px";
+  $("#desiredDestination").css("left", newPosX);
 }

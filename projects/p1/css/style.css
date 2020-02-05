@@ -65,8 +65,22 @@ body {
   height: 5vw;
   width: 10vw;
   opacity: 0.5;
-  position: absolute;
   text-align: center;
   vertical-align: middle;
   line-height: 5vw;
+  position: relative;
+  top: 7vw;
+}
+
+#desiredDestination {
+  background-color: lime;
+  color: black;
+  height: 6vw;
+  width: 15vw;
+  opacity: 0.5;
+  text-align: center;
+  line-height: 6vw;
+  position: relative;
+  top: -31vw;
+  right: 1vw;
 }

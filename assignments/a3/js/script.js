@@ -152,6 +152,7 @@ let animals =
 let correctAnimal = "";
 let answers = [];
 const NUM_OPTIONS = 3;
+let backwardsText = "";
 
 function setup() {
   newRound();
@@ -182,7 +183,7 @@ function handleGuess() {
 }
 
 function sayBackwards(text) {
-  let backwardsText = text.split('').reverse().join('');
+  backwardsText = text.split('').reverse().join('');
   let options = {
     "rate": Math.random(),
     "pitch": Math.random()
@@ -197,4 +198,33 @@ function addButton(label) {
   $div.button();
   $div.on("click", handleGuess);
   $('body').append($div);
+  return $div;
+}
+
+function findCorrectAnswerButton() {
+  let $correctDiv;
+  let $divs = $('div');
+
+  for(let i = 0; i < $div.length; i++) {
+    if($div[i].text() === correctAnimal) {
+      $correctDiv = $div[i];
+    }
+  }
+  return $correctDiv;
+}
+
+if(annyang) {
+  var commands = {
+    'I give up': function() {
+      alert("ok");
+      findCorrectAnswerButton().shake();
+      newRound();
+    }
+  };
+
+  // Add our commands to annyang
+  annyang.addCommands(commands);
+
+  // Start listening. You can call this here, or attach this call to an event, button, etc.
+  annyang.start();
 }

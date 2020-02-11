@@ -168,6 +168,7 @@ function newRound() {
   }
   let randomCorrect = Math.floor(Math.random() * answers.length);
   correctAnimal = answers[randomCorrect];
+  answers[randomCorrect].addClass("correctAnimal");
   sayBackwards(correctAnimal);
 }
 
@@ -201,24 +202,26 @@ function addButton(label) {
   return $div;
 }
 
-function findCorrectAnswerButton() {
-  let $correctDiv;
-  let $divs = $('div');
-
-  for(let i = 0; i < $div.length; i++) {
-    if($div[i].text() === correctAnimal) {
-      $correctDiv = $div[i];
-    }
-  }
-  return $correctDiv;
+function shakeCorrectDiv() {
+  $('.correctAnimal').shake();
 }
+
+let vocalGuess;
 
 if(annyang) {
   var commands = {
     'I give up': function() {
       alert("ok");
-      findCorrectAnswerButton().shake();
+      shakeCorrectDiv();
       newRound();
+    },
+    'Say it again': () => {
+      responsiveVoice.speak(backwardsText, "UK English Male", options);
+    },
+    'I think it is' + vocalGuess: () => {
+      if(vocalGuess === correctAnimal) {
+
+      }
     }
   };
 

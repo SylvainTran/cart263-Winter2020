@@ -131,12 +131,13 @@ function update ()
     {
         player.setVelocityY(0);
     }    
-    setTimeout(() => { automatons.getChildren().forEach(automata => {
-        automatons.rotate(200); // 2, 25, 50, 200
-        //automatons.shiftPosition(250, 250);
-        //automata.setDisplaySize(Math.random() * 75, Math.random() * 50);    
-    });} , 3000);
 }
+
+setInterval(() => { automatons.getChildren().forEach(automata => {
+    automatons.rotate(200); // 2, 25, 50, 200
+    //automatons.shiftPosition(250, 250);
+    //automata.setDisplaySize(Math.random() * 75, Math.random() * 50);    
+});}, 1000);
 
 class AutomataManager {
     constructor(name, positionX, positionY, velocity, tasksList, deviantBehaviors) {

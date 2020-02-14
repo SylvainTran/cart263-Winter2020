@@ -70,6 +70,8 @@ let config = {
 let game = new Phaser.Game(config);
 let player;
 let cursors;
+let automatons;
+const NB_AUTOMATA = 30;
 
 function preload ()
 {
@@ -81,6 +83,12 @@ function create ()
 {
     player = this.physics.add.sprite(400, 0, 'Prippilukie');
     player.setCollideWorldBounds(true);
+    automatons = this.physics.add.group();
+    
+    for(let i = 0; i < NB_AUTOMATA; i++) 
+    {
+        automatons.create(Math.random() * window.innerWidth, Math.random() * window .innerHeight, 'automata');
+    }
     cursors = this.input.keyboard.createCursorKeys();
 }
 

@@ -87,16 +87,22 @@ function create ()
     
     for(let i = 0; i < NB_AUTOMATA; i++) 
     {
-        automatons.create(Math.random() * window.innerWidth, Math.random() * window .innerHeight, 'automata');
+        automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
+
+        // Add event listeners
+        automatons.getChildren()[i].addListener("collided", rotateMe);
     }
 
     this.physics.add.collider(player, automatons);
     this.physics.add.collider(automatons, automatons);
-    cursors = this.input.keyboard.createCursorKeys();
+    cursors = this.input.keyboard.createCursorKeys(); 
 }
 
+function rotateMe() {
+    console.log("Rotating - collided");
+}
 function update ()
-{
+{   
     // Horizontal
     if(cursors.left.isDown)
     {
@@ -125,6 +131,11 @@ function update ()
     {
         player.setVelocityY(0);
     }    
+    setTimeout(() => { automatons.getChildren().forEach(automata => {
+        automatons.rotate(200); // 2, 25, 50, 200
+        //automatons.shiftPosition(250, 250);
+        //automata.setDisplaySize(Math.random() * 75, Math.random() * 50);    
+    });} , 3000);
 }
 
 class AutomataManager {

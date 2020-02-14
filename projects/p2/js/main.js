@@ -52,12 +52,11 @@ Simon Penny's Stupid Robot (1985)
 *********************************************************************/
 let config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 760,
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
             debug: false
         }
     },
@@ -69,19 +68,52 @@ let config = {
 };
 
 let game = new Phaser.Game(config);
+let player;
+let cursors;
 
 function preload ()
 {
     // Nothing for now
+    // this.load.image("...", 'Prippilukie');
 }
-
+// TODO add spritesheet animations/graphics
 function create ()
 {
-
+    player = this.physics.add.sprite(400, 0, 'Prippilukie');
+    player.setCollideWorldBounds(true);
+    cursors = this.input.keyboard.createCursorKeys();
 }
 
 function update ()
 {
+    // Horizontal
+    if(cursors.left.isDown)
+    {
+        player.setVelocityX(-160);
+        console.log("Going left");
+    }
+    else if(cursors.right.isDown)
+    {
+        player.setVelocityX(160);
+    }
+    else 
+    {
+        player.setVelocityX(0);
+    }    
+
+    // Vertical
+    if(cursors.up.isDown)
+    {
+        player.setVelocityY(-160);
+    }
+    else if(cursors.down.isDown)
+    {
+        player.setVelocityY(160);
+    }
+    else 
+    {
+        player.setVelocityY(0);
+    }    
 }
 
 class AutomataManager {

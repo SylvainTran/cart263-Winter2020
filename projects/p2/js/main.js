@@ -89,6 +89,9 @@ function create ()
     {
         automatons.create(Math.random() * window.innerWidth, Math.random() * window .innerHeight, 'automata');
     }
+
+    this.physics.add.collider(player, automatons);
+    this.physics.add.collider(automatons, automatons);
     cursors = this.input.keyboard.createCursorKeys();
 }
 

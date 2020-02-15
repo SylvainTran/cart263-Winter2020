@@ -53,17 +53,32 @@ Simon Penny's Stupid Robot (1985)
 $(document).ready(start);
 
 class AutomataManager {
-    constructor(name, positionX, positionY, velocity, tasksList, deviantBehaviors) {
-        this.name = name;
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.velocity = velocity;
+    constructor(tasksList) {
+        // this.name = name;
+        // this.positionX = positionX;
+        // this.positionY = positionY;
+        // this.velocity = velocity;
         this.tasksList = tasksList;
-        this.deviantBehaviors = deviantBehaviors;    
+        console.log(this.tasksList);
+        // this.deviantBehaviors = deviantBehaviors;    
     }
 
-    getTasksList() {
-        return this.tasksList;
+    get tasksList() {
+        return this._tasksList;
+    }
+
+    set tasksList(value) {
+        this._tasksList = value;
+    }
+
+    getMethods = (obj) => {
+        let properties = new Set()
+        let currentObj = obj
+        do {
+            Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
+        } 
+        while ((currentObj = Object.getPrototypeOf(currentObj)))
+        return [...properties.keys()].filter(item => typeof obj[item] === 'function')
     }
 
     startMoveRoutine() {
@@ -72,14 +87,9 @@ class AutomataManager {
 
     startAutoRoutine() {
         console.log("Starting auto routine.");
+        console.log(`My tasks are to: ${this.tasksList}. Joy.`);
         let routineLength = 4;
-        let randomTask = Math.floor(Math.random() * routineLength);
-        let newTask = this.tasksList[randomTask];
-        let taskFound = window[newTask];
-        if (typeof taskFound === "function") 
-        {
-            this.taskFound();
-        }
+        let randomTask = Math.floor(Math.random() * routineLength);  
     }
 
     inspect() {
@@ -111,7 +121,10 @@ function start() {
     let name = "TestMe"; // To be assigned by player
     let tasksList = ["inspect", "superviseMinionAutomatas", "workOnBoxes", "cleanFloor"];
     let deviantBehaviors = ["observe manager", "grab"];
-    let automataManager = new AutomataManager(name, 0, 0, 5, tasksList, deviantBehaviors);
-    setTimeout(automataManager.startAutoRoutine, 1000); // Start off a new routine task every 5 seconds
-    //automataManager.startMoveRoutine();  
+    //console.log(tasksList);
+    let automataManager = new AutomataManager(tasksList);
+    //setTimeout(automataManager.startAutoRoutine, 1000); // Start off a new routine task every 5 seconds
+    automataManager.startAutoRoutine();
+    let allTasks = automataManager.getMethods(automataManager);  
+    console.log(allTasks);
 }

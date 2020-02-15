@@ -15,7 +15,7 @@ Project 2: Something is wrong on the Internet
 
     3Cs:
         Character
-            Actions are assigned weights of importance, in the Automata's GOAP priorities.
+            Actions are assigned weights of importance, in the Automata's FSM priorities.
             (Auto) Work on boxes:
                 UX
                     Gets rewarded for testing boxes of hardware.
@@ -90,7 +90,7 @@ function create ()
         automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
 
         // Add event listeners
-        automatons.getChildren()[i].addListener("collided", rotateMe);
+        //automatons.getChildren()[i].addListener("collided", rotateMe);
     }
 
     this.physics.add.collider(player, automatons);
@@ -101,13 +101,13 @@ function create ()
 function rotateMe() {
     console.log("Rotating - collided");
 }
+
 function update ()
 {
     // Horizontal
     if(cursors.left.isDown)
     {
         player.setVelocityX(-160);
-        console.log("Going left");
     }
     else if(cursors.right.isDown)
     {
@@ -133,85 +133,15 @@ function update ()
     }
 }
 
+// Animate each automaton
 setInterval(() => { automatons.getChildren().forEach(automata => {
     automatons.rotate(200); // 2, 25, 50, 200
     //automatons.shiftPosition(250, 250);
     //automata.setDisplaySize(Math.random() * 75, Math.random() * 50);
+});}, 10);
+
+// Check the FSM for each automaton
+setInterval(() => { automatons.getChildren().forEach(automata => {
+    // check current state every sec
+    console.log(fsm.state);
 });}, 1000);
-
-class AutomataManager {
-    constructor(tasksList) {
-        // this.name = name;
-        // this.positionX = positionX;
-        // this.positionY = positionY;
-        // this.velocity = velocity;
-        this.tasksList = tasksList;
-        console.log(this.tasksList);
-        // this.deviantBehaviors = deviantBehaviors;
-    }
-
-    get tasksList() {
-        return this._tasksList;
-    }
-
-    set tasksList(value) {
-        this._tasksList = value;
-    }
-
-    getMethods = (obj) => {
-        let properties = new Set()
-        let currentObj = obj
-        do {
-            Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
-        }
-        while ((currentObj = Object.getPrototypeOf(currentObj)))
-        return [...properties.keys()].filter(item => typeof obj[item] === 'function')
-    }
-
-    startMoveRoutine() {
-        console.log("Starting move routine.");
-    }
-
-    startAutoRoutine() {
-        console.log("Starting auto routine.");
-        console.log(`My tasks are to: ${this.tasksList}. Joy.`);
-        let routineLength = 4;
-        let randomTask = Math.floor(Math.random() * routineLength);
-    }
-
-    inspect() {
-        console.log("Manager Automata is inspecting the floor.");
-    }
-
-    cleanFloor() {
-        console.log("Manager Automata" + this.name + "is cleaning the floor.");
-    }
-
-    superviseMinionAutomatas() {
-        console.log("Manager Automata" + this.name + "is supervising minion Automatas.");
-    }
-
-    workOnBoxes() {
-        console.log("Manager Automata" + this.name + "is working on boxes.");
-    }
-
-    observeManager() {
-        console.log("Manager Automata" + this.name + "is observing the human manager.");
-    }
-
-    grab(){
-        console.log("Manager Automata" + this.name + "is grabbing something.");
-    }
-}
-
-function start() {
-    let name = "TestMe"; // To be assigned by player
-    let tasksList = ["inspect", "superviseMinionAutomatas", "workOnBoxes", "cleanFloor"];
-    let deviantBehaviors = ["observe manager", "grab"];
-    //console.log(tasksList);
-    let automataManager = new AutomataManager(tasksList);
-    //setTimeout(automataManager.startAutoRoutine, 1000); // Start off a new routine task every 5 seconds
-    automataManager.startAutoRoutine();
-    let allTasks = automataManager.getMethods(automataManager);
-    console.log(allTasks);
-}

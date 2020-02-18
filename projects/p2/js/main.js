@@ -99,9 +99,13 @@ function create ()
     this.physics.add.collider(player, automatons, rotateMe, null, this);
     cursors = this.input.keyboard.createCursorKeys();
     //camera.startFollow(player);
+    let testAutomata = new Automata("7435");
+    console.log(testAutomata._fsm.state);
+    testAutomata.speak();
 }
 
 function rotateMe() {
+
     console.log("Rotating - collided");
 }
 
@@ -146,5 +150,4 @@ setInterval(() => { automatons.getChildren().forEach(automata => {
 // Check the FSM for each automaton
 setInterval(() => { automatons.getChildren().forEach(automata => {
     // check current state every sec
-    console.log(fsm.state);
 });}, 1000);

@@ -155,21 +155,47 @@ const NUM_OPTIONS = 3;
 let backwardsText = "";
 
 function setup() {
+  // Initialise annyang with no commands (because we just want to listen to whatever it hears)
+  if(annyang)
+  {
+    annyang.init({});
+    //annyang.addCallback('result', handleSpeech);
+    // Add our commands to annyang
+    annyang.addCommands(commands);
+    annyang.addCommands(playerGuess);
+
+    // Start listening. You can call this here, or attach this call to an event, button, etc.
+    annyang.start();
+  }
+
   newRound();
+  updateScore();
 }
 
 function newRound() {
+  updateScore();
   answers = [];
+  let randomCorrect = Math.floor(Math.random() * answers.length);
+
   for(let i = 0; i < NUM_OPTIONS; i++) {
     let randomIndex = Math.floor(Math.random() * animals.length);
     let randomAnimal = animals[randomIndex];
-    addButton(randomAnimal);
+    let thisButton = addButton(randomAnimal);
     answers.push(randomAnimal);
+
+    if(i === randomCorrect)
+    {
+      correctAnimal = answers[i];
+      console.log(correctAnimal);
+      thisButton.addClass("correctAnimal");
+    }
   }
-  let randomCorrect = Math.floor(Math.random() * answers.length);
-  correctAnimal = answers[randomCorrect];
-  answers[randomCorrect].addClass("correctAnimal");
   sayBackwards(correctAnimal);
+}
+
+let options = {
+  "rate": Math.random(),
+  "pitch": Math.random()
 }
 
 function handleGuess() {
@@ -185,10 +211,6 @@ function handleGuess() {
 
 function sayBackwards(text) {
   backwardsText = text.split('').reverse().join('');
-  let options = {
-    "rate": Math.random(),
-    "pitch": Math.random()
-  }
   responsiveVoice.speak(backwardsText, "UK English Male", options);
 }
 
@@ -207,29 +229,34 @@ function shakeCorrectDiv() {
 }
 
 let vocalGuess;
+let consecutiveScore;
 
-if(annyang) {
-  var commands = {
-    'I give up': function() {
-      alert("ok");
-      shakeCorrectDiv();
+let commands = {
+  'I give up': function() {
+    alert("ok");
+    consecutiveScore = 0;
+    shakeCorrectDiv();
+    newRound();
+  },
+  'Say it again': () => {
+    responsiveVoice.speak(backwardsText, "UK English Male", options);
+  },
+}
+
+let playerGuess = {
+  "I think it is *vocalGuess": function() {
+    if(vocalGuess === correctAnimal) {
+      consecutiveScore++;
       newRound();
-    },
-    'Say it again': () => {
-      responsiveVoice.speak(backwardsText, "UK English Male", options);
-    },
-  }
-  let commands2 = {
-    "I think it is": function() {
-      if(vocalGuess === correctAnimal) {
-      }
+    }
+    else
+    {
+      consecutiveScore = 0;
     }
   }
-};
+}
 
-  // Add our commands to annyang
-  annyang.addCommands(commands);
-
-  // Start listening. You can call this here, or attach this call to an event, button, etc.
-  annyang.start();
+function updateScore()
+{
+  $('score').text("Score: " + consecutiveScore);
 }

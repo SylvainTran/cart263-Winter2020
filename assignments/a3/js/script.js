@@ -218,12 +218,14 @@ if(annyang) {
     'Say it again': () => {
       responsiveVoice.speak(backwardsText, "UK English Male", options);
     },
-    'I think it is' + vocalGuess: () => {
+  }
+  let commands2 = {
+    "I think it is": function() {
       if(vocalGuess === correctAnimal) {
-
       }
     }
-  };
+  }
+};
 
   // Add our commands to annyang
   annyang.addCommands(commands);

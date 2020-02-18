@@ -35,3 +35,27 @@ Not in a future of AI overlords and robots in the factories, but right here, now
     Platformer (e.g., maplestory)
       Something silly about monster bashing
       and the job of it
+
+Essay thesis statement:
+
+Someone or something or some combination of people and things is using YouTube to systematically frighten, traumatise, and abuse children, automatically and at scale, and it forces me to question my own beliefs about the internet, at every level.
+
+  What do you really know about the Internet?
+    About who lives in it?
+      About what is produced in it?
+        About why they are doing it?
+
+          These are all rooms of knowledge.
+            Yume nikki style...?
+              Interrogate workers in the "Demon-youtube-scape" as they build their devices to mind puppet people on earth
+                Do so with voice commands
+                Get voice replies from them
+
+              Or
+                Infiltrate a youtuber's home, find out it's really a massive corporation 
+                  It gets stranger and stranger
+
+                  Or the psychological exploration of motives
+
+                    Or the vocal commanding of robots that produce weird and dark stuff?
+                     

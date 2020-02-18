@@ -88,9 +88,8 @@ function create ()
     for(let i = 0; i < NB_AUTOMATA; i++) 
     {
         automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
-
         // Add event listeners
-        automatons.getChildren()[i].addListener("collided", rotateMe);
+        // automatons.getChildren()[i].addListener("collide", rotateMe);
     }
 
     this.physics.add.collider(player, automatons);
@@ -101,6 +100,7 @@ function create ()
 function rotateMe() {
     console.log("Rotating - collided");
 }
+
 function update ()
 {   
     // Horizontal
@@ -136,7 +136,7 @@ function update ()
 setInterval(() => { automatons.getChildren().forEach(automata => {
     automatons.rotate(200); // 2, 25, 50, 200
     //automatons.shiftPosition(250, 250);
-    //automata.setDisplaySize(Math.random() * 75, Math.random() * 50);    
+    //automata.setDisplaySize(Math.random() * 20, Math.random() * 20);    
 });}, 1000);
 
 class AutomataManager {

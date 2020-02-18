@@ -81,20 +81,24 @@ function preload ()
 // TODO add spritesheet animations/graphics
 function create ()
 {
+    let camera = this.cameras.add(0, 0, 1280, 760);
     player = this.physics.add.sprite(400, 0, 'Prippilukie');
     player.setCollideWorldBounds(true);
     automatons = this.physics.add.group();
+    automatons.enableBody = true;
+    automatons.physicsBodyType = Phaser.Physics.ARCADE;
 
     for(let i = 0; i < NB_AUTOMATA; i++)
     {
-        automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
-        // Add event listeners
-        // automatons.getChildren()[i].addListener("collide", rotateMe);
+        let a = automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
+        //a.body.immovable = true;
     }
-
+    // Add event listeners    
     this.physics.add.collider(player, automatons);
     this.physics.add.collider(automatons, automatons);
+    this.physics.add.collider(player, automatons, rotateMe, null, this);
     cursors = this.input.keyboard.createCursorKeys();
+    //camera.startFollow(player);
 }
 
 function rotateMe() {

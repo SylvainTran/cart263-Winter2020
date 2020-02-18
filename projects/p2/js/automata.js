@@ -5,7 +5,9 @@ let fsm = new StateMachine({
       { name: 'fatigued',   from: 'laboring', to: 'idle'  }
     ],
     methods: {
-      onBusy:     () => { console.log('I\'m busy')    },
-      onFatigued:   () => { console.log('I\'m fatigued.')     }
+      onBusy: 
+        () => {console.log('I\'m busy')},
+      onFatigued:   
+        () => {console.log('I\'m fatigued.')}
     }
   });

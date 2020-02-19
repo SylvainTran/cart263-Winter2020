@@ -1,3 +1,15 @@
 body {
+    background-color:yellowgreen;
+}
 
+div {
+    color: blue;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.guess {
+    margin: auto;
+    width: 46%;
+    margin-left: 24vw;
 }

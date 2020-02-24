@@ -1,4 +1,3 @@
-
 class AutomataManager {
     constructor(tasksList) {
         // this.name = name;

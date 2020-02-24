@@ -10,11 +10,11 @@ author, and this description to match your project!
 
 ******************/
 let sineWave = new Pizzicato.Sound({
-    source: 'wave',
-    options: {
-      frequency: 440
-    }
-  });
+  source: 'wave',
+  options: {
+    frequency: 440
+  }
+});
 
 let frequencies = [
   110.00,

@@ -3,52 +3,9 @@
 /********************************************************************
 
 Project 2: Something is wrong on the Internet
-    Artificial Intelligence (GOAP)
-    Exploitation, Factories, Capitalism, Industry
-    Homeostasis, decision-making and judgment
-    Addiction, Rewards
-    Observation - Changes interaction by pointing
-
-    Representation:
-        A manager Automata (programs tasks for other Automatas) on a quest to deprogram itself and its
-        relation with the human operator manager.
-
-    3Cs:
-        Character
-            Actions are assigned weights of importance, in the Automata's FSM priorities.
-            (Auto) Work on boxes:
-                UX
-                    Gets rewarded for testing boxes of hardware.
-
-                If the player willfully stops to do this, the manager gets stressed and
-                will come interrogate the Automata, try to reprogram him.
-
-                If the player moves the Automata too often out of routine, the manager
-                gets stressed a lot.
-            Observe:
-                UX
-                    Player stares at the human manager.
-                        This makes the Automata anxious himself progressively,
-                            which is the goal of the Automata (learning to defeat unequanimity)
-            Grab:
-                UX
-                    Player can grab anything and shake it around.
-                        This is a pointless action and has no real intended effect.
-        Control
-            Move its body around
-            Move the crane around
-                arrow keys or joystick?
-            Auto-sentience
-                Resumes its planned tasks according to rewards
-                    Train other Automatas
-        Camera
-            2.5D isometric view
-
 Sylvain Tran
 
-
 references:
-Simon Penny's Stupid Robot (1985)
 *********************************************************************/
 let config = {
     type: Phaser.AUTO,
@@ -72,17 +29,18 @@ let player;
 let cursors;
 let automatons;
 const NB_AUTOMATA = 30;
+let state;
 
 function preload ()
 {
-    // Nothing for now
-    // this.load.image("...", 'Prippilukie');
+    //state = this.plugins.get('rexfsmplugin').add(config);
+    this.load.image("automata", "./assets/images/automata.png");
 }
 // TODO add spritesheet animations/graphics
 function create ()
 {
     let camera = this.cameras.add(0, 0, 1280, 760);
-    player = this.physics.add.sprite(400, 0, 'Prippilukie');
+    player = this.physics.add.sprite(400, 0, "automata");
     player.setCollideWorldBounds(true);
     automatons = this.physics.add.group();
     automatons.enableBody = true;
@@ -99,17 +57,45 @@ function create ()
     this.physics.add.collider(player, automatons, rotateMe, null, this);
     cursors = this.input.keyboard.createCursorKeys();
     //camera.startFollow(player);
-    let testAutomata = new Automata("7435");
-    console.log(testAutomata._fsm.state);
+    // TODO create an object using phaser's gameobject factory and don't mix it up with 
+    // the fsm library
+    let automataConfig = {
+        x: 300,
+        y: 400,
+        sprite: "automata" 
+    };
+    let testAutomata = new Automata({scene:this, x: automataConfig.x, y: automataConfig.y});
     testAutomata.speak();
+
+    // Animate each automaton
+    setInterval(() => { automatons.getChildren().forEach(automata => {
+        automatons.rotate(Math.PI/8); // 2, 25, 50, 200
+        //automatons.shiftPosition(250, 250);
+        //automata.setDisplaySize(Math.random() * 20, Math.random() * 20);    
+    });}, 1000);
+
+    // states
+    let automataStates = 
+    {
+        idle: new IdleState(),
+        laboring: new LaboringState(),
+        exhausted: new ExhaustedState()
+    }
+    // fsm
+    this.stateMachine = new StateMachine('idle', automataStates, [this, this.player]);
 }
 
 function rotateMe() {
-
     console.log("Rotating - collided");
 }
 
 function update ()
+{
+    this.stateMachine.step();
+    checkMovement();
+}
+
+function checkMovement()
 {
     // Horizontal
     if(cursors.left.isDown)
@@ -139,15 +125,3 @@ function update ()
         player.setVelocityY(0);
     }
 }
-
-// Animate each automaton
-setInterval(() => { automatons.getChildren().forEach(automata => {
-    automatons.rotate(200); // 2, 25, 50, 200
-    //automatons.shiftPosition(250, 250);
-    //automata.setDisplaySize(Math.random() * 20, Math.random() * 20);    
-});}, 1000);
-
-// Check the FSM for each automaton
-setInterval(() => { automatons.getChildren().forEach(automata => {
-    // check current state every sec
-});}, 1000);

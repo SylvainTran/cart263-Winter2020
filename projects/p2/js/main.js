@@ -69,9 +69,7 @@ function create ()
 
     // Animate each automaton
     setInterval(() => { automatons.getChildren().forEach(automata => {
-        automatons.rotate(Math.PI/8); // 2, 25, 50, 200
-        //automatons.shiftPosition(250, 250);
-        //automata.setDisplaySize(Math.random() * 20, Math.random() * 20);    
+        automatons.rotate(Math.PI/8); // 2, 25, 50, 200  
     });}, 1000);
 
     // states
@@ -83,6 +81,19 @@ function create ()
     }
     // fsm
     this.stateMachine = new StateMachine('idle', automataStates, [this, this.player]);
+    
+    // Voice control
+    if(annyang)
+    {
+      // inits the commands
+      annyang.init(commands, true);
+  
+      // Add our commands to annyang (separated for clarity)
+      annyang.addCommands(commands);
+
+      // Start listening
+      annyang.start();
+    }
 }
 
 function rotateMe() {
@@ -125,3 +136,25 @@ function checkMovement()
         player.setVelocityY(0);
     }
 }
+
+let commands = {
+    'Start working': function() {
+        // if in a good mood or state, will obey
+        responsiveVoice.speak("Cleaning up the floor, sir.", "UK English Female", options);
+        // if not, disobey
+        //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);        
+    },
+    'Stop working': () => {
+        responsiveVoice.speak("There wasn't much to do anyway.", "UK English Female", options);
+    },
+}
+
+// options()
+//
+// Options for rate and pitch be random for some reason
+let options = {
+    "rate": Math.random(),
+    "pitch": Math.random()
+}
+  
+  

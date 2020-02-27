@@ -307,3 +307,11 @@ function updateScore()
 {
   $('#score').text("Score: " + consecutiveScore);
 }
+
+// options()
+//
+// Options for rate and pitch be random for some reason
+let options = {
+  "rate": Math.random(),
+  "pitch": Math.random()
+}

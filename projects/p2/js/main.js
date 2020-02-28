@@ -33,7 +33,6 @@ let state;
 
 function preload ()
 {
-    //state = this.plugins.get('rexfsmplugin').add(config);
     this.load.image("automata", "./assets/images/automata.png");
 }
 // TODO add spritesheet animations/graphics
@@ -56,9 +55,7 @@ function create ()
     this.physics.add.collider(automatons, automatons);
     this.physics.add.collider(player, automatons, rotateMe, null, this);
     cursors = this.input.keyboard.createCursorKeys();
-    //camera.startFollow(player);
-    // TODO create an object using phaser's gameobject factory and don't mix it up with 
-    // the fsm library
+
     let automataConfig = {
         x: 300,
         y: 400,
@@ -103,7 +100,7 @@ function rotateMe() {
 function update ()
 {
     this.stateMachine.step();
-    checkMovement();
+    checkMovement(); //To put in the fsm
 }
 
 function checkMovement()

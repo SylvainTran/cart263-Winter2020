@@ -37,6 +37,12 @@ $(document).ready(setup);
 function setup() 
 {
   setTimeout(handleMessageDialog, intervalToCallNewDialog);
+  $('.side__left-menu__top').fadeIn(3000);
+
+  // Accordions
+  $('#side__left-menu__item--accordion-about').accordion({
+      collapsible: true
+  });
 }
 
 //handleMessageDialog

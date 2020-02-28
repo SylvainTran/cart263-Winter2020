@@ -1,0 +1,7 @@
+.side__left-menu {
+    color: blueviolet;
+    padding: 0 0vw 0 0;
+    min-width: 20vw;
+    max-width: 25vw;
+    cursor: crosshair;
+}

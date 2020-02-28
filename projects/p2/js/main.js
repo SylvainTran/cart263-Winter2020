@@ -9,8 +9,8 @@ references:
 *********************************************************************/
 let config = {
     type: Phaser.AUTO,
-    width: 1280,
-    height: 760,
+    width: 480,
+    height: 720,
     physics: {
         default: 'arcade',
         arcade: {
@@ -91,6 +91,8 @@ function create ()
       // Start listening
       annyang.start();
     }
+    // Append the phaser canvas in the flex box
+    $('.main__game').append($('canvas'));
 }
 
 function rotateMe() {

@@ -30,7 +30,54 @@ let cursors;
 let automatons;
 const NB_AUTOMATA = 30;
 let state;
+const intervalToCallNewDialog = 1000;
 
+$(document).ready(setup);
+
+function setup() 
+{
+  setTimeout(handleMessageDialog, intervalToCallNewDialog);
+}
+
+//handleMessageDialog
+//
+//
+function handleMessageDialog() {
+    let text2 = "You have a new quest.";
+    createDialog("New Quest", text2, "Accept", "Accept", null, closeDialog);
+}
+
+//closeDialog
+//
+//Closes this dialog
+function closeDialog() {
+    $(this).dialog("close");
+}
+  
+//createDialog(title, text, button1, button2, button1Event, button2Event)
+//
+//creates a generic dialog with the provided args
+function createDialog(title, text, button1, button2, button1Event, button2Event) {
+    let newDialog = document.createElement("div");
+
+    $(newDialog).addClass(".dialog");
+    $(newDialog).attr("title", title);
+    $(newDialog).text(text);
+    $(newDialog).dialog({
+        position: { my: "center top", at: "right top"},
+        buttons: [
+        {
+            text: button1,
+            click: button1Event
+        },
+        {
+            text: button2,
+            click: button2Event
+        }
+        ]
+    });
+}
+  
 function preload ()
 {
     this.load.image("automata", "./assets/images/automata.png");
@@ -146,6 +193,9 @@ let commands = {
     'Stop working': () => {
         responsiveVoice.speak("There wasn't much to do anyway.", "UK English Female", options);
     },
+    'Take a stroll': () => {
+        responsiveVoice.speak("Everyone deserves a good stroll", "UK English Female", options);        
+    }
 }
 
 // options()

@@ -6,7 +6,40 @@ Project 2: Something is wrong on the Internet
 Sylvain Tran
 
 references:
+https://stackoverflow.com/questions/4852017/how-to-initialize-an-arrays-length-in-javascript
+https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scene/
+https://phaser.io/phaser3/devlog/119
 *********************************************************************/
+class BootScene extends Phaser.Scene {
+
+    constructor () {
+        super({
+            key: 'boot',
+            files: [
+                { type: 'image', key: 'bar', url: 'loaderBar.png' },
+                { type: 'image', key: 'bg', url: 'background.png' },
+            ]
+        });
+    }
+
+    init(data) {}
+    preload () {}
+    create (data)  {}
+    update(time, delta) {}
+}
+
+class Vacation extends Phaser.Scene {
+
+    constructor () {
+        super("Vacation");
+    }
+
+    init(data) {}
+    preload () {}
+    create (data)  {}
+    update(time, delta) {}
+}
+
 let config = {
     type: Phaser.AUTO,
     width: 480,
@@ -17,10 +50,17 @@ let config = {
             debug: false
         }
     },
+    plugins: {
+        global: [
+            { key: 'YoutubeDirtPile', plugin: YoutubeDirtPilePlugin, start: true }
+        ]
+    },
     scene: {
-        preload: preload,
-        create: create,
-        update: update
+        BootScene: BootScene,
+        Vacation: Vacation,
+        preload: preload, //TODO put in bootscene
+        create: create, //TODO put in bootscene
+        update: update //TODO put in bootscene
     }
 };
 
@@ -45,9 +85,26 @@ function setup()
   });
 }
 
+//spawnDirt(scene)
+//
+//spawn dirty youtube videos for the robots to collect maybe
+function spawnDirt(scene) {
+    const DIRT_MULTIPLIER = 10;
+    let NB_OF_DIRT_PILES = Math.floor(Math.random() * DIRT_MULTIPLIER);
+    console.log(NB_OF_DIRT_PILES);
+    let dirtyArray = Array(NB_OF_DIRT_PILES).fill(null).map( (x, i) => i );
+    console.log(dirtyArray.length);
+
+    dirtyArray.forEach((d) => {
+        console.log("Spawning new Youtube Dirt Pile");
+        let randomXY = [Math.random() * 480, Math.random() * 720];
+        scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
+    });
+}
+
 //handleMessageDialog
 //
-//
+//handle message dialogues - From P1
 function handleMessageDialog() {
     let text2 = "You have a new quest.";
     createDialog("New Quest", text2, "Accept", "Accept", null, closeDialog);
@@ -55,14 +112,14 @@ function handleMessageDialog() {
 
 //closeDialog
 //
-//Closes this dialog
+//Closes this dialog - From P1
 function closeDialog() {
     $(this).dialog("close");
 }
   
 //createDialog(title, text, button1, button2, button1Event, button2Event)
 //
-//creates a generic dialog with the provided args
+//creates a generic dialog with the provided args - From P1
 function createDialog(title, text, button1, button2, button1Event, button2Event) {
     let newDialog = document.createElement("div");
 
@@ -87,6 +144,7 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
 function preload ()
 {
     this.load.image("automata", "./assets/images/automata.png");
+    this.load.image('YoutubeDirtPile', "./assets/images/sprites/YoutubeDirtPile.png");
 }
 // TODO add spritesheet animations/graphics
 function create ()
@@ -144,12 +202,25 @@ function create ()
       // Start listening
       annyang.start();
     }
+
     // Append the phaser canvas in the flex box
     $('.main__game').append($('canvas'));
 }
 
+function createNewYoutubeContent () {
+    // Spawn new dirty and mindless youtube video for people to consume
+    setTimeout(() => {
+        spawnDirt(game.scene.get(create));
+    }, INTERVAL_NEW_TASK_SPAWN);
+}
 function rotateMe() {
-    console.log("Rotating - collided");
+    console.log("Rotating - collided!!!!");
+    // Animate each automaton
+    setTimeout(() => { automatons.getChildren().forEach(automata => {
+        automatons.rotate(-Math.PI/8); // 2, 25, 50, 200  
+        // TODO play laboring animation
+        // TODO Sweep up closest dirt pile
+    });}, 1000);
 }
 
 function update ()
@@ -192,7 +263,9 @@ function checkMovement()
 let commands = {
     'Start working': function() {
         // if in a good mood or state, will obey
-        responsiveVoice.speak("Cleaning up the floor, sir.", "UK English Female", options);
+        responsiveVoice.speak("Cleaning up the floor, sir. New Content Uploaded.", "UK English Female", options);
+        createNewYoutubeContent();
+        rotateMe();
         // if not, disobey
         //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);        
     },

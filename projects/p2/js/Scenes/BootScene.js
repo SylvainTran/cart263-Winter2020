@@ -13,7 +13,7 @@ class BootScene extends Phaser.Scene {
 
     init(data) 
     {
-        
+
     }
     
     preload () 
@@ -42,14 +42,6 @@ class BootScene extends Phaser.Scene {
         this.physics.add.collider(player, automatons, rotateMe, null, this);
         cursors = this.input.keyboard.createCursorKeys();
 
-        let automataConfig = {
-            x: 300,
-            y: 400,
-            sprite: "automata" 
-        };
-        let testAutomata = new Automata({scene:this, x: automataConfig.x, y: automataConfig.y});
-        testAutomata.speak();
-
         // Animate each automaton
         setInterval(() => { automatons.getChildren().forEach(automata => {
             automatons.rotate(Math.PI/8); // 2, 25, 50, 200  
@@ -64,20 +56,16 @@ class BootScene extends Phaser.Scene {
         }
         // fsm
         this.stateMachine = new StateMachine('idle', automataStates, [this, this.player]);
-        
         // Voice control
         if(annyang)
         {
-        // inits the commands
-        annyang.init(commands, true);
-    
-        // Add our commands to annyang (separated for clarity)
-        annyang.addCommands(commands);
-
-        // Start listening
-        annyang.start();
+            // inits the commands
+            annyang.init(commands, true);
+            // Add our commands to annyang (separated for clarity)
+            annyang.addCommands(commands);
+            // Start listening
+            annyang.start();
         }
-
         // Append the phaser canvas in the flex box
         $('.main__game').append($('canvas'));
     }

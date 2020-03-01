@@ -1,3 +1,12 @@
+// 2020-03-01
+// The mindless slaves will obey with enough money, -- the more
+// money the player gives them to create youtube content,
+// the more crazed and disturbing the video will be
+// The in-game gameplay is that after issuing money bags to automatas by picking them up,
+// the player can issue vocal commands to make the robots line up in the factory assembly and
+// start producing shit videos depending on the money amount given
+// Automatons who have not been paid will start doing the videos
+// about what they actually like instead
 
 let commands = {
     'Start working': function() {

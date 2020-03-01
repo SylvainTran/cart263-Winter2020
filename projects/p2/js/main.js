@@ -27,7 +27,7 @@ let config = {
         ]
     },
     scene: [
-        BootScene, Vacation
+        BootScene, YoutubeLounge, UI
     ]
 };
 

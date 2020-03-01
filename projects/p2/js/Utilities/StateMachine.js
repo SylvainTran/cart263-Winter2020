@@ -95,7 +95,8 @@ class PlayerIdleState extends State {
     }
   }
 
-  checkMovement() {
+  checkMovement() 
+  {
     if(cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown)
     {
       return true;

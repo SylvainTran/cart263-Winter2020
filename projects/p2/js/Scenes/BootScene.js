@@ -3,7 +3,6 @@ class BootScene extends Phaser.Scene {
     constructor () {
         super({
             key: 'boot',
-            active: true,
             files: [
                 { type: 'image', key: 'bar', url: 'loaderBar.png' },
                 { type: 'image', key: 'bg', url: 'background.png' },
@@ -75,11 +74,12 @@ class BootScene extends Phaser.Scene {
         // Append the phaser canvas in the flex box
         $('.main__game').append($('canvas'));
 
-        // Call first game scene
-        // TODO parallel launching
+        // Call first game scene in parallel (for now)
+        this.scene.launch('YoutubeLounge');
     }
 
-    update(time, delta) {
+    update(time, delta) 
+    {
         this.AutomataFSM.step();
         this.PlayerFSM.step();  
     }

@@ -10,35 +10,6 @@ https://stackoverflow.com/questions/4852017/how-to-initialize-an-arrays-length-i
 https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scene/
 https://phaser.io/phaser3/devlog/119
 *********************************************************************/
-class BootScene extends Phaser.Scene {
-
-    constructor () {
-        super({
-            key: 'boot',
-            files: [
-                { type: 'image', key: 'bar', url: 'loaderBar.png' },
-                { type: 'image', key: 'bg', url: 'background.png' },
-            ]
-        });
-    }
-
-    init(data) {}
-    preload () {}
-    create (data)  {}
-    update(time, delta) {}
-}
-
-class Vacation extends Phaser.Scene {
-
-    constructor () {
-        super("Vacation");
-    }
-
-    init(data) {}
-    preload () {}
-    create (data)  {}
-    update(time, delta) {}
-}
 
 let config = {
     type: Phaser.AUTO,
@@ -55,13 +26,9 @@ let config = {
             { key: 'YoutubeDirtPile', plugin: YoutubeDirtPilePlugin, start: true }
         ]
     },
-    scene: {
-        BootScene: BootScene,
-        Vacation: Vacation,
-        preload: preload, //TODO put in bootscene
-        create: create, //TODO put in bootscene
-        update: update //TODO put in bootscene
-    }
+    scene: [
+        BootScene, Vacation
+    ]
 };
 
 let game = new Phaser.Game(config);
@@ -141,78 +108,13 @@ function createDialog(title, text, button1, button2, button1Event, button2Event)
     });
 }
   
-function preload ()
-{
-    this.load.image("automata", "./assets/images/automata.png");
-    this.load.image('YoutubeDirtPile', "./assets/images/sprites/YoutubeDirtPile.png");
-}
-// TODO add spritesheet animations/graphics
-function create ()
-{
-    let camera = this.cameras.add(0, 0, 1280, 760);
-    player = this.physics.add.sprite(400, 0, "automata");
-    player.setCollideWorldBounds(true);
-    automatons = this.physics.add.group();
-    automatons.enableBody = true;
-    automatons.physicsBodyType = Phaser.Physics.ARCADE;
-
-    for(let i = 0; i < NB_AUTOMATA; i++)
-    {
-        let a = automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
-        //a.body.immovable = true;
-    }
-    // Add event listeners    
-    this.physics.add.collider(player, automatons);
-    this.physics.add.collider(automatons, automatons);
-    this.physics.add.collider(player, automatons, rotateMe, null, this);
-    cursors = this.input.keyboard.createCursorKeys();
-
-    let automataConfig = {
-        x: 300,
-        y: 400,
-        sprite: "automata" 
-    };
-    let testAutomata = new Automata({scene:this, x: automataConfig.x, y: automataConfig.y});
-    testAutomata.speak();
-
-    // Animate each automaton
-    setInterval(() => { automatons.getChildren().forEach(automata => {
-        automatons.rotate(Math.PI/8); // 2, 25, 50, 200  
-    });}, 1000);
-
-    // states
-    let automataStates = 
-    {
-        idle: new IdleState(),
-        laboring: new LaboringState(),
-        exhausted: new ExhaustedState()
-    }
-    // fsm
-    this.stateMachine = new StateMachine('idle', automataStates, [this, this.player]);
-    
-    // Voice control
-    if(annyang)
-    {
-      // inits the commands
-      annyang.init(commands, true);
-  
-      // Add our commands to annyang (separated for clarity)
-      annyang.addCommands(commands);
-
-      // Start listening
-      annyang.start();
-    }
-
-    // Append the phaser canvas in the flex box
-    $('.main__game').append($('canvas'));
-}
-
 function createNewYoutubeContent () {
     // Spawn new dirty and mindless youtube video for people to consume
     setTimeout(() => {
-        spawnDirt(game.scene.get(create));
+        //spawnDirt(game.scene.get(create));
     }, INTERVAL_NEW_TASK_SPAWN);
 }
+
 function rotateMe() {
     console.log("Rotating - collided!!!!");
     // Animate each automaton

@@ -16,8 +16,6 @@ Simon Penny's Stupid Robot (1985)
 *********************************************************************/
 const INTERVAL_NEW_TASK_SPAWN = 5000;
 
-$(document).ready(setup);
-
 class YoutubeDirtPile extends Phaser.GameObjects.Image {
 
     constructor (scene, x, y)
@@ -46,20 +44,26 @@ class YoutubeDirtPilePlugin extends Phaser.Plugins.BasePlugin {
 
 }
 
-function setup() 
-{
-    // setInterval(() => {
-    //     spawnDirt();
-    // }, INTERVAL_NEW_TASK_SPAWN);
+//spawnDirt(scene)
+//
+//spawn dirty youtube videos for the robots to collect maybe
+function spawnDirt(scene) {
+    const DIRT_MULTIPLIER = 10;
+    let NB_OF_DIRT_PILES = Math.floor(Math.random() * DIRT_MULTIPLIER);
+    console.log(NB_OF_DIRT_PILES);
+    let dirtyArray = Array(NB_OF_DIRT_PILES).fill(null).map( (x, i) => i );
+    console.log(dirtyArray.length);
+
+    dirtyArray.forEach((d) => {
+        console.log("Spawning new Youtube Dirt Pile");
+        let randomXY = [Math.random() * 480, Math.random() * 720];
+        scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
+    });
 }
 
-// function spawnDirt() {
-//     let NB_OF_DIRT_PILES = Math.random();
-//     let dirtyArray = [NB_OF_DIRT_PILES];
-//     let randomXY = [Math.random() * 480, Math.random() * 720];
-
-//     dirtyArray.forEach((d) => {
-//         console.log("spawning new dirt pile");
-//         this.add.YoutubeDirtPile(randomXY);
-//     })
-// }
+function createNewYoutubeContent () {
+    // Spawn new dirty and mindless youtube video for people to consume
+    setTimeout(() => {
+        //spawnDirt(game.scene.get(create));
+    }, INTERVAL_NEW_TASK_SPAWN);
+}

@@ -58,41 +58,6 @@ function setup()
   });
 }
 
-//spawnDirt(scene)
-//
-//spawn dirty youtube videos for the robots to collect maybe
-function spawnDirt(scene) {
-    const DIRT_MULTIPLIER = 10;
-    let NB_OF_DIRT_PILES = Math.floor(Math.random() * DIRT_MULTIPLIER);
-    console.log(NB_OF_DIRT_PILES);
-    let dirtyArray = Array(NB_OF_DIRT_PILES).fill(null).map( (x, i) => i );
-    console.log(dirtyArray.length);
-
-    dirtyArray.forEach((d) => {
-        console.log("Spawning new Youtube Dirt Pile");
-        let randomXY = [Math.random() * 480, Math.random() * 720];
-        scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
-    });
-}
-
-  
-function createNewYoutubeContent () {
-    // Spawn new dirty and mindless youtube video for people to consume
-    setTimeout(() => {
-        //spawnDirt(game.scene.get(create));
-    }, INTERVAL_NEW_TASK_SPAWN);
-}
-
-function rotateMe() {
-    console.log("Rotating - collided!!!!");
-    // Animate each automaton
-    setTimeout(() => { automatons.getChildren().forEach(automata => {
-        automatons.rotate(-Math.PI/8); // 2, 25, 50, 200  
-        // TODO play laboring animation
-        // TODO Sweep up closest dirt pile
-    });}, 1000);
-}
-
 function update ()
 {
     this.stateMachine.step();

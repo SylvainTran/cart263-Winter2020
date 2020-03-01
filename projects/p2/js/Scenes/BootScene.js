@@ -13,7 +13,22 @@ class BootScene extends Phaser.Scene {
 
     init(data) 
     {
+        // states
+        let automataStates = 
+        {
+            idle: new IdleState(),
+            laboring: new LaboringState(),
+            exhausted: new ExhaustedState()
+        }
 
+        let playerStates = 
+        {
+            idle: new PlayerIdleState(),
+            moving: new MovingState()
+        }
+        // fsm
+        this.AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
+        this.PlayerFSM = new StateMachine('idle', playerStates, [this, this.player]);
     }
     
     preload () 
@@ -47,15 +62,6 @@ class BootScene extends Phaser.Scene {
             automatons.rotate(Math.PI/8); // 2, 25, 50, 200  
         });}, 1000);
 
-        // states
-        let automataStates = 
-        {
-            idle: new IdleState(),
-            laboring: new LaboringState(),
-            exhausted: new ExhaustedState()
-        }
-        // fsm
-        this.stateMachine = new StateMachine('idle', automataStates, [this, this.player]);
         // Voice control
         if(annyang)
         {
@@ -68,7 +74,13 @@ class BootScene extends Phaser.Scene {
         }
         // Append the phaser canvas in the flex box
         $('.main__game').append($('canvas'));
+
+        // Call first game scene
+        // TODO parallel launching
     }
 
-    update(time, delta) {}
+    update(time, delta) {
+        this.AutomataFSM.step();
+        this.PlayerFSM.step();  
+    }
 }

@@ -31,6 +31,7 @@ class StateMachine {
     }
   }
   
+  // Base state class to be extended
   class State {
     enter() 
     {
@@ -42,7 +43,7 @@ class StateMachine {
         
     }
   }
-  
+  //Automata states only
   class IdleState extends State {
       enter()
       {
@@ -77,4 +78,79 @@ class ExhaustedState extends State {
     {
         
     }
+}
+
+// Player states
+class PlayerIdleState extends State {
+  enter()
+  {
+    console.log("Player is Idle");
+  }
+
+  execute(scene, player) 
+  {
+    if(this.checkMovement())
+    {
+      this.stateMachine.transition("moving");
+    }
+  }
+
+  checkMovement() {
+    if(cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
+class MovingState extends State {
+  enter()
+  {
+    console.log("Player is starting to move");
+  }
+
+  execute(scene, player) 
+  {
+    this.updateVelocity();
+  }
+
+  updateVelocity()
+  {
+    // Horizontal
+    if(cursors.left.isDown)
+    {
+      player.setVelocityX(-160);
+    }
+    else if(cursors.right.isDown)
+    {
+      player.setVelocityX(160);
+    }
+    else
+    {
+      player.setVelocityX(0);
+    }
+
+    // Vertical
+    if(cursors.up.isDown)
+    {
+      player.setVelocityY(-160);
+    }
+    else if(cursors.down.isDown)
+    {
+      player.setVelocityY(160);
+    }
+    else
+    {
+      player.setVelocityY(0);
+    }
+    
+    //If the player didn't move at all, then he is idle
+    if(player.body.velocity.equals(new Phaser.Math.Vector2(0,0)) ) {
+      this.stateMachine.transition("idle");
+    }
+  }
 }

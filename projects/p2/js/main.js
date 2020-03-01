@@ -58,42 +58,5 @@ function setup()
   });
 }
 
-function update ()
-{
-    this.stateMachine.step();
-    checkMovement(); //To put in the fsm
-}
-
-function checkMovement()
-{
-    // Horizontal
-    if(cursors.left.isDown)
-    {
-        player.setVelocityX(-160);
-    }
-    else if(cursors.right.isDown)
-    {
-        player.setVelocityX(160);
-    }
-    else
-    {
-        player.setVelocityX(0);
-    }
-
-    // Vertical
-    if(cursors.up.isDown)
-    {
-        player.setVelocityY(-160);
-    }
-    else if(cursors.down.isDown)
-    {
-        player.setVelocityY(160);
-    }
-    else
-    {
-        player.setVelocityY(0);
-    }
-}
-
   
   

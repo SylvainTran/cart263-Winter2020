@@ -22,5 +22,8 @@ class YoutubeLounge extends Phaser.Scene {
         testAutomata.speak();
     }
 
-    update(time, delta) {}
+    update(time, delta) 
+    {
+
+    }
 }

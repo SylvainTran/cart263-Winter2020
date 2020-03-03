@@ -60,13 +60,13 @@ class StateMachine {
       
       checkIfEnoughMoney(automata) 
       {
-        console.log("Checking if enough money was offered");
-        console.log(automata.cashInventory);
+        //console.log("Checking if enough money was offered");
+        //console.log(automata.cashInventory);
       }
 
       randomDecisionTree()
       {
-        console.log("making random decisions");
+        //console.log("making random decisions");
       }
   }
 

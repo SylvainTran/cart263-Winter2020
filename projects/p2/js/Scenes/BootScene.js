@@ -24,8 +24,6 @@ class BootScene extends Phaser.Scene {
     create ()
     {
         let camera = this.cameras.add(0, 0, 1280, 760);
-        this.youtubePimpPlayer = new YoutubePimpPlayer(this, 150, 150, "automata");
-        this.youtubePimpPlayer.setCollideWorldBounds(true);
         
         // Voice control
         if(annyang)
@@ -46,6 +44,6 @@ class BootScene extends Phaser.Scene {
 
     update(time, delta) 
     {
-        this.youtubePimpPlayer.PlayerFSM.step();
+
     }
 }

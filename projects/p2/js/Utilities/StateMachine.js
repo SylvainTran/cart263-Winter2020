@@ -139,28 +139,34 @@ class MovingState extends State {
     if(player.cursors.left.isDown)
     {
       player.setVelocityX(-80);
+      //player.anims.play('left', true);
     }
     else if(player.cursors.right.isDown)
     {
       player.setVelocityX(80);
+      //player.anims.play('right', true);
     }
     else
     {
       player.setVelocityX(0);
+      //player.anims.play('turn', true);
     }
 
     // Vertical
     if(player.cursors.up.isDown)
     {
       player.setVelocityY(-80);
+      //player.anims.play('up', true);
     }
     else if(player.cursors.down.isDown)
     {
       player.setVelocityY(80);
+      //player.anims.play('turn', true);
     }
     else
     {
       player.setVelocityY(0);
+      //player.anims.play('turn', true);
     }
     
     //If the player didn't move at all, then he is idle

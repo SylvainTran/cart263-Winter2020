@@ -38,7 +38,9 @@ class YoutubeLounge extends Phaser.Scene {
         // Player collision with tiles with collide true
         // Spawn at the spawn point setup in Tiled
         const spawnPoint = map.findObject("GameObjects", obj => obj.name === "Spawn Point");
-        this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "automata");
+        // Sprite scale factor
+        const scaleFactor = 0.3;
+        this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "ley").setScale(scaleFactor);
         this.youtubePimpPlayer.setCollideWorldBounds(true);
         this.physics.add.collider(this.youtubePimpPlayer, aboveLayer);
         // Physics bounds

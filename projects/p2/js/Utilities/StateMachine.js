@@ -138,11 +138,11 @@ class MovingState extends State {
     // Horizontal
     if(player.cursors.left.isDown)
     {
-      player.setVelocityX(-160);
+      player.setVelocityX(-80);
     }
     else if(player.cursors.right.isDown)
     {
-      player.setVelocityX(160);
+      player.setVelocityX(80);
     }
     else
     {
@@ -152,11 +152,11 @@ class MovingState extends State {
     // Vertical
     if(player.cursors.up.isDown)
     {
-      player.setVelocityY(-160);
+      player.setVelocityY(-80);
     }
     else if(player.cursors.down.isDown)
     {
-      player.setVelocityY(160);
+      player.setVelocityY(80);
     }
     else
     {

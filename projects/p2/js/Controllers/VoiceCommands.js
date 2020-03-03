@@ -7,13 +7,19 @@
 // start producing shit videos depending on the money amount given
 // Automatons who have not been paid will start doing the videos
 // about what they actually like instead
-
 let commands = {
     'Start working': function() {
-        // if in a good mood or state, will obey
+        // if has enough incentive/money bags, will create a suspicious video
+        // otherwise will create art or something 
+
+        // change state of global variable or what?
+        // event listener - signal emitted?
+        workCommandIssued = true;
+
         responsiveVoice.speak("Cleaning up the floor, sir. New Content Uploaded.", "UK English Female", options);
         createNewYoutubeContent();
-        rotateMe();
+        //rotateMe();
+
         // if not, disobey
         //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);        
     },
@@ -23,7 +29,7 @@ let commands = {
     'Take a stroll': () => {
         responsiveVoice.speak("Everyone deserves a good stroll", "UK English Female", options);        
     }
-}
+};
 
 // options()
 //

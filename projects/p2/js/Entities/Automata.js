@@ -3,6 +3,8 @@
     {
       super(config.scene, config.x, config.y, "automata");
       config.scene.add.existing(this);
+      this.AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
+      this.cashInventory = 0; // The automata's cash bag inventory.
     }
 
     speak() 

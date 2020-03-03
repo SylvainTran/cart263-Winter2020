@@ -8,7 +8,8 @@ class StateMachine {
         this.states = states;
         this.stateArgs = stateArgs;
         this.state = null;
-  
+        // this.workCommandIssued = false; // if the player has issued a voice command to work        
+
         for (const state of Object.values(this.states)) 
         {
             state.stateMachine = this;
@@ -31,9 +32,9 @@ class StateMachine {
     }
   }
   
-  // Base state class to be extended
+  // Base state class for specialized states
   class State {
-    enter() 
+    enter(scene, player) 
     {
         
     }
@@ -45,36 +46,49 @@ class StateMachine {
   }
   //Automata states only
   class IdleState extends State {
-      enter()
+      enter(scene, automata)
       {
-        console.table(["I'm Idle"]);
+        console.log("I'm Idle Like Stale Bread");
       }
 
-      execute(scene, player) 
+      execute(scene, automata) 
       {
-        
+        //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of 
+        // financial incentives. If not, has a probability to create art or something else instead
+        workCommandIssued? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
+      }
+      
+      checkIfEnoughMoney(automata) 
+      {
+        console.log("Checking if enough money was offered");
+        console.log(automata.cashInventory);
+      }
+
+      randomDecisionTree()
+      {
+        console.log("making random decisions");
       }
   }
 
   class LaboringState extends State {
-    enter()
+    enter(scene, automata)
     {
 
     }
 
-    execute(scene, player) 
+    execute(scene, automata) 
     {
         
     }
 }
 
 class ExhaustedState extends State {
-    enter()
+    enter(scene, automata)
     {
 
     }
 
-    execute() 
+    execute(scene, automata) 
     {
         
     }
@@ -82,22 +96,22 @@ class ExhaustedState extends State {
 
 // Player states
 class PlayerIdleState extends State {
-  enter()
+  enter(scene, player)
   {
     console.log("Player is Idle");
   }
 
   execute(scene, player) 
   {
-    if(this.checkMovement())
+    if(this.checkMovement(scene))
     {
       this.stateMachine.transition("moving");
     }
   }
 
-  checkMovement() 
+  checkMovement(scene) 
   {
-    if(cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown)
+    if(scene.cursors.left.isDown || scene.cursors.right.isDown || scene.cursors.up.isDown || scene.cursors.down.isDown)
     {
       return true;
     }
@@ -109,24 +123,24 @@ class PlayerIdleState extends State {
 }
 
 class MovingState extends State {
-  enter()
+  enter(scene, player)
   {
     console.log("Player is starting to move");
   }
 
   execute(scene, player) 
   {
-    this.updateVelocity();
+    this.updateVelocity(scene);
   }
 
-  updateVelocity()
+  updateVelocity(player)
   {
     // Horizontal
-    if(cursors.left.isDown)
+    if(player.cursors.left.isDown)
     {
       player.setVelocityX(-160);
     }
-    else if(cursors.right.isDown)
+    else if(player.cursors.right.isDown)
     {
       player.setVelocityX(160);
     }
@@ -136,11 +150,11 @@ class MovingState extends State {
     }
 
     // Vertical
-    if(cursors.up.isDown)
+    if(player.cursors.up.isDown)
     {
       player.setVelocityY(-160);
     }
-    else if(cursors.down.isDown)
+    else if(player.cursors.down.isDown)
     {
       player.setVelocityY(160);
     }

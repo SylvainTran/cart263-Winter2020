@@ -30,7 +30,7 @@ let config = {
         ]
     },
     scene: [
-        BootScene, Preloader, YoutubeLounge, UI
+        BootScene, Preloader, YoutubeLounge, UI, YoutubeChannelA
     ]
 };
 

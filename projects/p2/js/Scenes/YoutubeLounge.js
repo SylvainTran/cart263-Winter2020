@@ -41,14 +41,24 @@ class YoutubeLounge extends Phaser.Scene {
         this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "automata");
         this.youtubePimpPlayer.setCollideWorldBounds(true);
         this.physics.add.collider(this.youtubePimpPlayer, aboveLayer);
+        // Physics bounds
+        this.physics.world.setBounds(0, 0, 640, 640);
 
         // Test NPC
         this.testAutomata = new Automata({scene:this, x: automataConfig.x, y: automataConfig.y});
         this.testAutomata.speak();
         console.log("In youtube lounge");
 
-        // TODO parallel launching with UI
+        // Camera follow and zoom
+        this.cameras.main.setSize(640, 640);
+        this.cameras.main.setBounds(0, 0, 640, 640);
+        this.cameras.main.startFollow(this.youtubePimpPlayer, true, 0.05, 0.05);
+        this.cameras.main.setZoom(3);
+        
+        // TODO parallel launching with UI and other youtube channels
         this.scene.launch("UI");
+        // TODO Launch Youtube channels if player activates the youtube channels in the studio
+        //this.scene.launch("YoutubeChannelA");
     }
 
     update(time, delta) 

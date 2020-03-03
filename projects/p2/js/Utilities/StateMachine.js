@@ -46,48 +46,49 @@ class StateMachine {
   }
   //Automata states only
   class IdleState extends State {
-      enter(scene, player)
+      enter(scene, automata)
       {
-        console.log(["I'm Idle"]);
+        console.log("I'm Idle Like Stale Bread");
       }
 
-      execute(scene, player) 
+      execute(scene, automata) 
       {
         //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of 
         // financial incentives. If not, has a probability to create art or something else instead
-        this.workCommandIssued? this.checkIfEnoughMoney() : this.randomDecisionTree();
+        workCommandIssued? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
       }
       
-      checkIfEnoughMoney() 
+      checkIfEnoughMoney(automata) 
       {
-        //console.log("Checking if enough money was offered");        
+        console.log("Checking if enough money was offered");
+        console.log(automata.cashInventory);
       }
 
       randomDecisionTree()
       {
-        //console.log("making random decisions");
+        console.log("making random decisions");
       }
   }
 
   class LaboringState extends State {
-    enter(scene, player)
+    enter(scene, automata)
     {
 
     }
 
-    execute(scene, player) 
+    execute(scene, automata) 
     {
         
     }
 }
 
 class ExhaustedState extends State {
-    enter(scene, player)
+    enter(scene, automata)
     {
 
     }
 
-    execute(scene, player) 
+    execute(scene, automata) 
     {
         
     }

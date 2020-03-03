@@ -58,7 +58,8 @@ $(document).ready(setup);
 
 function setup() 
 {
-  setTimeout(handleMessageDialog, intervalToCallNewDialog);
+    // jquery ui quest log, in development
+    //   setTimeout(handleMessageDialog, intervalToCallNewDialog);
   $('.side__left-menu__top').fadeIn(3000);
 
   // Accordions

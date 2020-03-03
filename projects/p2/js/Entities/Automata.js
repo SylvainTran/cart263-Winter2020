@@ -1,8 +1,12 @@
-  class Automata extends Phaser.GameObjects.Sprite {
-    constructor(config)
+  class Automata extends Person {
+    constructor(scene, x, y, avatarKey)
     {
-      super(config.scene, config.x, config.y, "automata");
-      config.scene.add.existing(this);
+      super(scene, x, y, avatarKey);
+      scene.add.existing(this);
+      scene.physics.add.existing(this);
+      this.setImmovable(true);
+      this.x = x;
+      this.y = y;
       this.AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
       this.cashInventory = 0; // The automata's cash bag inventory.
       this.financialToleranceThreshold = Math.floor(Math.random() * 100);

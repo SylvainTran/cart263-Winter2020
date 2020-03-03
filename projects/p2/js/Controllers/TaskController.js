@@ -44,9 +44,23 @@ class YoutubeDirtPilePlugin extends Phaser.Plugins.BasePlugin {
 
 }
 
+//Create new youtube content
+//
+// Creates new youtube content depending on being low on cash or not
+function createNewYoutubeContent(scene, alignment) {
+    // Spawn new dirty and mindless youtube video for people to consume
+    setTimeout(() => {
+        if(alignment === true) { // word play on true, will change soon
+          spawnGoodVideo();
+        }else {
+          spawnDirt(scene);
+        }
+    }, INTERVAL_NEW_TASK_SPAWN);
+}
+
 //spawnDirt(scene)
 //
-//spawn dirty youtube videos for the robots to collect maybe
+//spawn dirty youtube videos
 function spawnDirt(scene) {
     const DIRT_MULTIPLIER = 10;
     let NB_OF_DIRT_PILES = Math.floor(Math.random() * DIRT_MULTIPLIER);
@@ -61,9 +75,20 @@ function spawnDirt(scene) {
     });
 }
 
-function createNewYoutubeContent () {
-    // Spawn new dirty and mindless youtube video for people to consume
-    setTimeout(() => {
-        //spawnDirt(game.scene.get(create));
-    }, INTERVAL_NEW_TASK_SPAWN);
+//spawnGoodVideo(scene)
+//
+//spawn good youtube videos
+function spawnGoodVideo(scene) {
+    const GOOD_VIDEO_MULTIPLIER = 10;
+    let NB_OF_GOOD_PILES = Math.floor(Math.random() * GOOD_VIDEO_MULTIPLIER);
+    console.log(NB_OF_GOOD_PILES);
+    let goodArray = Array(NB_OF_GOOD_PILES).fill(null).map( (x, i) => i );
+    console.log(goodArray.length);
+
+    goodArray.forEach((d) => {
+        console.log("Spawning new Youtube Good Video");
+        let randomXY = [Math.random() * 480, Math.random() * 720];
+        // TODO use Youtube's API or trick to spawn something like it
+        scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
+    });
 }

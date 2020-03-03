@@ -55,18 +55,25 @@ class StateMachine {
       {
         //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of
         // financial incentives. If not, has a probability to create art or something else instead
-        workCommandIssued? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
+        scene.workCommandIssued? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
       }
 
       checkIfEnoughMoney(automata)
       {
-        //console.log("Checking if enough money was offered");
+        console.log("Checking if enough money was offered");
         //console.log(automata.cashInventory);
+        if(automata.getCashInventory() >= getFinancialToleranceThreshold())
+        {
+          return true;
+        } else {
+          return false;
+        }
       }
 
       randomDecisionTree()
       {
         //console.log("making random decisions");
+        setTimeout(() => transition("moving"), 5000);
       }
   }
 
@@ -94,6 +101,23 @@ class ExhaustedState extends State {
     }
 }
 
+class AutomataMovingState extends State {
+    enter(scene, automata)
+    {
+
+    }
+    // Move in a random direction
+    execute(scene, automata)
+    {
+      let randomDirection = Math.floor(Math.random() * 4);
+      switch(randomDirection) {
+        case 1: automata.setVelocityX(-80); break;
+        case 2: automata.setVelocityX(80); break;
+        case 3: automata.setVelocityY(-80); break;
+        case 4: automata.setVelocityY(80); break;
+      }
+    }
+}
 // Player states
 class PlayerIdleState extends State {
   enter(scene, player)

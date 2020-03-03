@@ -7,7 +7,6 @@ class YoutubeStudio extends Phaser.Scene {
     init(data)
     {
       //this.youtubePimpPlayer = data.player;
-      console.log(this.youtubePimpPlayer);
       this.rpgCommands = {
         'Give me :amount of loot': (lootValue) => {
             givePlayerLoot(lootValue);
@@ -16,10 +15,12 @@ class YoutubeStudio extends Phaser.Scene {
       this.youtubeCommands = {
         'Create videos that make money': () => {
           // if has enough incentive/money bags, will create a suspicious video
-
           // otherwise will create art or something
+          this.workCommandIssued = true;
+          let alignment = checkIfEnoughMoney();
+          createNewYoutubeContent(alignment);
           responsiveVoice.speak("New Content Uploaded.", "UK English Female", options);
-          createNewYoutubeContent();
+          setTimeout(()=> {this.workCommandIssued = false; }, 1000); // Reset the state after 1 sec
         }
       };
       annyang.addCommands(this.rpgCommands);
@@ -82,8 +83,16 @@ class YoutubeStudio extends Phaser.Scene {
         // Test NPC
         const keenerAPosX = 169;
         const keenerAPosY = 102;
-        this.youtubeCreatorKeenerA = new Automata({scene:this, x:keenerAPosX, y:keenerAPosY});
+        this.youtubeCreatorKeenerA = new Automata(this, keenerAPosX, keenerAPosY, "ley").setScale(scaleFactor);
         this.youtubeCreatorKeenerA.speak();
+        this.physics.add.collider(this.youtubePimpPlayer, this.youtubeCreatorKeenerA);
+
+        $('.side__left-menu__top').text("IN THE STUDIO");
+        let instructions = "Magic Spells: ";
+        let spellA = " [Give me (desired amount) of loot]";
+        let spellB = " [Create videos that make money]";
+        // Update the main__log div to reflect the commands that we have
+        $('.main__log').text(`${instructions}` + `${spellA}` + `${spellB}`);
 
         // TODO Launch Youtube channels if player activates the youtube channels in the studio
         //this.scene.launch("YoutubeChannelA");

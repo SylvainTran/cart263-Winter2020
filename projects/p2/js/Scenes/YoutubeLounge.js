@@ -50,10 +50,15 @@ class YoutubeLounge extends Phaser.Scene {
         this.cameras.main.startFollow(this.youtubePimpPlayer, true, 0.05, 0.05);
         this.cameras.main.setZoom(3);
 
+        //$('.side__left-menu__top').text("World of Youtube");
+        // Update the main__log div to reflect the commands that we have
+        $('.main__log').text("Find the hidden Youtube Studio.");
+
         // TODO parallel launching with UI and other youtube channels
         this.scene.launch("UI");
         // TODO Launch Youtube channels if player activates the youtube channels in the studio
         //this.scene.launch("YoutubeChannelA");
+
     }
 
     update(time, delta)

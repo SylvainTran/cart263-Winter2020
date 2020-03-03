@@ -12,22 +12,7 @@ class BootScene extends Phaser.Scene {
 
     init(data) 
     {
-        // states
-        let automataStates = 
-        {
-            idle: new IdleState(),
-            laboring: new LaboringState(),
-            exhausted: new ExhaustedState()
-        }
 
-        let playerStates = 
-        {
-            idle: new PlayerIdleState(),
-            moving: new MovingState()
-        }
-        // fsm
-        this.AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
-        this.PlayerFSM = new StateMachine('idle', playerStates, [this, this.player]);
     }
     
     preload () 
@@ -39,21 +24,23 @@ class BootScene extends Phaser.Scene {
     create (data)
     {
         let camera = this.cameras.add(0, 0, 1280, 760);
-        player = this.physics.add.sprite(400, 0, "automata");
-        player.setCollideWorldBounds(true);
+        //player = this.physics.add.sprite(400, 0, "automata");
+        //player.setCollideWorldBounds(true);
         automatons = this.physics.add.group();
         automatons.enableBody = true;
         automatons.physicsBodyType = Phaser.Physics.ARCADE;
+        this.automatonsCreated = []; // keep a reference to automatons created
 
         for(let i = 0; i < NB_AUTOMATA; i++)
         {
             let a = automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
-            //a.body.immovable = true;
+            this.automatonsCreated.push(a);
+            a.body.immovable = true;
         }
-        // Add event listeners    
-        this.physics.add.collider(player, automatons);
-        this.physics.add.collider(automatons, automatons);
-        this.physics.add.collider(player, automatons, rotateMe, null, this);
+        // // Add event listeners    
+        // //this.physics.add.collider(player, automatons);
+        //this.physics.add.collider(automatons, automatons);
+        //this.physics.add.collider(player, automatons, rotateMe, null, this);
         cursors = this.input.keyboard.createCursorKeys();
 
         // Animate each automaton
@@ -80,7 +67,7 @@ class BootScene extends Phaser.Scene {
 
     update(time, delta) 
     {
-        this.AutomataFSM.step();
-        this.PlayerFSM.step();  
+        AutomataFSM.step();
+        PlayerFSM.step();
     }
 }

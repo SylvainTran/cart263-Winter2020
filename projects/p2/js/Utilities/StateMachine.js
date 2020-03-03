@@ -8,7 +8,8 @@ class StateMachine {
         this.states = states;
         this.stateArgs = stateArgs;
         this.state = null;
-  
+        // this.workCommandIssued = false; // if the player has issued a voice command to work        
+
         for (const state of Object.values(this.states)) 
         {
             state.stateMachine = this;
@@ -52,7 +53,19 @@ class StateMachine {
 
       execute(scene, player) 
       {
-        
+        //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of 
+        // financial incentives. If not, has a probability to create art or something else instead
+        this.workCommandIssued? this.checkIfEnoughMoney() : this.randomDecisionTree();
+      }
+      
+      checkIfEnoughMoney() 
+      {
+        console.log("Checking if enough money was offered");        
+      }
+
+      randomDecisionTree()
+      {
+        console.log("making random decisions");
       }
   }
 

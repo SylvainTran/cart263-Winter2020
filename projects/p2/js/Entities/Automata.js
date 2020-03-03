@@ -3,6 +3,7 @@
     {
       super(config.scene, config.x, config.y, "automata");
       config.scene.add.existing(this);
+      this.AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
     }
 
     speak() 

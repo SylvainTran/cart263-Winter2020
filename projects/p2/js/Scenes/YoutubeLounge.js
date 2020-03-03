@@ -13,6 +13,7 @@ class YoutubeLounge extends Phaser.Scene {
     {       
         this.load.image("tilesA", "./assets/tilesets/tilesetA.png");
         this.load.tilemapTiledJSON("map", "./assets/tilemaps/world-of-youtube.json");
+        this.load.tilemapTiledJSON("dank-youtube-studio-map", "./assets/tilemaps/dank-youtube-studio.json");
     }
 
     create ()

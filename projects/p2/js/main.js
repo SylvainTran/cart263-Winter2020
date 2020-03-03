@@ -9,6 +9,10 @@ references:
 https://stackoverflow.com/questions/4852017/how-to-initialize-an-arrays-length-in-javascript
 https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scene/
 https://phaser.io/phaser3/devlog/119
+
+attributions:
+CC0 free assets from itch.io (exact attributions soon)
+tilemapping from phaser
 *********************************************************************/
 let config = {
     type: Phaser.AUTO,
@@ -26,7 +30,7 @@ let config = {
         ]
     },
     scene: [
-        BootScene, YoutubeLounge, UI
+        BootScene, Preloader, YoutubeLounge, UI
     ]
 };
 
@@ -35,7 +39,7 @@ let automataConfig = {
     y: 400,
     sprite: "automata" 
 };
-// player states
+// player states - TODO Move into their classes
 let playerStates = 
 {
     idle: new PlayerIdleState(),

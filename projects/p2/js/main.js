@@ -12,12 +12,12 @@ https://phaser.io/phaser3/devlog/119
 *********************************************************************/
 let config = {
     type: Phaser.AUTO,
-    width: 480,
-    height: 720,
+    width: 640,
+    height: 640,
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false
+            gravity: { y: 0 }
         }
     },
     plugins: {

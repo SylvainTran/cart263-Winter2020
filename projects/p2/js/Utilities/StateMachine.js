@@ -32,9 +32,9 @@ class StateMachine {
     }
   }
   
-  // Base state class to be extended
+  // Base state class for specialized states
   class State {
-    enter() 
+    enter(scene, player) 
     {
         
     }
@@ -46,9 +46,9 @@ class StateMachine {
   }
   //Automata states only
   class IdleState extends State {
-      enter()
+      enter(scene, player)
       {
-        console.table(["I'm Idle"]);
+        console.log(["I'm Idle"]);
       }
 
       execute(scene, player) 
@@ -60,17 +60,17 @@ class StateMachine {
       
       checkIfEnoughMoney() 
       {
-        console.log("Checking if enough money was offered");        
+        //console.log("Checking if enough money was offered");        
       }
 
       randomDecisionTree()
       {
-        console.log("making random decisions");
+        //console.log("making random decisions");
       }
   }
 
   class LaboringState extends State {
-    enter()
+    enter(scene, player)
     {
 
     }
@@ -82,12 +82,12 @@ class StateMachine {
 }
 
 class ExhaustedState extends State {
-    enter()
+    enter(scene, player)
     {
 
     }
 
-    execute() 
+    execute(scene, player) 
     {
         
     }
@@ -95,22 +95,22 @@ class ExhaustedState extends State {
 
 // Player states
 class PlayerIdleState extends State {
-  enter()
+  enter(scene, player)
   {
     console.log("Player is Idle");
   }
 
   execute(scene, player) 
   {
-    if(this.checkMovement())
+    if(this.checkMovement(scene))
     {
       this.stateMachine.transition("moving");
     }
   }
 
-  checkMovement() 
+  checkMovement(scene) 
   {
-    if(cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown)
+    if(scene.cursors.left.isDown || scene.cursors.right.isDown || scene.cursors.up.isDown || scene.cursors.down.isDown)
     {
       return true;
     }
@@ -122,24 +122,24 @@ class PlayerIdleState extends State {
 }
 
 class MovingState extends State {
-  enter()
+  enter(scene, player)
   {
     console.log("Player is starting to move");
   }
 
   execute(scene, player) 
   {
-    this.updateVelocity();
+    this.updateVelocity(scene);
   }
 
-  updateVelocity()
+  updateVelocity(player)
   {
     // Horizontal
-    if(cursors.left.isDown)
+    if(player.cursors.left.isDown)
     {
       player.setVelocityX(-160);
     }
-    else if(cursors.right.isDown)
+    else if(player.cursors.right.isDown)
     {
       player.setVelocityX(160);
     }
@@ -149,11 +149,11 @@ class MovingState extends State {
     }
 
     // Vertical
-    if(cursors.up.isDown)
+    if(player.cursors.up.isDown)
     {
       player.setVelocityY(-160);
     }
-    else if(cursors.down.isDown)
+    else if(player.cursors.down.isDown)
     {
       player.setVelocityY(160);
     }

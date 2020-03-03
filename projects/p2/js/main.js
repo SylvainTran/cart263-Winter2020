@@ -50,18 +50,9 @@ let automataStates =
     exhausted: new ExhaustedState()
 }  
 
-// FSMs
-let AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
-//Automata.prototype.fsm = AutomataFSM;
-let PlayerFSM = new StateMachine('idle', playerStates, [this, this.player]);
 let game = new Phaser.Game(config);
-let player = new Player(config);
-let cursors;
-let automatons;
-const NB_AUTOMATA = 30;
-let state;
 const intervalToCallNewDialog = 1000;
-//let workCommandIssued = false; // if the player has issued a voice command to work
+let workCommandIssued = false; // if the player has issued a voice command to work
 
 $(document).ready(setup);
 

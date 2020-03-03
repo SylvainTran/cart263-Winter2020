@@ -4,7 +4,7 @@ class YoutubeLounge extends Phaser.Scene {
         super('YoutubeLounge');
     }
 
-    init(data) 
+    init() 
     {      
 
     }
@@ -14,7 +14,7 @@ class YoutubeLounge extends Phaser.Scene {
 
     }
 
-    create (data)
+    create ()
     {
         this.testAutomata = new Automata({scene:this, x: automataConfig.x, y: automataConfig.y});
         this.testAutomata.speak();

@@ -10,7 +10,7 @@ class BootScene extends Phaser.Scene {
         });
     }
 
-    init(data) 
+    init() 
     {
 
     }
@@ -21,33 +21,12 @@ class BootScene extends Phaser.Scene {
         this.load.image('YoutubeDirtPile', "./assets/images/sprites/YoutubeDirtPile.png");
     }
 
-    create (data)
+    create ()
     {
         let camera = this.cameras.add(0, 0, 1280, 760);
-        //player = this.physics.add.sprite(400, 0, "automata");
-        //player.setCollideWorldBounds(true);
-        automatons = this.physics.add.group();
-        automatons.enableBody = true;
-        automatons.physicsBodyType = Phaser.Physics.ARCADE;
-        this.automatonsCreated = []; // keep a reference to automatons created
-
-        for(let i = 0; i < NB_AUTOMATA; i++)
-        {
-            let a = automatons.create(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 'automata');
-            this.automatonsCreated.push(a);
-            a.body.immovable = true;
-        }
-        // // Add event listeners    
-        // //this.physics.add.collider(player, automatons);
-        //this.physics.add.collider(automatons, automatons);
-        //this.physics.add.collider(player, automatons, rotateMe, null, this);
-        cursors = this.input.keyboard.createCursorKeys();
-
-        // Animate each automaton
-        setInterval(() => { automatons.getChildren().forEach(automata => {
-            automatons.rotate(Math.PI/8); // 2, 25, 50, 200  
-        });}, 1000);
-
+        this.youtubePimpPlayer = new YoutubePimpPlayer(this, 150, 150, "automata");
+        this.youtubePimpPlayer.setCollideWorldBounds(true);
+        
         // Voice control
         if(annyang)
         {
@@ -67,7 +46,6 @@ class BootScene extends Phaser.Scene {
 
     update(time, delta) 
     {
-        AutomataFSM.step();
-        PlayerFSM.step();
+        this.youtubePimpPlayer.PlayerFSM.step();
     }
 }

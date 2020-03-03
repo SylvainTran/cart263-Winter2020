@@ -18,7 +18,7 @@ let commands = {
 
         responsiveVoice.speak("Cleaning up the floor, sir. New Content Uploaded.", "UK English Female", options);
         createNewYoutubeContent();
-        rotateMe();
+        //rotateMe();
 
         // if not, disobey
         //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);        

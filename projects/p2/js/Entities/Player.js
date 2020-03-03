@@ -16,7 +16,8 @@ class YoutubePimpPlayer extends Person {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.cursors = scene.input.keyboard.createCursorKeys();
-        this.PlayerFSM = new StateMachine('idle', playerStates, [this, this.player]);     
+        this.PlayerFSM = new StateMachine('idle', playerStates, [scene, this]);
+        this.inventory = 0;
 
         //Animations (TODO atlas version)
         scene.anims.create({
@@ -25,13 +26,13 @@ class YoutubePimpPlayer extends Person {
             frameRate: 10,
             repeat: -1
         });
-        
+
         scene.anims.create({
             key: 'turn',
             frames: [ { key: 'ley', frame: 2 } ],
             frameRate: 20
         });
-        
+
         scene.anims.create({
             key: 'right',
             frames: scene.anims.generateFrameNumbers('ley', { start: 7, end: 9 }),
@@ -45,5 +46,12 @@ class YoutubePimpPlayer extends Person {
             frameRate: 10,
             repeat: -1
         });
+    }
+
+    set inventory(value) {
+      if(value) // Could be negative too (on purpose)
+      {
+        this.inventory += value;
+      }
     }
 }

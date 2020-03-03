@@ -30,29 +30,29 @@ let config = {
         ]
     },
     scene: [
-        BootScene, Preloader, YoutubeLounge, UI, YoutubeChannelA
+        BootScene, Preloader, YoutubeLounge, UI, YoutubeStudio, YoutubeChannelA
     ]
 };
 
 let automataConfig = {
     x: 300,
     y: 400,
-    sprite: "automata" 
+    sprite: "automata"
 };
 // player states - TODO Move into their classes
-let playerStates = 
+let playerStates =
 {
     idle: new PlayerIdleState(),
     moving: new MovingState()
 }
 
 // automata states
-let automataStates = 
+let automataStates =
 {
     idle: new IdleState(),
     laboring: new LaboringState(),
     exhausted: new ExhaustedState()
-}  
+}
 
 let game = new Phaser.Game(config);
 const intervalToCallNewDialog = 1000;
@@ -60,7 +60,7 @@ let workCommandIssued = false; // if the player has issued a voice command to wo
 
 $(document).ready(setup);
 
-function setup() 
+function setup()
 {
     // jquery ui quest log, in development
     //   setTimeout(handleMessageDialog, intervalToCallNewDialog);

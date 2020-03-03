@@ -2,46 +2,46 @@
 //
 // To separate different states. Read tutorial from: https://www.mkelly.me/blog/phaser-finite-state-machine/
 class StateMachine {
-    constructor(init, states, stateArgs) 
+    constructor(init, states, stateArgs)
     {
         this.init = init;
         this.states = states;
         this.stateArgs = stateArgs;
         this.state = null;
-        // this.workCommandIssued = false; // if the player has issued a voice command to work        
+        // this.workCommandIssued = false; // if the player has issued a voice command to work
 
-        for (const state of Object.values(this.states)) 
+        for (const state of Object.values(this.states))
         {
             state.stateMachine = this;
         }
     }
-  
-    step() 
+
+    step()
     {
-      if (this.state === null) 
+      if (this.state === null)
       {
         this.state = this.init;
         this.states[this.state].enter(...this.stateArgs);
-      }  
+      }
       this.states[this.state].execute(...this.stateArgs);
     }
-  
+
     transition(newState, ...enterArgs) {
       this.state = newState;
       this.states[this.state].enter(...this.stateArgs, ...enterArgs);
     }
   }
-  
+
   // Base state class for specialized states
   class State {
-    enter(scene, player) 
+    enter(scene, player)
     {
-        
+
     }
-  
-    execute(scene, player) 
+
+    execute(scene, player)
     {
-        
+
     }
   }
   //Automata states only
@@ -51,14 +51,14 @@ class StateMachine {
         console.log("I'm Idle Like Stale Bread");
       }
 
-      execute(scene, automata) 
+      execute(scene, automata)
       {
-        //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of 
+        //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of
         // financial incentives. If not, has a probability to create art or something else instead
         workCommandIssued? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
       }
-      
-      checkIfEnoughMoney(automata) 
+
+      checkIfEnoughMoney(automata)
       {
         //console.log("Checking if enough money was offered");
         //console.log(automata.cashInventory);
@@ -76,9 +76,9 @@ class StateMachine {
 
     }
 
-    execute(scene, automata) 
+    execute(scene, automata)
     {
-        
+
     }
 }
 
@@ -88,9 +88,9 @@ class ExhaustedState extends State {
 
     }
 
-    execute(scene, automata) 
+    execute(scene, automata)
     {
-        
+
     }
 }
 
@@ -101,17 +101,17 @@ class PlayerIdleState extends State {
     console.log("Player is Idle");
   }
 
-  execute(scene, player) 
+  execute(scene, player)
   {
-    if(this.checkMovement(scene))
+    if(this.checkMovement(player))
     {
       this.stateMachine.transition("moving");
     }
   }
 
-  checkMovement(scene) 
+  checkMovement(player)
   {
-    if(scene.cursors.left.isDown || scene.cursors.right.isDown || scene.cursors.up.isDown || scene.cursors.down.isDown)
+    if(player.cursors.left.isDown || player.cursors.right.isDown || player.cursors.up.isDown || player.cursors.down.isDown)
     {
       return true;
     }
@@ -126,11 +126,13 @@ class MovingState extends State {
   enter(scene, player)
   {
     console.log("Player is starting to move");
+    console.log(scene);
+    console.log(player);
   }
 
-  execute(scene, player) 
+  execute(scene, player)
   {
-    this.updateVelocity(scene);
+    this.updateVelocity(player);
   }
 
   updateVelocity(player)
@@ -168,7 +170,7 @@ class MovingState extends State {
       player.setVelocityY(0);
       //player.anims.play('turn', true);
     }
-    
+
     //If the player didn't move at all, then he is idle
     if(player.body.velocity.equals(new Phaser.Math.Vector2(0,0)) ) {
       this.stateMachine.transition("idle");

@@ -1,3 +1,6 @@
+// AutomataManager
+//
+// For future extension, was an artefact of early project idea
 class AutomataManager {
     constructor(tasksList) {
         // this.name = name;

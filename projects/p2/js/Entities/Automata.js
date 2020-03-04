@@ -1,3 +1,6 @@
+//Automata
+//
+//This class is the one for the keener youtuber NPCs
   class Automata extends Person {
     constructor(scene, x, y, avatarKey)
     {
@@ -12,38 +15,50 @@
       this.financialToleranceThreshold = Math.floor(Math.random() * 100);
       this.id = Math.floor(Math.random() * 1000);
     }
-
+    // Useless test function
     speak()
     {
-      console.log("My serial number is " + this.serialNumber + ". My Current state is: " + this.state);
+      console.log("I'm a keener");
     }
-
+    // getCashInventory
+    //
+    // Return the cash inventory to check for video generation decisions
     getCashInventory() {
         return this.cashInventory;
     }
-
+    // setCashInventory
+    //
+    // Sets the cash inventory to check for video generation decisions
     setCashInventory(value) {
       if(value) // Could be negative too (on purpose)
       {
         this.inventory += value;
       }
     }
-
+    // getFinancialToleranceThreshold
+    //
+    // Return the financial tolerance threshold to check for video generation decisions
     getFinancialToleranceThreshold() {
         return this.financialToleranceThreshold;
     }
-
+    // setFinancialToleranceThreshold
+    //
+    // Sets the financial tolerance threshold to check for video generation decisions
     setFinancialToleranceThreshold(value) {
       if(value) // Could be negative too (on purpose)
       {
         this.financialToleranceThreshold = value;
       }
     }
-
+    // getId
+    //
+    // Return this automata's ID
     getId() {
         return this.id;
     }
-
+    // setId
+    //
+    // Sets this automata's ID
     setId(value) {
       if(value >= 0)
       {
@@ -54,7 +69,7 @@
     //
     // if the NPC automata's cash inventory is lower than the tolerance threshold
     // for feeling secure, more likely to creating dirty videos for the sake of money
-    // to be extended with cash offers 
+    // to be extended with cash offers
     checkBankAccount() {
       if(this.getCashInventory() <= this.getFinancialToleranceThreshold() ){
         console.log("Poor enough at the moment, creating dirty video for money");
@@ -65,7 +80,7 @@
       }
     }
   }
-
+  // Useless test function
   function rotateMe() {
     console.log("Rotating - collided!!!!");
     // Animate each automaton

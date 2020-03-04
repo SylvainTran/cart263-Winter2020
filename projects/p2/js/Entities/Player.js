@@ -1,4 +1,6 @@
+// Person
 // Read The Artist is Present 2's code for this
+// The Person is the base class for our custom sprites
 class Person extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, avatarKey) {
         super(scene, x, y, avatarKey);
@@ -8,7 +10,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.y = y;
     }
 }
-
+// YoutubePimpPlayer
+//
+// The controlled player, a Youtube pimp of sort (also called the Youtube Creator or a wizard)
 class YoutubePimpPlayer extends Person {
     constructor(scene, x, y, avatarKey)
     {
@@ -19,7 +23,7 @@ class YoutubePimpPlayer extends Person {
         this.PlayerFSM = new StateMachine('idle', playerStates, [scene, this]);
         this.inventory = 0;
     }
-
+    // Later on we'll set the inventory to things
     set inventory(value) {
       if(value) // Could be negative too (on purpose)
       {

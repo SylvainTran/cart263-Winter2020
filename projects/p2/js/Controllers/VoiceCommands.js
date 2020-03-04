@@ -11,16 +11,12 @@ let commands = {
     'Start working': function() {
         // if has enough incentive/money bags, will create a suspicious video
         // otherwise will create art or something
-
-        // change state of global variable or what?
-        // event listener - signal emitted?
         workCommandIssued = true;
 
         responsiveVoice.speak("Cleaning up the floor, sir. New Content Uploaded.", "UK English Female", options);
         createNewYoutubeContent();
-        //rotateMe();
 
-        // if not, disobey
+        // if not, disobey -- Artefact of early project idea
         //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);
     },
     'Stop working': () => {
@@ -39,6 +35,9 @@ let options = {
     "pitch": Math.random()
 }
 
+// givePlayerLoot()
+//
+// Give loot for the player upon voice command while in the Youtube Creator Studio -> to be refactored later
 function givePlayerLoot(player, lootValue) {
   player.inventory.setInventory(lootValue);
 }

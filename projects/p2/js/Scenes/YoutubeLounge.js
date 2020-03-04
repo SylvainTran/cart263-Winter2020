@@ -49,7 +49,7 @@ class YoutubeLounge extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 640, 640);
         this.cameras.main.startFollow(this.youtubePimpPlayer, true, 0.05, 0.05);
         this.cameras.main.setZoom(3);
-
+        
         //$('.side__left-menu__top').text("World of Youtube");
         // Update the main__log div to reflect the commands that we have
         $('.main__log').text("Find the hidden Youtube Studio.");

@@ -7,8 +7,7 @@ class StateMachine {
         this.init = init;
         this.states = states;
         this.stateArgs = stateArgs;
-        this.state = null;
-        // this.workCommandIssued = false; // if the player has issued a voice command to work
+        this.state = null; // This is a string ! Damn javascript
 
         for (const state of Object.values(this.states))
         {
@@ -73,7 +72,7 @@ class StateMachine {
       randomDecisionTree()
       {
         //console.log("making random decisions");
-        setTimeout(() => transition("moving"), 5000);
+        setTimeout(() => this.stateMachine.transition("moving"), 5000);
       }
   }
 
@@ -150,49 +149,47 @@ class MovingState extends State {
   enter(scene, player)
   {
     console.log("Player is starting to move");
-    console.log(scene);
-    console.log(player);
   }
 
   execute(scene, player)
   {
-    this.updateVelocity(player);
+    this.updateVelocity(scene, player);
   }
 
-  updateVelocity(player)
+  updateVelocity(scene, player)
   {
     // Horizontal
     if(player.cursors.left.isDown)
     {
       player.setVelocityX(-80);
-      //player.anims.play('left', true);
+      //player.myAnims.play("ley-left-walk");
     }
     else if(player.cursors.right.isDown)
     {
       player.setVelocityX(80);
-      //player.anims.play('right', true);
+      //player.play("ley-right-walk");    
     }
     else
     {
       player.setVelocityX(0);
-      //player.anims.play('turn', true);
+      //player.play("ley-front-walk");
     }
 
     // Vertical
     if(player.cursors.up.isDown)
     {
       player.setVelocityY(-80);
-      //player.anims.play('up', true);
+      //player.play("ley-up-walk");
     }
     else if(player.cursors.down.isDown)
     {
       player.setVelocityY(80);
-      //player.anims.play('turn', true);
+      //player.play("ley-front-walk");;
     }
     else
     {
       player.setVelocityY(0);
-      //player.anims.play('turn', true);
+      //player.play("ley-front-walk");
     }
 
     //If the player didn't move at all, then he is idle

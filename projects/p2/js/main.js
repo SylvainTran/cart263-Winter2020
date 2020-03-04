@@ -34,11 +34,6 @@ let config = {
     ]
 };
 
-let automataConfig = {
-    x: 300,
-    y: 400,
-    sprite: "automata"
-};
 // player states - TODO Move into their classes
 let playerStates =
 {
@@ -55,6 +50,7 @@ let automataStates =
 }
 
 let game = new Phaser.Game(config);
+
 const intervalToCallNewDialog = 1000;
 let workCommandIssued = false; // if the player has issued a voice command to work
 

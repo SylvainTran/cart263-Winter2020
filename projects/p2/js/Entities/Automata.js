@@ -7,7 +7,7 @@
       this.setImmovable(true);
       this.x = x;
       this.y = y;
-      this.AutomataFSM = new StateMachine('idle', automataStates, [this, this.player]);
+      this.AutomataFSM = new StateMachine('idle', automataStates, [scene, this]);
       this.cashInventory = 0; // The automata's cash bag inventory.
       this.financialToleranceThreshold = Math.floor(Math.random() * 100);
       this.id = Math.floor(Math.random() * 1000);
@@ -51,9 +51,17 @@
       }
     }
     // Check bank account
+    //
+    // if the NPC automata's cash inventory is lower than the tolerance threshold
+    // for feeling secure, more likely to creating dirty videos for the sake of money
+    // to be extended with cash offers 
     checkBankAccount() {
-      if(cashInventory() >= this.financialToleranceThreshold()){
-
+      if(this.getCashInventory() <= this.getFinancialToleranceThreshold() ){
+        console.log("Poor enough at the moment, creating dirty video for money");
+        return false;
+      } else {
+        console.log("Secure enough at the moment, creating art");
+        return true;
       }
     }
   }

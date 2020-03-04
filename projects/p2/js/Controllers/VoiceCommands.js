@@ -10,7 +10,7 @@
 let commands = {
     'Start working': function() {
         // if has enough incentive/money bags, will create a suspicious video
-        // otherwise will create art or something 
+        // otherwise will create art or something
 
         // change state of global variable or what?
         // event listener - signal emitted?
@@ -21,13 +21,13 @@ let commands = {
         //rotateMe();
 
         // if not, disobey
-        //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);        
+        //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);
     },
     'Stop working': () => {
         responsiveVoice.speak("There wasn't much to do anyway.", "UK English Female", options);
     },
     'Take a stroll': () => {
-        responsiveVoice.speak("Everyone deserves a good stroll", "UK English Female", options);        
+        responsiveVoice.speak("Everyone deserves a good stroll", "UK English Female", options);
     }
 };
 
@@ -37,4 +37,8 @@ let commands = {
 let options = {
     "rate": Math.random(),
     "pitch": Math.random()
+}
+
+function givePlayerLoot(player, lootValue) {
+  player.inventory.setInventory(lootValue);
 }

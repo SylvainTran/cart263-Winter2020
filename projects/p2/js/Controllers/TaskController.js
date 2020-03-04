@@ -61,9 +61,55 @@ function spawnDirt(scene) {
     });
 }
 
+<<<<<<< Updated upstream
 function createNewYoutubeContent () {
     // Spawn new dirty and mindless youtube video for people to consume
     setTimeout(() => {
         //spawnDirt(game.scene.get(create));
     }, INTERVAL_NEW_TASK_SPAWN);
 }
+=======
+//spawnGoodVideo(scene)
+//
+//spawn good youtube videos
+function spawnGoodVideo(scene) {
+    const GOOD_VIDEO_MULTIPLIER = 10;
+    let NB_OF_GOOD_PILES = Math.floor(Math.random() * GOOD_VIDEO_MULTIPLIER);
+    console.log(NB_OF_GOOD_PILES);
+    let goodArray = Array(NB_OF_GOOD_PILES).fill(null).map( (x, i) => i );
+    console.log(goodArray.length);
+
+    goodArray.forEach((d) => {
+        console.log("Spawning new Youtube Good Video");
+        let randomXY = [Math.random() * 640, Math.random() * 640];
+        // TODO use Youtube's API or trick to spawn something like it
+        scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
+        let randomVideoIndex = Math.floor(Math.random() * dirtyVideosUrls.length);
+        let goodVideoElected = dirtyVideosUrls[randomVideoIndex];
+        let newDiv = document.createElement("DIV");
+        let videoDiv = document.createElement("iframe");
+        $(videoDiv).attr("width",420);
+        $(videoDiv).attr("height", 315);
+        $(videoDiv).attr("src", dirtyVideoElected.replace("watch?v=", "embed/"));
+        newDiv.appendChild(videoDiv);
+        $('#youtubeVideos').append(newDiv);  
+    });
+}
+
+// Videos that fit James Bridle's disturbed video content category
+let dirtyVideosUrls = [
+    "https://www.youtube.com/watch?time_continue=8&v=BHcFQ9gaMF4&feature=emb_logo",
+    "https://www.youtube.com/watch?v=Or8iYWRg2w8",
+    "https://www.youtube.com/watch?v=DTSWQGKUg_c",
+    "https://www.youtube.com/watch?v=2hizjTNsOCo", // This one is extremely disturbing and should not be watched under any circumstances
+    "https://www.youtube.com/watch?v=_iJM-4YNs6k"
+];
+
+// Good videos in my books
+let goodVideoUrls = [
+    "https://www.youtube.com/watch?v=owx3ao42kwI",
+    "https://www.youtube.com/watch?v=ouTrl07SIF8",
+    "https://www.youtube.com/watch?v=AE_PZ4YyvHg",
+    "https://www.youtube.com/watch?v=xeApql7zeSY"
+]
+>>>>>>> Stashed changes

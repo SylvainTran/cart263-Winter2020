@@ -10,7 +10,7 @@ class Preloader extends Phaser.Scene {
   preload() {
     this.load.image("automata", "./assets/images/automata.png");
     this.load.image("YoutubeDirtPile", "./assets/images/sprites/YoutubeDirtPile.png");
-    this.load.atlas('ley', './assets/images/spritesheets/ley/leySpritesheet.png', './assets/images/spritesheets/ley/leySpritesheet.json');
+    this.load.atlas('ley', './assets/images/spritesheets/ley/leySpritesheet.png', './assets/images/spritesheets/ley/walk/leySpritesheet.json');
     // Tileset and maps
     this.load.image("tilesA", "./assets/tilesets/tilesetA.png");
     this.load.tilemapTiledJSON("map", "./assets/tilemaps/world-of-youtube.json");

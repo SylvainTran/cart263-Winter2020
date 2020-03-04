@@ -24,7 +24,7 @@ class YoutubePimpPlayer extends Person {
         this.inventory = 0;
     }
     // Later on we'll set the inventory to things
-    set inventory(value) {
+    setInventory(value) {
       if(value) // Could be negative too (on purpose)
       {
         this.inventory += value;

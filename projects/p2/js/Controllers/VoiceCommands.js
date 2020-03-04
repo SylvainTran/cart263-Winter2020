@@ -12,10 +12,7 @@ let commands = {
         // if has enough incentive/money bags, will create a suspicious video
         // otherwise will create art or something
         workCommandIssued = true;
-
         responsiveVoice.speak("Cleaning up the floor, sir. New Content Uploaded.", "UK English Female", options);
-        createNewYoutubeContent();
-
         // if not, disobey -- Artefact of early project idea
         //responsiveVoice.speak("Nah, I won't do it.", "UK English Female", options);
     },
@@ -39,5 +36,5 @@ let options = {
 //
 // Give loot for the player upon voice command while in the Youtube Creator Studio -> to be refactored later
 function givePlayerLoot(player, lootValue) {
-  player.inventory.setInventory(lootValue);
+  player.setInventory(lootValue);
 }

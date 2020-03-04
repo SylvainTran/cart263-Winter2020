@@ -13,14 +13,15 @@ class YoutubeStudio extends Phaser.Scene {
     this.youtubeCreatorKeenerA;
     // Currently some issue with using the previous scene's player through the data object -- something to do with the FSM
     //this.youtubePimpPlayer = data.player;
+    this.youtubePimpPlayer;
     // Our annyang commands for use inside the YoutubeStudio map
     this.rpgCommands = {
       // The player can ask for infinite amounts of money to come out of the sky
       // as per my fantastic game design. This is to make the player reflect on the titanic budget that the industry
       // generates in order to get people to do what they desire, including posting disturbing videos to aggrandize their monopoly of the market
-      'Give me :amount loot': (lootValue) => {
+      'Give me :lootValue': (lootValue) => {
         responsiveVoice.speak("Loot generated.", "UK English Female", options);
-        givePlayerLoot(lootValue);
+        givePlayerLoot(this.youtubePimpPlayer, lootValue);
       }
     }
     // These commands have to do with the player's wizard status

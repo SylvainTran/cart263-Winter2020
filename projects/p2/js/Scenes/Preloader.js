@@ -22,7 +22,7 @@ class Preloader extends Phaser.Scene {
 
     create ()
     {        
-        //Animations (atlas version - weird bug currently)
+        //Animations (atlas version)
         this.anims.create({
             key: 'ley-left-walk',
             frames: this.anims.generateFrameNames('ley', { prefix: 'ley-left-walk.', start: 0, end: 8, zeroPad: 2, suffix:'.png' }),

@@ -84,13 +84,6 @@ function spawnDirt(scene) {
     });
 }
 
-function createNewYoutubeContent () {
-    // Spawn new dirty and mindless youtube video for people to consume
-    setTimeout(() => {
-        //spawnDirt(game.scene.get(create));
-    }, INTERVAL_NEW_TASK_SPAWN);
-}
-
 //spawnGoodVideo(scene)
 //
 //spawn good youtube videos
@@ -106,13 +99,13 @@ function spawnGoodVideo(scene) {
         let randomXY = [Math.random() * 640, Math.random() * 640];
         // TODO use Youtube's API or trick to spawn something like it
         scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
-        let randomVideoIndex = Math.floor(Math.random() * dirtyVideosUrls.length);
-        let goodVideoElected = dirtyVideosUrls[randomVideoIndex];
+        let randomVideoIndex = Math.floor(Math.random() * goodVideoUrls.length);
+        let goodVideoElected = goodVideoUrls[randomVideoIndex];
         let newDiv = document.createElement("DIV");
         let videoDiv = document.createElement("iframe");
         $(videoDiv).attr("width",420);
         $(videoDiv).attr("height", 315);
-        $(videoDiv).attr("src", dirtyVideoElected.replace("watch?v=", "embed/"));
+        $(videoDiv).attr("src", goodVideoElected.replace("watch?v=", "embed/"));
         newDiv.appendChild(videoDiv);
         $('#youtubeVideos').append(newDiv);  
     });

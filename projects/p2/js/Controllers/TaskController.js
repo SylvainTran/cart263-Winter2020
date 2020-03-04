@@ -84,13 +84,6 @@ function spawnDirt(scene) {
     });
 }
 
-function createNewYoutubeContent () {
-    // Spawn new dirty and mindless youtube video for people to consume
-    setTimeout(() => {
-        //spawnDirt(game.scene.get(create));
-    }, INTERVAL_NEW_TASK_SPAWN);
-}
-
 //spawnGoodVideo(scene)
 //
 //spawn good youtube videos

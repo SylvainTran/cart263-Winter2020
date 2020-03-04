@@ -4,21 +4,20 @@ class YoutubeLounge extends Phaser.Scene {
         super('YoutubeLounge');
     }
 
-    init() 
-    {      
+    init(data)
+    {
 
     }
-    
-    preload () 
-    {       
-        this.load.image("tilesA", "./assets/tilesets/tilesetA.png");
-        this.load.tilemapTiledJSON("map", "./assets/tilemaps/world-of-youtube.json");
-        this.load.tilemapTiledJSON("dank-youtube-studio-map", "./assets/tilemaps/dank-youtube-studio.json");
+
+    preload ()
+    {
+
     }
 
     create ()
     {
         // Tilemap setup
+        // Followed tutorial from https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6
         const map = this.make.tilemap({ key: "map" });
         const tileset = map.addTilesetImage("tilesetA", "tilesA");
         const belowLayer = map.createStaticLayer("Below", tileset, 0, 0);
@@ -33,26 +32,57 @@ class YoutubeLounge extends Phaser.Scene {
           collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
           faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
         });
-        
+
         // Player collision with tiles with collide true
         // Spawn at the spawn point setup in Tiled
         const spawnPoint = map.findObject("GameObjects", obj => obj.name === "Spawn Point");
-        this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "automata");
+        // Sprite scale factor
+        const scaleFactor = 0.3;
+        this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "ley").setScale(scaleFactor);
         this.youtubePimpPlayer.setCollideWorldBounds(true);
         this.physics.add.collider(this.youtubePimpPlayer, aboveLayer);
+        // Physics bounds
+        this.physics.world.setBounds(0, 0, 640, 640);
 
-        // Test NPC
-        this.testAutomata = new Automata({scene:this, x: automataConfig.x, y: automataConfig.y});
-        this.testAutomata.speak();
-        console.log("In youtube lounge");
+        // Camera follow and zoom
+        this.cameras.main.setSize(640, 640);
+        this.cameras.main.setBounds(0, 0, 640, 640);
+        this.cameras.main.startFollow(this.youtubePimpPlayer, true, 0.05, 0.05);
+        this.cameras.main.setZoom(3);
+        
+        //$('.side__left-menu__top').text("World of Youtube");
+        // Update the main__log div to reflect the commands that we have
+        $('.main__log').text("Find the hidden Youtube Studio.");
 
-        // TODO parallel launching with UI
+        // TODO parallel launching with UI and other youtube channels
         this.scene.launch("UI");
+        // TODO Launch Youtube channels if player activates the youtube channels in the studio
+        //this.scene.launch("YoutubeChannelA");
+
     }
 
-    update(time, delta) 
+    update(time, delta)
     {
         this.youtubePimpPlayer.PlayerFSM.step();
-        this.testAutomata.AutomataFSM.step();
+
+        //Check if the player is changing maps
+        //If so transition to the appropriate map
+        //Temporary collision check, should be done with Tiled
+        //console.log("X pos: " + Math.floor(this.youtubePimpPlayer.x));
+        //console.log("Y pos: " + Math.floor(this.youtubePimpPlayer.y));
+        const STAIR_TO_YOUTUBE_STUDIO_POS_X = 501;
+        const STAIR_TO_YOUTUBE_STUDIO_POS_Y = 563;
+        const OFFSET_X = 5;
+        const OFFSET_Y = 5;
+        if(Math.floor(this.youtubePimpPlayer.x) >= STAIR_TO_YOUTUBE_STUDIO_POS_X - OFFSET_X &&
+          Math.floor(this.youtubePimpPlayer.x) <= STAIR_TO_YOUTUBE_STUDIO_POS_X + OFFSET_X &&
+          Math.floor(this.youtubePimpPlayer.y) >= STAIR_TO_YOUTUBE_STUDIO_POS_Y - OFFSET_Y &&
+          Math.floor(this.youtubePimpPlayer.y) <= STAIR_TO_YOUTUBE_STUDIO_POS_Y + OFFSET_Y)
+        {
+          console.log("Going to the youtube studio");
+          //this.youtubePimpPlayer.PlayerFSM.transition("idle");
+          this.scene.start("youtubeStudio", { player: this.youtubePimpPlayer });
+          this.scene.remove("YoutubeLounge");
+        }
     }
 }

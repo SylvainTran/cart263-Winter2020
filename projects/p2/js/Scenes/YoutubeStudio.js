@@ -119,7 +119,7 @@ class YoutubeStudio extends Phaser.Scene {
 
     let newDivInstructions = document.createElement("DIV");
     let instructions = "<br>" + "<br>" + "Magic Spells: " + "<br>" + "<br>";
-    let spellA = "<span style=\"color: yellow\">" + " [Give me (desired amount) of loot]" + "</span>" + "<br>" + "<br>";
+    let spellA = "<span style=\"color: yellow\">" + " [Give me (desired amount)]" + "</span>" + "<br>" + "<br>";
     let spellB = "<span style=\"color: green\">" + "[Create videos that make money]" + "</span>";
     $(newDivInstructions).append(instructions);
     $(newDivInstructions).append(spellA);

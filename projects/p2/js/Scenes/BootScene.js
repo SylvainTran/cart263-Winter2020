@@ -17,11 +17,14 @@ class BootScene extends Phaser.Scene {
     
     preload () 
     {
-
+        this.load.image("automata", "./assets/images/automata.png");
+        this.load.image('YoutubeDirtPile', "./assets/images/sprites/YoutubeDirtPile.png");
     }
 
     create ()
     {
+        let camera = this.cameras.add(0, 0, 1280, 760);
+        
         // Voice control
         if(annyang)
         {
@@ -34,7 +37,9 @@ class BootScene extends Phaser.Scene {
         }
         // Append the phaser canvas in the flex box
         $('.main__game').append($('canvas'));
-        this.scene.start('preloader');
+
+        // Call first game scene in parallel (for now)
+        this.scene.launch('YoutubeLounge');
     }
 
     update(time, delta) 

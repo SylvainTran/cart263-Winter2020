@@ -8,7 +8,7 @@
 // Automatons who have not been paid will start doing the videos
 // about what they actually like instead
 let commands = {
-    'Start working': function() {
+    'Start working': () => {
         // if has enough incentive/money bags, will create a suspicious video
         // otherwise will create art or something
         workCommandIssued = true;

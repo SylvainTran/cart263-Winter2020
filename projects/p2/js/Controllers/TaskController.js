@@ -132,4 +132,4 @@ let goodVideoUrls = [
     "https://www.youtube.com/watch?v=ouTrl07SIF8",
     "https://www.youtube.com/watch?v=AE_PZ4YyvHg",
     "https://www.youtube.com/watch?v=xeApql7zeSY"
-]
+];

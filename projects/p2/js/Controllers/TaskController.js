@@ -94,7 +94,6 @@ function spawnDirt(scene) {
 //
 //spawn good youtube videos
 function spawnGoodVideo(scene) {
-<<<<<<< Updated upstream
     const GOOD_VIDEO_MULTIPLIER = 10;
     let NB_OF_GOOD_PILES = Math.floor(Math.random() * GOOD_VIDEO_MULTIPLIER);
     console.log(NB_OF_GOOD_PILES);
@@ -106,38 +105,16 @@ function spawnGoodVideo(scene) {
         let randomXY = [Math.random() * 640, Math.random() * 640];
         // TODO use Youtube's API or trick to spawn something like it
         scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
-        let randomVideoIndex = Math.floor(Math.random() * dirtyVideosUrls.length);
-        let goodVideoElected = dirtyVideosUrls[randomVideoIndex];
+        let randomVideoIndex = Math.floor(Math.random() * goodVideoUrls.length);
+        let goodVideoElected = goodVideoUrls[randomVideoIndex];
         let newDiv = document.createElement("DIV");
         let videoDiv = document.createElement("iframe");
         $(videoDiv).attr("width",420);
         $(videoDiv).attr("height", 315);
-        $(videoDiv).attr("src", dirtyVideoElected.replace("watch?v=", "embed/"));
+        $(videoDiv).attr("src", goodVideoElected.replace("watch?v=", "embed/"));
         newDiv.appendChild(videoDiv);
         $('#youtubeVideos').append(newDiv);  
     });
-    });
-=======
-  const GOOD_VIDEO_MULTIPLIER = 10;
-  let NB_OF_GOOD_PILES = Math.floor(Math.random() * GOOD_VIDEO_MULTIPLIER);
-  console.log(NB_OF_GOOD_PILES);
-  let goodArray = Array(NB_OF_GOOD_PILES).fill(null).map((x, i) => i);
-  console.log(goodArray.length);
-  // Not fully implemented yet, need a bank account and cash system for the NPCs
-  goodArray.forEach((d) => {
-    let randomXY = [Math.random() * 640, Math.random() * 640];
-    scene.add.YoutubeDirtPile(randomXY[0], randomXY[1]);
-    let randomVideoIndex = Math.floor(Math.random() * goodVideoUrls.length);
-    let goodVideoElected = goodVideoUrls[randomVideoIndex];
-    let newDiv = document.createElement("DIV");
-    let videoDiv = document.createElement("iframe");
-    $(videoDiv).attr("width", 420);
-    $(videoDiv).attr("height", 315);
-    $(videoDiv).attr("src", goodVideoElected.replace("watch?v=", "embed/"));
-    newDiv.appendChild(videoDiv);
-    $('#youtubeVideos').append(newDiv);
-  });
->>>>>>> Stashed changes
 }
 
 // Videos that fit James Bridle's disturbed video content category. May give a gray box instead for server problem reasons
@@ -151,16 +128,8 @@ let dirtyVideosUrls = [
 
 // Good videos in my books. May give a gray box instead for server problem reasons
 let goodVideoUrls = [
-<<<<<<< Updated upstream
     "https://www.youtube.com/watch?v=owx3ao42kwI",
     "https://www.youtube.com/watch?v=ouTrl07SIF8",
     "https://www.youtube.com/watch?v=AE_PZ4YyvHg",
     "https://www.youtube.com/watch?v=xeApql7zeSY"
 ]
-=======
-  "https://www.youtube.com/watch?v=owx3ao42kwI",
-  "https://www.youtube.com/watch?v=ouTrl07SIF8",
-  "https://www.youtube.com/watch?v=AE_PZ4YyvHg",
-  "https://www.youtube.com/watch?v=xeApql7zeSY"
-]
->>>>>>> Stashed changes

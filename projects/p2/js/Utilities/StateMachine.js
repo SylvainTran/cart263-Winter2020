@@ -144,25 +144,23 @@ class MovingState extends State {
     // Horizontal
     if (player.cursors.left.isDown) {
       player.setVelocityX(-80);
-      //player.myAnims.play("ley-left-walk");
+      player.play("ley-left-walk");
     } else if (player.cursors.right.isDown) {
       player.setVelocityX(80);
-      //player.play("ley-right-walk");
+      player.play("ley-right-walk");
     } else {
       player.setVelocityX(0);
-      //player.play("ley-front-walk");
     }
 
     // Vertical
     if (player.cursors.up.isDown) {
       player.setVelocityY(-80);
-      //player.play("ley-up-walk");
+      player.play("ley-up-walk");
     } else if (player.cursors.down.isDown) {
       player.setVelocityY(80);
-      //player.play("ley-front-walk");;
+      player.play("ley-front-walk");;
     } else {
       player.setVelocityY(0);
-      //player.play("ley-front-walk");
     }
 
     //If the player didn't move at all, then he is idle

@@ -144,7 +144,6 @@ class MovingState extends State {
     // Horizontal
     if (player.cursors.left.isDown) {
       player.setVelocityX(-80);
-      // for each frame in anim, play till end of player.anims.frames()
       player.play("ley-left-walk", true);
     } else if (player.cursors.right.isDown) {
       player.setVelocityX(80);

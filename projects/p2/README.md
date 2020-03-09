@@ -18,7 +18,7 @@ For the very fact that we are so shocked, distraught and disturbed by the up-and
 
 ### Features
 - Explore a top-down world without too much commitment
-- Use speech recognition to cast spells
-- Generate money by asking for it
+- Use speech recognition to cast spells <- kind of unreliable
+- Generate money by asking for it <- no use yet
 - It's basically a fantasy without the hype
-- Generate Youtube videos based on the Youtube Keener's alignment (which depends on their bank account) <- This last bit is still in progress
+- Generate Youtube videos based on the Youtube Keener's alignment (which depends on their bank account)

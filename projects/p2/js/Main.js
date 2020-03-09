@@ -89,4 +89,5 @@ function setup() {
 
 function startMusic() {
   irishLand.play();
+  irishLand.loop = true;
 }

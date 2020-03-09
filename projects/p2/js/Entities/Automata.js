@@ -12,7 +12,7 @@
       this.y = y;
       this.AutomataFSM = new StateMachine('idle', automataStates, [scene, this]);
       this.cashInventory = 0; // The automata's cash bag inventory.
-      this.financialToleranceThreshold = Math.floor(Math.random() * 100);
+      this.financialToleranceThreshold = Math.floor(Math.random() * 100); // between 0-100 will guarantee getting good or bad videos, along with the bank account randomizer that gives 1$ or 101$
       this.id = Math.floor(Math.random() * 1000);
     }
     // Useless test function
@@ -63,6 +63,25 @@
       if(value >= 0)
       {
         this.id = value;
+      }
+    }
+
+    // randomizeBankAccount()
+    //
+    // This is a metaphor for the many impredictable things in life
+    randomizeBankAccount() {
+      let randomBankAccountCapital = Math.random();
+      const MAXIMUM_CASH = 101; // max cash possible for the NPC
+      const ONE_DOLLAR = 1; // the one penny
+      const CORRUPTION_THRESHOLD = 0.2; // will generate bad youtube videos at this threshold
+
+      if(randomBankAccountCapital <= CORRUPTION_THRESHOLD)
+      {
+        this.cashInventory = MAXIMUM_CASH;
+      }
+      else
+      {
+        this.cashInventory = ONE_DOLLAR;
       }
     }
     // Check bank account

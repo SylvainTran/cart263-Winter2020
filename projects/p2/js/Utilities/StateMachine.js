@@ -18,7 +18,6 @@ class StateMachine {
       this.state = this.init;
       this.states[this.state].enter(...this.stateArgs);
     }
-    console.log(this.state);
     this.states[this.state].execute(...this.stateArgs);
   }
   // Transition into a given state (called conditionally)
@@ -42,20 +41,21 @@ class State {
 //Automata states only
 class IdleState extends State {
   enter(scene, automata) {
-    console.log("I'm Idle Like Stale Bread");
+
   }
 
   execute(scene, automata) {
     //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of
     // financial incentives. If not, has a probability to create art or something else instead
     // This is hopefully going to be majorly redone later using better structuring and AI
-    scene.workCommandIssued ? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
+    scene.workCommandIssued ? this.checkIfEnoughMoney(scene, automata) : this.randomDecisionTree();
   }
   //Checks if enough money in the automata's inventory depending on the financial tolerance threshold (fearing poverty)
   checkIfEnoughMoney(automata) {
     console.log("Checking if enough money was offered");
     //console.log(automata.cashInventory);
-    if (automata.getCashInventory() >= getFinancialToleranceThreshold()) {
+    // Will use getters eventually, some issue currently?
+    if (automata.cashInventory >= automata.financialToleranceThreshold) {
       return true;
     } else {
       return false;

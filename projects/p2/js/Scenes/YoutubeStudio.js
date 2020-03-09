@@ -32,9 +32,12 @@ class YoutubeStudio extends Phaser.Scene {
         this.workCommandIssued = true;
         // The agent's alignment is whether or not you are happy with your bank account, driving your
         // decision to make kinds of content on youtube
+        this.youtubeCreatorKeenerA.randomizeBankAccount(); // This is to vary getting good or bad videos
         let alignment = this.youtubeCreatorKeenerA.checkBankAccount();
         createNewYoutubeContent(this, alignment);
         responsiveVoice.speak("New Content Uploaded.", "UK English Female", options);
+        // play 360 animation
+        this.youtubePimpPlayer.play("everything");
         setTimeout(() => {
           this.workCommandIssued = false;
         }, 1000); // Reset the state after 1 sec -- does not do anything yet

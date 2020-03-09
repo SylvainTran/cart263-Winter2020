@@ -19,7 +19,7 @@ class AutomataManager {
     set tasksList(value) {
         this._tasksList = value;
     }
-
+    // Code attributions in Main.js
     getMethods = (obj) => {
         let properties = new Set()
         let currentObj = obj

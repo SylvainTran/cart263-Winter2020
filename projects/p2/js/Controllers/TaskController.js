@@ -121,7 +121,6 @@ function spawnGoodVideo(scene) {
 
 // Videos that fit James Bridle's disturbed video content category. May give a gray box instead for server problem reasons
 let dirtyVideosUrls = [
-  "https://www.youtube.com/watch?time_continue=8&v=BHcFQ9gaMF4&feature=emb_logo",
   "https://www.youtube.com/watch?v=Or8iYWRg2w8",
   "https://www.youtube.com/watch?v=DTSWQGKUg_c",
   "https://www.youtube.com/watch?v=2hizjTNsOCo", // This one is extremely disturbing and should not be watched under any circumstances

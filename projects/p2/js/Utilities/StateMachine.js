@@ -144,10 +144,11 @@ class MovingState extends State {
     // Horizontal
     if (player.cursors.left.isDown) {
       player.setVelocityX(-80);
-      player.play("ley-left-walk");
+      // for each frame in anim, play till end of player.anims.frames()
+      player.play("ley-left-walk", true);
     } else if (player.cursors.right.isDown) {
       player.setVelocityX(80);
-      player.play("ley-right-walk");
+      player.play("ley-right-walk", true);
     } else {
       player.setVelocityX(0);
     }
@@ -155,10 +156,10 @@ class MovingState extends State {
     // Vertical
     if (player.cursors.up.isDown) {
       player.setVelocityY(-80);
-      player.play("ley-up-walk");
+      player.play("ley-up-walk", true);
     } else if (player.cursors.down.isDown) {
       player.setVelocityY(80);
-      player.play("ley-front-walk");;
+      player.play("ley-front-walk", true);;
     } else {
       player.setVelocityY(0);
     }

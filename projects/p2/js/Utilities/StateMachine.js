@@ -148,18 +148,18 @@ class MovingState extends State {
     } else if (player.cursors.right.isDown) {
       player.setVelocityX(80);
       player.play("ley-right-walk", true);
-    } else {
+    } else if (player.cursors.up.isDown) {
+      // Remove excess X velocity horizontally (awkward horizontal diagonal movement -- vertical diagonal still allowed)
       player.setVelocityX(0);
-    }
-
-    // Vertical
-    if (player.cursors.up.isDown) {
       player.setVelocityY(-80);
       player.play("ley-up-walk", true);
     } else if (player.cursors.down.isDown) {
+      // Remove excess X velocity horizontally (awkward horizontal diagonal movement -- vertical diagonal still allowed)
+      player.setVelocityX(0);
       player.setVelocityY(80);
-      player.play("ley-front-walk", true);;
+      player.play("ley-front-walk", true);
     } else {
+      player.setVelocityX(0);
       player.setVelocityY(0);
     }
 

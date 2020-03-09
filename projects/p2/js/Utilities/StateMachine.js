@@ -18,6 +18,7 @@ class StateMachine {
       this.state = this.init;
       this.states[this.state].enter(...this.stateArgs);
     }
+    console.log(this.state);
     this.states[this.state].execute(...this.stateArgs);
   }
   // Transition into a given state (called conditionally)
@@ -63,7 +64,12 @@ class IdleState extends State {
   //Random decision tree
   randomDecisionTree() {
     //console.log("making random decisions");
-    setTimeout(() => this.stateMachine.transition("moving"), 5000);
+    let randomDesireToMove = Math.random();
+    const moveThreshold = 0.35;
+    if(randomDesireToMove <= moveThreshold) { // This is basic yet satisfying
+      this.stateMachine.transition("moving");
+    }
+    setTimeout(() => this.stateMachine.transition("idle"), 100);
   }
 }
 // These states are artefacts of the first ideation of the project, may be repicked later
@@ -97,15 +103,19 @@ class AutomataMovingState extends State {
     switch (randomDirection) {
       case 1:
         automata.setVelocityX(-80);
+        automata.play("ley-left-walk", true);
         break;
       case 2:
         automata.setVelocityX(80);
+        automata.play("ley-right-walk", true);
         break;
       case 3:
         automata.setVelocityY(-80);
+        automata.play("ley-up-walk", true);
         break;
       case 4:
         automata.setVelocityY(80);
+        automata.play("ley-front-walk", true);
         break;
     }
   }

@@ -46,6 +46,8 @@ class YoutubeLounge extends Phaser.Scene {
     // Sprite scale factor
     const scaleFactor = 0.3;
     this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "ley").setScale(scaleFactor);
+    this.youtubePimpPlayer.setSize(43, 46);
+    this.youtubePimpPlayer.setOffset(9.5, 8);
     this.youtubePimpPlayer.setCollideWorldBounds(true);
     // Player collision with tiles with collide true
     this.physics.add.collider(this.youtubePimpPlayer, aboveLayer);

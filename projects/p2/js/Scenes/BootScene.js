@@ -1,19 +1,6 @@
 class BootScene extends Phaser.Scene {
   constructor() {
-    super({
-      key: 'boot',
-      files: [{
-          type: 'image',
-          key: 'bar',
-          url: 'loaderBar.png'
-        },
-        {
-          type: 'image',
-          key: 'bg',
-          url: 'background.png'
-        },
-      ]
-    });
+    super('boot');
   }
 
   init() {

@@ -23,6 +23,7 @@ let config = {
   physics: {
     default: 'arcade',
     arcade: {
+      debug: true,
       gravity: {
         y: 0
       }
@@ -49,6 +50,7 @@ let playerStates = {
 // Automata states - TODO Move into its class
 let automataStates = {
   idle: new IdleState(),
+  moving: new AutomataMovingState(),
   laboring: new LaboringState(),
   exhausted: new ExhaustedState()
 }

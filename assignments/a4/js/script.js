@@ -60,8 +60,11 @@ function generateText(data) {
 
   let randomProgrammingLanguage = getRandomArrayElement(data.programmingLanguages);
   console.log(randomProgrammingLanguage);
-
-  let randomDescription = `${article} ${randomCondiment} ${verb} likes ${randomCat} in the ${randomRoom} programming in ${randomProgrammingLanguage}.`;
+	
+  let randomLispDialect = getRandomArrayElement(data.lisps);
+  console.log(randomLispDialect);
+  
+  let randomDescription = `${article} ${randomCondiment} ${verb} likes ${randomCat} in the ${randomRoom} programming in ${randomProgrammingLanguage}, sadly inferior to ${randomLispDialect}.`;
   $('.generatedText').text(randomDescription);
 }
 

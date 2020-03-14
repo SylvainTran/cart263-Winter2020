@@ -1,0 +1,7 @@
+.pocket__game {
+    padding: 0vw 1vw 1vw 1vw;
+}
+
+.pocket__game canvas {
+    border-radius: 50%;
+}

@@ -1,0 +1,11 @@
+.main__primary-action {
+    width: 5em;
+    position: relative;
+    bottom: 5px;
+    float: right;
+    cursor: pointer;
+}
+
+.main__primary-action:hover {
+    width: 6.5em;
+}

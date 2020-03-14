@@ -3,8 +3,8 @@
 // Physics to arcade
 let config = {
     type: Phaser.AUTO,
-    width: 320,
-    height: 320,
+    width: 160,
+    height: 160,
     physics: {
       default: 'arcade',
       arcade: {
@@ -27,3 +27,9 @@ let gameE = new Phaser.Game(config);
 let gameF = new Phaser.Game(config);
 let gameG = new Phaser.Game(config);
 let gameH = new Phaser.Game(config);
+
+$('document').ready(setup);
+
+function setup() {
+
+}

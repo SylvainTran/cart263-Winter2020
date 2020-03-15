@@ -13,8 +13,10 @@ class BootScene extends Phaser.Scene {
   
     create() {
       // Append the phaser canvas in the flex box
-    $('.pocket__game').append($('canvas'));
-
+      let pocketDiv = document.createElement("div");
+      $('.pocket__game').append($(pocketDiv));
+      $(pocketDiv).append($(this.game.canvas)); // Just this instance's canvas
+      $(this.game.canvas).draggable({axis: "x"}); // Restrain to x-axis (also the div flex colum direction does this somehow)
       // Randomize offset positions relative to parent pocket__game div
       console.log($('.main__game').width());
       let $parentCanvasWidth = $('.main__game').width();
@@ -32,6 +34,7 @@ class BootScene extends Phaser.Scene {
         element.style.position = "sticky";
         element.style.top = newTopPos + "px";
         element.style.left = newLeftPos + "px";
+        element.classList.add("pocket-game");
       });
       this.scene.start('preloader');
     }

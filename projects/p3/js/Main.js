@@ -28,7 +28,7 @@ let gameF = new Phaser.Game(config);
 let gameG = new Phaser.Game(config);
 let gameH = new Phaser.Game(config);
 
-$('document').ready(setup);
+//$('document').ready(setup);
 
 function setup() {
 

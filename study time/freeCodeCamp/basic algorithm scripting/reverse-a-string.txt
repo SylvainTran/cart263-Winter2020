@@ -1,0 +1,31 @@
+function reverseString(str) {
+  //str is a string
+  //to turn it into an array, use
+  let strArray = [];
+  for(let h = 0; h < str.length; h++)
+  {
+    strArray.push(str.charAt(h));
+  }
+  //console.log(strArray);
+  //take the first letter, swap with last, go until halfway
+  let temp;
+  console.log("Length of strArray is " + strArray.length);
+  for(let end = strArray.length - 1, start = 0; start < end; end--, start++)
+  {
+    temp = strArray[start];
+    strArray[start] = strArray[end];
+    strArray[end] = temp; 
+  }
+  console.log(strArray);
+  str = "";
+  for(let i = 0; i < strArray.length; i++)
+  {
+    str += strArray[i];
+  }
+  console.log("Final result: " + str);
+  return str;
+}
+
+reverseString("hello");
+reverseString("Howdy");
+reverseString("Greetings from Earth");

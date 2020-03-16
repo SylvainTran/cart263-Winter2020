@@ -15,7 +15,7 @@ let config = {
       }
     },
     scene: [
-      BootScene, Preloader 
+      BootScene, Preloader, World
     ]
   };
 

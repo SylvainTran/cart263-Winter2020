@@ -12,3 +12,5 @@
 @import "components/main__primary-action.css";
 @import "components/flex-container-row__triage-room.css";
 @import "components/flex-container-row__stats-room.css";
+@import "components/sticky.css";
+@import "components/navBar.css";

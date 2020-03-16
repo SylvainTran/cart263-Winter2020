@@ -28,8 +28,27 @@ let gameF = new Phaser.Game(config);
 let gameG = new Phaser.Game(config);
 let gameH = new Phaser.Game(config);
 
-//$('document').ready(setup);
+$('document').ready(setup);
+let $hamburgerMenu;
+let $navBar;
+let sticky;
 
 function setup() {
+  $hamburgerMenu = $('.nav__hamburger-menu');
+  $navBar = $('#navBar');
+  sticky = $hamburgerMenu.offset().top;
+  window.onscroll = function() {
+    handleNav();
+  };
+}
 
+function handleNav() {
+  if(window.pageYOffset >= sticky)
+  {
+    $navBar.addClass('sticky');
+    $hamburgerMenu.addClass('sticky');
+  } else {
+    $navBar.removeClass('sticky');
+    $hamburgerMenu.removeClass('sticky');
+  } 
 }

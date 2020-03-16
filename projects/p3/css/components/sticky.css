@@ -1,0 +1,8 @@
+.sticky {
+    position: fixed;
+    top: 0vw;
+    padding-top: 0.5vw;
+    padding-left: 0.5vw;
+    background-color: white;
+    z-index: 2;
+}

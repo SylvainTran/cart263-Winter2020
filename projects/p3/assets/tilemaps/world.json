@@ -4,7 +4,7 @@
      "export":
         {
          "format":"json",
-         "target":"world-of-youtube.json"
+         "target":"world.json"
         }
     },
  "height":40,

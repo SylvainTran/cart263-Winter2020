@@ -1,0 +1,12 @@
+#navBar {
+    overflow: hidden;
+    width: 100%;
+    height: 2vw;
+}
+
+/* Navbar links */
+#navBar a {
+    float: right;
+    display: block;
+    color: blue;
+}

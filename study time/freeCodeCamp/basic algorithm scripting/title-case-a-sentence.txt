@@ -1,0 +1,19 @@
+function titleCase(str) {
+  let strArr = str.split(" ");
+  let newStr = "";
+
+  strArr.forEach( function(word) {
+    // for each word, replace the first letter by its
+    // upper capitalized version
+    newStr += word.charAt(0).toUpperCase() + word.substring(1, word.length).toLowerCase() + " ";
+  });
+
+  newStr = newStr.substring(0, newStr.length - 1);
+  str = newStr;
+  console.log(str);
+  return str;
+}
+
+console.log(titleCase("I'm a little tea pot") === "I'm A Little Tea Pot");
+console.log(titleCase("sHoRt AnD sToUt"));
+console.log(titleCase("HERE IS MY HANDLE HERE IS MY SPOUT"));

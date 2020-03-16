@@ -1,0 +1,17 @@
+function booWho(bool) {
+  if(bool != null)
+  {
+    return (typeof bool === "boolean");
+  }
+  else
+  {
+    return undefined;
+  }
+}
+
+console.log(booWho(null));
+console.log(booWho(true));
+console.log(booWho(false));
+console.log(booWho([1,2,3]));
+console.log(booWho([].slice));
+console.log(booWho({ "a": 1 }));

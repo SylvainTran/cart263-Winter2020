@@ -1,0 +1,19 @@
+function repeatStringNumTimes(str, num) {
+  let concat = "";
+  if(str <= 0)
+  {
+    return concat;
+  }
+  for(let i = 0; i < num; i++)
+  {
+    concat += str;
+  }
+  return concat;
+}
+
+// console.log(repeatStringNumTimes("*", 3));
+// console.log(repeatStringNumTimes("abc", 3));
+// console.log(repeatStringNumTimes("abc", 4));
+// console.log(repeatStringNumTimes("*", 8));
+// console.log(repeatStringNumTimes("abc", 3));
+console.log(repeatStringNumTimes("abc", -0));

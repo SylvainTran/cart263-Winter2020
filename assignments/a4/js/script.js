@@ -3,10 +3,7 @@
 /********************************************************************
 
 Condiments
-Author Name
-
-This is a template. Fill in the title, author, and this description
-to match your project! Write JavaScript to do amazing things below!
+Sylvain Tran
 
 *********************************************************************/
 $(document).on("click", getJSONAttempt);
@@ -15,13 +12,6 @@ function getJSONAttempt() {
   $.getJSON("data/data.json")
     .done(dataLoaded)
     .fail(dataNotLoaded);
-}
-
-function parseJSONAttempt() {
-  let regex;
-  let correctURL = "data/data.json";
-  let providedURL = getJSONAttempt();
-  //providedURL.search("/");
 }
 
 function dataLoaded(data) {
@@ -35,8 +25,8 @@ function generateText(data) {
   let verb = "is";
   let vowels = ["a", "e", "i", "o", "u"];
   let article;
-
-  if( randomCondiment.charAt(randomCondiment.length - 1) === "s") // Does not work with exceptions that would require to check for the phoneme sounding like a vowel's phoneme
+  // Does not work with exceptions that would require to check for the phoneme sounding like a vowel's phoneme
+  if( randomCondiment.charAt(randomCondiment.length - 1) === "s")
   {
     verb = "are";
   }
@@ -64,21 +54,13 @@ function generateText(data) {
   let randomLispDialect = getRandomArrayElement(data.lisps);
   console.log(randomLispDialect);
   
-  let randomDescription = `${article} ${randomCondiment} ${verb} likes ${randomCat} in the ${randomRoom} programming in ${randomProgrammingLanguage}, sadly inferior to ${randomLispDialect}.`;
+  let randomDescription = `${article} ${randomCondiment} ${verb} some ${randomCat} in the ${randomRoom} programming in ${randomProgrammingLanguage}, sadly inferior to ${randomLispDialect}.`;
   $('.generatedText').text(randomDescription);
 }
 
 function dataNotLoaded(request, text, error) {
   console.error(error);
   console.log(request);
-  switch(error) {
-    case "Not Found":
-      document.write("Not Found");
-      parseJSONAttempt();
-      break;
-    default:
-      break;
-  }
 }
 
 function getRandomArrayElement(array) {

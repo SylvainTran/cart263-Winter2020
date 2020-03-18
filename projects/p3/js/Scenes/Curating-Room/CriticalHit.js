@@ -1,20 +1,22 @@
 class CriticalHit extends Phaser.Scene {
-    constructor() {
-      super({key: 'CriticalHit'});
+    constructor(key, parent) {
+      super(key);
+      this.parent = parent;
       this.count = 0;
+      this.WIDTH = 250;
+      this.HEIGHT = 250;
     }
   
     init() {
-  
+      console.log('Init CriticalHit');
     }
   
     preload() {
-      this.load.image("tilesA", "./assets/tilesets/tilesetA.png");
-      this.load.tilemapTiledJSON("map", "./assets/tilemaps/world.json");
+
     }
   
     create() {
-
+      this.add.circle(150, 150, 100, '#77bf5e');
     }
   
     update(time, delta) {

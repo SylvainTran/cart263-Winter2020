@@ -1,26 +1,3 @@
-// Config file for phaser
-//
-// Physics to arcade
-let config = {
-    type: Phaser.AUTO,
-    width: 160,
-    height: 160,
-    physics: {
-      default: 'arcade',
-      arcade: {
-        debug: true,
-        gravity: {
-          y: 0
-        }
-      }
-    },
-    scene: [
-      BootScene, Controller
-    ]
-  };
-
-let gameA = new Phaser.Game(config);
-
 $('document').ready(setup);
 let $hamburgerMenu;
 let $navBar;
@@ -45,3 +22,25 @@ function handleNav() {
     $hamburgerMenu.removeClass('sticky');
   } 
 }
+
+// Config file for phaser
+//
+// Physics to arcade
+let config = {
+  type: Phaser.AUTO,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: true,
+      gravity: {
+        y: 0
+      }
+    }
+  },
+  scene: [
+    BootScene, Controller
+  ]
+};
+let gameA = new Phaser.Game(config);

@@ -1,9 +1,9 @@
-.pocket__game {
+#main__world-node-container {
     /* padding: 0vw 1vw 1vw 1vw; */
     width: 100%;
     height: 50vw;
 }
 
-.pocket__game canvas {
+#main__world-node-container canvas {
     /* border-radius: 50%; */
 }

@@ -30,6 +30,13 @@ let config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
+  backgroundColor: '#676767',
+  scale: {
+    parent: 'main__world-node-container',
+    mode: Phaser.Scale.RESIZE,
+    width: window.innerWidth,
+    height: window.innerHeight
+  },
   physics: {
     default: 'arcade',
     arcade: {
@@ -43,4 +50,4 @@ let config = {
     BootScene, Controller
   ]
 };
-let gameA = new Phaser.Game(config);
+let game = new Phaser.Game(config);

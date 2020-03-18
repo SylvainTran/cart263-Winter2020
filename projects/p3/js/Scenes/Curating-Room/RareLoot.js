@@ -1,6 +1,7 @@
-class Preloader extends Phaser.Scene {
+class RareLoot extends Phaser.Scene {
     constructor() {
-      super('preloader');
+      super({key: 'RareLoot'});
+      this.count = 0;
     }
   
     init() {
@@ -13,7 +14,7 @@ class Preloader extends Phaser.Scene {
     }
   
     create() {
-      this.scene.start('World');
+
     }
   
     update(time, delta) {

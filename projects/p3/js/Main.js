@@ -15,18 +15,11 @@ let config = {
       }
     },
     scene: [
-      BootScene, Preloader, World
+      BootScene, Controller
     ]
   };
 
 let gameA = new Phaser.Game(config);
-let gameB = new Phaser.Game(config);
-let gameC = new Phaser.Game(config);
-let gameD = new Phaser.Game(config);
-let gameE = new Phaser.Game(config);
-let gameF = new Phaser.Game(config);
-let gameG = new Phaser.Game(config);
-let gameH = new Phaser.Game(config);
 
 $('document').ready(setup);
 let $hamburgerMenu;

@@ -1,7 +1,7 @@
 class World extends Phaser.Scene {
 
     constructor() {
-      super('World');
+      super({key: 'World'});
     }
   
     init(data) {

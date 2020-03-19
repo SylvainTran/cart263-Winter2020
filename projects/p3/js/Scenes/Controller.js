@@ -18,6 +18,26 @@ class Controller extends Phaser.Scene {
     this.createMoment('CriticalHit', CriticalHit);
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
+    const momentWidth = 150; // TODO find a better way
+    const momentHeight = 150;
+    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xff0000, 5, true);    
+  }
+
+  //createLinkLine(...)
+  //@args: many
+  //creates a link line (must be set visible to be seen) when a dragged scene is in range of another scene
+  // Also sets line width
+  createLinkLine(x, y, x1, y1, x2, y2, color, width, visible) {
+    this.scene.linkLine = this.add.line(x, y, x1, y1, x2, y2, color, visible).setOrigin(0)
+      .setLineWidth(width);
+  }
+
+  setLinkLineVisible(visibility) {
+    this.scene.linkLine.setVisible(visibility);  
+  }
+
+  updateLinkLinePos(x1, y1, x2, y2) {
+    this.scene.linkLine.setTo(x1, y1, x2, y2);
   }
 
   createMainCanvas(addToActiveDisplay) {
@@ -56,7 +76,7 @@ class Controller extends Phaser.Scene {
     this.input.enableDebug(draggableZoneParent);
     this.input.setDraggable(draggableZoneParent);
     this.input.on('drag', (function (pointer, gameObject, dragX, dragY) {
-      console.debug("Dragging: " + gameObject.name);
+      //console.debug("Dragging: " + gameObject.name);
       gameObject.x = dragX;
       gameObject.y = dragY;
       momentInstance.refresh();
@@ -78,14 +98,20 @@ class Controller extends Phaser.Scene {
       for (const zone in draggableZonesActive) {
         // If we're not comparing the dragged object with himself
         if(draggableZonesActive[zone].name === gameObject.name) {
-          console.log(draggableZonesActive[zone].name + " and " + gameObject.name);
+          //console.log(draggableZonesActive[zone].name + " and " + gameObject.name);
           continue;
         } 
         // Check if any zone is within range of the 'connection trigger' / Comparison from a go's centre
         if(gameObject.getCenter().distance(draggableZonesActive[zone].getCenter()) < rangeToLink) {
-          console.debug("In range of link between: " + gameObject.name + ", " + draggableZonesActive[zone].name);
-          // Create a visual link
+          //console.debug("In range of link between: " + gameObject.name + ", " + draggableZonesActive[zone].name);
+          // Sets the visual link visible
+          this.scene.setLinkLineVisible(true);
+          this.scene.updateLinkLinePos(gameObject.x, gameObject.y, draggableZonesActive[zone].x, draggableZonesActive[zone].y);
+          // TODO update find nearest by sorting draggableZoneActive instead to fix current favoritist behavior
           // Enable linking on drop zone behaviour
+        }
+        else {
+          this.scene.setLinkLineVisible(false);
         }
       }
 
@@ -95,7 +121,13 @@ class Controller extends Phaser.Scene {
     })); // end of drag
   }
 
-  update(time, delta) {
+  updateLineBetweenNodes() {
+  }
 
+  update(time, delta) {
+    // Update the link line's position if currently visible
+    // if(this.scene.linkLine.visible) {
+    //   this.updateLinkLinePos(x1, y1, x2, y2)
+    // }
   }
 }

@@ -3,8 +3,6 @@ class RareLoot extends Phaser.Scene {
       super(key);
       this.parent = parent;
       this.count = 0;
-      this.WIDTH = 250;
-      this.HEIGHT = 250;
     }
   
     init() {
@@ -16,11 +14,27 @@ class RareLoot extends Phaser.Scene {
     }
   
     create() {
-      this.add.star(450, 450, 5, 100, 100, '#77bf5e');
+      this.add.circle(this.parent.x, this.parent.y, 100, '#77bf5e').setOrigin(0);
+      this.setupCamera();
     }
   
     update(time, delta) {
   
     }
+
+    setupCamera() {
+      this.cameras.main.setPosition(this.parent.x, this.parent.y);
+      this.cameras.main.setSize(GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
+      //this.cameras.main.setViewport(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
+      this.cameras.main.setScroll(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
+    }
+
+    refresh ()
+    {
+        this.cameras.main.setPosition(this.parent.x, this.parent.y);
+        this.scene.bringToTop();
+    }
   }
   
+  RareLoot.WIDTH = 200;
+  RareLoot.HEIGHT = 200;

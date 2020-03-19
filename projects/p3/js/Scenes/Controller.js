@@ -18,8 +18,6 @@ class Controller extends Phaser.Scene {
     this.createMoment('CriticalHit', CriticalHit);
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
-
-    this.scene.start('World');
   }
 
   createMainCanvas(addToActiveDisplay) {
@@ -36,16 +34,19 @@ class Controller extends Phaser.Scene {
     let x = Phaser.Math.Between(leftMargin, window.innerWidth);
     let y = Phaser.Math.Between(topMargin, window.innerHeight);
     
-    // Create each moment (deliberately called 'mom') for touch and dragging
-    // Includes each touch-able zone
-    let mom = this.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive().setOrigin(0);
+    // Create a parent zone for touch and dragging the scene
+    let draggableZoneParent = this.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({ draggable: true }).setOrigin(0);
     // Create the instance and setup the drag handling
-    let momentInstance = new moment(key, mom);
-    this.input.setDraggable(mom);
-    mom.on('drag', (pointer, dragX, dragY) => { 
-      console.log('dragging moment');
+    let momentInstance = new moment(key, draggableZoneParent);
+    draggableZoneParent.input.draggable = true;
+    draggableZoneParent.input.alwaysEnabled = true;
+    this.input.enableDebug(draggableZoneParent);
+    this.input.setDraggable(draggableZoneParent);
+    draggableZoneParent.on('drag', (pointer, dragX, dragY) => { 
+      console.log('Dragging a moment.');
       this.x = dragX;
       this.y = dragY;
+      momentInstance.refresh();
     });   
     this.scene.add(key, momentInstance, true);
   }

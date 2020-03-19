@@ -13,6 +13,7 @@ class World extends Phaser.Scene {
   }
 
   create() {
+    console.log("Creating World");
     // Physics bounds
     this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
     this.cameras.main.setSize(window.innerWidth, window.innerHeight);

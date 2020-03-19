@@ -3,8 +3,6 @@ class CriticalHit extends Phaser.Scene {
       super(key);
       this.parent = parent;
       this.count = 0;
-      this.WIDTH = 250;
-      this.HEIGHT = 250;
     }
   
     init() {
@@ -16,10 +14,28 @@ class CriticalHit extends Phaser.Scene {
     }
   
     create() {
-      this.add.circle(150, 150, 100, '#77bf5e');
+      this.add.circle(this.parent.x, this.parent.y, 100, '#77bf5e').setOrigin(0);
+      this.setupCamera();
+    }
+
+    setupCamera() {
+      this.cameras.main.setPosition(this.parent.x, this.parent.y);
+      this.cameras.main.setSize(GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
+      //this.cameras.main.setViewport(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
+      this.cameras.main.setScroll(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
     }
   
     update(time, delta) {
   
     }
+
+    refresh ()
+    {
+        this.cameras.main.setPosition(this.parent.x, this.parent.y);
+        // Bring it to the top of the scene list render order
+        this.scene.bringToTop();
+    }
   }
+
+  CriticalHit.WIDTH = 200;
+  CriticalHit.HEIGHT = 200;

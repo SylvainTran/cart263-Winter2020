@@ -14,7 +14,7 @@ class RareLoot extends Phaser.Scene {
     }
   
     create() {
-      this.add.circle(this.parent.x, this.parent.y, 100, '#77bf5e').setOrigin(0);
+      this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
       this.setupCamera();
     }
   
@@ -36,5 +36,5 @@ class RareLoot extends Phaser.Scene {
     }
   }
   
-  RareLoot.WIDTH = 200;
-  RareLoot.HEIGHT = 200;
+  RareLoot.WIDTH = 300;
+  RareLoot.HEIGHT = 300;

@@ -14,7 +14,7 @@ class CriticalHit extends Phaser.Scene {
     }
   
     create() {
-      this.add.circle(this.parent.x, this.parent.y, 100, '#77bf5e').setOrigin(0);
+      this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
       this.setupCamera();
     }
 
@@ -37,5 +37,5 @@ class CriticalHit extends Phaser.Scene {
     }
   }
 
-  CriticalHit.WIDTH = 200;
-  CriticalHit.HEIGHT = 200;
+  CriticalHit.WIDTH = 300;
+  CriticalHit.HEIGHT = 300;

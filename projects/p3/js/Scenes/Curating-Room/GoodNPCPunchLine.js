@@ -14,7 +14,7 @@ class GoodNPCPunchLine extends Phaser.Scene {
     }
   
     create() {
-      this.add.circle(this.parent.x, this.parent.y, 100, '#77bf5e').setOrigin(0);
+      this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
       this.setupCamera();
       this.debugZoneViewport();
     }
@@ -42,6 +42,6 @@ class GoodNPCPunchLine extends Phaser.Scene {
     }
   }
 
-  GoodNPCPunchLine.WIDTH = 200;
-  GoodNPCPunchLine.HEIGHT = 200;
+  GoodNPCPunchLine.WIDTH = 300;
+  GoodNPCPunchLine.HEIGHT = 300;
   

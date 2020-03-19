@@ -33,7 +33,7 @@ let config = {
   backgroundColor: '#676767',
   scale: {
     parent: 'main__world-node-container',
-    mode: Phaser.Scale.RESIZE,
+    mode: Phaser.Scale.CENTER_BOTH,
     width: window.innerWidth,
     height: window.innerHeight
   },

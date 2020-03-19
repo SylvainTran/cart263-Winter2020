@@ -18,9 +18,6 @@ class Controller extends Phaser.Scene {
     this.createMoment('CriticalHit', CriticalHit);
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
-    const momentWidth = 150; // TODO find a better way
-    const momentHeight = 150;
-    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xff0000, 5, true); // TODO fix visibility issue, should start invisible (false) but not settable to true after?  
     this.draggableZonesActive = [];
     // cache only the Zones gameObjects that are active <- for now
     for (const element of this.children.list) {
@@ -29,6 +26,9 @@ class Controller extends Phaser.Scene {
         this.draggableZonesActive.push(element);
       }
     }
+    const momentWidth = 150; // TODO find a better way
+    const momentHeight = 150;
+    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xff0000, 5, true); // TODO fix visibility issue, should start invisible (false) but not settable to true after?  
   }
 
   //createLinkLine(...)
@@ -80,39 +80,44 @@ class Controller extends Phaser.Scene {
   //handle dragging behaviour event on each momentInstance created, by using the draggableZoneParent gameObject
   handleDrag(draggableZoneParent, momentInstance) {
     this.input.enableDebug(draggableZoneParent);
-    this.input.setDraggable(draggableZoneParent);
-    this.input.on('drag', (function (pointer, gameObject, dragX, dragY) {
-      console.debug("Dragging: " + gameObject.name);
-      gameObject.x = dragX;
-      gameObject.y = dragY;
+    draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
+      //console.debug("Dragging: " + this.name);
+      draggableZoneParent.setPosition(dragX, dragY);
       momentInstance.refresh();
       // Find nearest zone from this gameObject being dragged
       // Compare this go's pos (x, y) with each zone's pos (x, y) in draggableZonesActive
       // Refresh cache pos instead for optimization later
       const rangeToLink = 1000;
+      let thisPosXY = this.getCenter();
       let currentMinNeighbour = 0;
+      let tempClosestNeighbour;
       let lengthDragZonesActive = this.scene.draggableZonesActive.length;
       for (let i = 0; i < lengthDragZonesActive; i++) {
         currentMinNeighbour = i;
-        for(let j = i + 1; j < lengthDragZonesActive; j++) {
-          if(gameObject.getCenter()
+        for(let j = i + 1; j < lengthDragZonesActive; j++) { // TODO fix this I think
+          console.debug("Closest neighbour: " + this.scene.draggableZonesActive[currentMinNeighbour].name);
+          if(j != i && thisPosXY
             .distance(this.scene.draggableZonesActive[j]
               .getCenter()) < 
-                gameObject.getCenter()
+                thisPosXY
                   .distance(this.scene.draggableZonesActive[currentMinNeighbour]
                     .getCenter() ) ) 
           {
+            console.debug("Is it ever true");
             currentMinNeighbour = j;
           }  
-          if(j != i && 
-            gameObject.getCenter().
+          if( 
+            thisPosXY.
               distance(this.scene.draggableZonesActive[currentMinNeighbour]
                 .getCenter()) 
                 < rangeToLink) 
           {
+            tempClosestNeighbour = this.scene.draggableZonesActive[i];
+            this.scene.draggableZonesActive[i] = this.scene.draggableZonesActive[currentMinNeighbour];
+            this.scene.draggableZonesActive[currentMinNeighbour] = tempClosestNeighbour;
             // Sets the visual link visible
             //this.scene.setLinkLineVisible(true);
-            this.scene.updateLinkLinePos(gameObject.x, gameObject.y, this.scene.draggableZonesActive[currentMinNeighbour].x, this.scene.draggableZonesActive[currentMinNeighbour].y);
+            this.scene.updateLinkLinePos(this.x, this.y, this.scene.draggableZonesActive[currentMinNeighbour].x, this.scene.draggableZonesActive[currentMinNeighbour].y);
             // TODO update find nearest by sorting draggableZoneActive instead to fix current favoritist behavior
             // Cache the dragged go's current linked scene for ordering (distance among competiting scenes in range) comparison            
             // Enable linking on drop zone behaviour

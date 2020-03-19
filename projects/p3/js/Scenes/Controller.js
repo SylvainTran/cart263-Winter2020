@@ -69,10 +69,25 @@ class Controller extends Phaser.Scene {
         if(element.type === 'Zone' && element.active)
         {
           draggableZonesActive.push(element);
-          // Find nearest zone from this gameObject being dragged
         }
       }
-      console.log(draggableZonesActive);  
+      // Find nearest zone from this gameObject being dragged
+      // Compare this go's pos (x, y) with each zone's pos (x, y) in draggableZonesActive
+      // Refresh cache pos instead for optimization later
+      const rangeToLink = 1000;
+      for (const zone in draggableZonesActive) {
+        // If we're not comparing the dragged object with himself
+        if(draggableZonesActive[zone].name === gameObject.name) {
+          console.log(draggableZonesActive[zone].name + " and " + gameObject.name);
+          continue;
+        } 
+        // Check if any zone is within range of the 'connection trigger' / Comparison from a go's centre
+        if(gameObject.getCenter().distance(draggableZonesActive[zone].getCenter()) < rangeToLink) {
+          console.debug("In range of link between: " + gameObject.name + ", " + draggableZonesActive[zone].name);
+          // Create a visual link
+          // Enable linking on drop zone behaviour
+        }
+      }
 
       // all nodes start separated
       // the scene used to drag first is first in the list

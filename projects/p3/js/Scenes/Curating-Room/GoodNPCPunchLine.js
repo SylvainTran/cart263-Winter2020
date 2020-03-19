@@ -19,9 +19,12 @@ class GoodNPCPunchLine extends Phaser.Scene {
       this.debugZoneViewport();
     }
 
+    //debugZoneViewport()
+    //@args: none
+    //debugging viewport stuff
     debugZoneViewport() {
-      console.log("Zone at (x, y): " + this.parent.x + ", " + this.parent.y); // The draggable zone parent container is the position of the camera
-      console.log("Camera viewport (x, y): " + this.cameras.main.centerX + ", " + this.cameras.main.centerY); // Should be at the center of the camera's viewport relative to the left of the game canvas
+      console.debug("Zone at (x, y): " + this.parent.x + ", " + this.parent.y); // The draggable zone parent container is the position of the camera
+      console.debug("Camera viewport (x, y): " + this.cameras.main.centerX + ", " + this.cameras.main.centerY); // Should be at the center of the camera's viewport relative to the left of the game canvas
     }
   
     setupCamera() {
@@ -37,8 +40,8 @@ class GoodNPCPunchLine extends Phaser.Scene {
 
     refresh ()
     {
-        this.cameras.main.setPosition(this.parent.x, this.parent.y);
-        this.scene.bringToTop();
+      this.cameras.main.setPosition(this.parent.x, this.parent.y);
+      this.scene.bringToTop();
     }
   }
 

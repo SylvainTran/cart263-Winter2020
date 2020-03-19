@@ -18,6 +18,9 @@ class CriticalHit extends Phaser.Scene {
       this.setupCamera();
     }
 
+    //setupCamera()
+    //@args: none
+    //setup the camera positions, size and scroll view
     setupCamera() {
       this.cameras.main.setPosition(this.parent.x, this.parent.y);
       this.cameras.main.setSize(GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
@@ -29,11 +32,13 @@ class CriticalHit extends Phaser.Scene {
   
     }
 
-    refresh ()
-    {
-        this.cameras.main.setPosition(this.parent.x, this.parent.y);
-        // Bring it to the top of the scene list render order
-        this.scene.bringToTop();
+    //refresh()
+    //@args: none
+    //Reset the position of the camera to that of the dragged zone parent (i.e., after having been dragged from Controller.js)
+    refresh (){
+      this.cameras.main.setPosition(this.parent.x, this.parent.y);
+      // Bring it to the top of the scene list render order
+      this.scene.bringToTop();
     }
   }
 

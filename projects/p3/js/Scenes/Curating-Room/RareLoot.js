@@ -31,8 +31,8 @@ class RareLoot extends Phaser.Scene {
 
     refresh ()
     {
-        this.cameras.main.setPosition(this.parent.x, this.parent.y);
-        this.scene.bringToTop();
+      this.cameras.main.setPosition(this.parent.x, this.parent.y);
+      this.scene.bringToTop();
     }
   }
   

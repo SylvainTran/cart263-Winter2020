@@ -20,7 +20,15 @@ class Controller extends Phaser.Scene {
     this.createMoment('RareLoot', RareLoot);
     const momentWidth = 150; // TODO find a better way
     const momentHeight = 150;
-    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xff0000, 5, true);    
+    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xff0000, 5, true); // TODO fix visibility issue, should start invisible (false) but not settable to true after?  
+    this.draggableZonesActive = [];
+    // cache only the Zones gameObjects that are active <- for now
+    for (const element of this.children.list) {
+      if(element.type === 'Zone' && element.active)
+      {
+        this.draggableZonesActive.push(element);
+      }
+    }
   }
 
   //createLinkLine(...)
@@ -71,47 +79,44 @@ class Controller extends Phaser.Scene {
   //@args: draggableZoneParent {GameObject.Zone}, momentInstance {Phaser.Scene}
   //handle dragging behaviour event on each momentInstance created, by using the draggableZoneParent gameObject
   handleDrag(draggableZoneParent, momentInstance) {
-    draggableZoneParent.input.draggable = true;
-    draggableZoneParent.input.alwaysEnabled = true;
     this.input.enableDebug(draggableZoneParent);
     this.input.setDraggable(draggableZoneParent);
     this.input.on('drag', (function (pointer, gameObject, dragX, dragY) {
-      //console.debug("Dragging: " + gameObject.name);
+      console.debug("Dragging: " + gameObject.name);
       gameObject.x = dragX;
       gameObject.y = dragY;
       momentInstance.refresh();
-      // On drag, suggest nearest nodes/moments to "connect with"
-      // get the (x, y) pos of each scene/moment that exists in the game, put it in a list (that will be ordered)
-      let displayedSceneList = this.scene.children;
-      let draggableZonesActive = [];
-      // cache only the Zones gameObjects that are active <- for now
-      for (const element of displayedSceneList.list) {
-        if(element.type === 'Zone' && element.active)
-        {
-          draggableZonesActive.push(element);
-        }
-      }
       // Find nearest zone from this gameObject being dragged
       // Compare this go's pos (x, y) with each zone's pos (x, y) in draggableZonesActive
       // Refresh cache pos instead for optimization later
       const rangeToLink = 1000;
-      for (const zone in draggableZonesActive) {
-        // If we're not comparing the dragged object with himself
-        if(draggableZonesActive[zone].name === gameObject.name) {
-          //console.log(draggableZonesActive[zone].name + " and " + gameObject.name);
-          continue;
-        } 
-        // Check if any zone is within range of the 'connection trigger' / Comparison from a go's centre
-        if(gameObject.getCenter().distance(draggableZonesActive[zone].getCenter()) < rangeToLink) {
-          //console.debug("In range of link between: " + gameObject.name + ", " + draggableZonesActive[zone].name);
-          // Sets the visual link visible
-          this.scene.setLinkLineVisible(true);
-          this.scene.updateLinkLinePos(gameObject.x, gameObject.y, draggableZonesActive[zone].x, draggableZonesActive[zone].y);
-          // TODO update find nearest by sorting draggableZoneActive instead to fix current favoritist behavior
-          // Enable linking on drop zone behaviour
-        }
-        else {
-          this.scene.setLinkLineVisible(false);
+      let currentMinNeighbour = 0;
+      let lengthDragZonesActive = this.scene.draggableZonesActive.length;
+      for (let i = 0; i < lengthDragZonesActive; i++) {
+        currentMinNeighbour = i;
+        for(let j = i + 1; j < lengthDragZonesActive; j++) {
+          if(gameObject.getCenter()
+            .distance(this.scene.draggableZonesActive[j]
+              .getCenter()) < 
+                gameObject.getCenter()
+                  .distance(this.scene.draggableZonesActive[currentMinNeighbour]
+                    .getCenter() ) ) 
+          {
+            currentMinNeighbour = j;
+          }  
+          if(j != i && 
+            gameObject.getCenter().
+              distance(this.scene.draggableZonesActive[currentMinNeighbour]
+                .getCenter()) 
+                < rangeToLink) 
+          {
+            // Sets the visual link visible
+            //this.scene.setLinkLineVisible(true);
+            this.scene.updateLinkLinePos(gameObject.x, gameObject.y, this.scene.draggableZonesActive[currentMinNeighbour].x, this.scene.draggableZonesActive[currentMinNeighbour].y);
+            // TODO update find nearest by sorting draggableZoneActive instead to fix current favoritist behavior
+            // Cache the dragged go's current linked scene for ordering (distance among competiting scenes in range) comparison            
+            // Enable linking on drop zone behaviour
+          }
         }
       }
 
@@ -119,9 +124,6 @@ class Controller extends Phaser.Scene {
       // the scene used to drag first is first in the list
       // the next one appended is the second in the order, and so on
     })); // end of drag
-  }
-
-  updateLineBetweenNodes() {
   }
 
   update(time, delta) {

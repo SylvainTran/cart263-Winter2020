@@ -42,6 +42,8 @@ class Controller extends Phaser.Scene {
     // Create the instance and setup the drag handling
     let momentInstance = new moment(key, draggableZoneParent);
     this.handleDrag(draggableZoneParent, momentInstance);
+    // Set a name for the zone (used for handling it later)
+    draggableZoneParent.setName(key);
     this.scene.add(key, momentInstance, true);
   }
 
@@ -54,10 +56,28 @@ class Controller extends Phaser.Scene {
     this.input.enableDebug(draggableZoneParent);
     this.input.setDraggable(draggableZoneParent);
     this.input.on('drag', (function (pointer, gameObject, dragX, dragY) {
+      console.debug("Dragging: " + gameObject.name);
       gameObject.x = dragX;
       gameObject.y = dragY;
       momentInstance.refresh();
-    }));
+      // On drag, suggest nearest nodes/moments to "connect with"
+      // get the (x, y) pos of each scene/moment that exists in the game, put it in a list (that will be ordered)
+      let displayedSceneList = this.scene.children;
+      let draggableZonesActive = [];
+      // cache only the Zones gameObjects that are active <- for now
+      for (const element of displayedSceneList.list) {
+        if(element.type === 'Zone' && element.active)
+        {
+          draggableZonesActive.push(element);
+          // Find nearest zone from this gameObject being dragged
+        }
+      }
+      console.log(draggableZonesActive);  
+
+      // all nodes start separated
+      // the scene used to drag first is first in the list
+      // the next one appended is the second in the order, and so on
+    })); // end of drag
   }
 
   update(time, delta) {

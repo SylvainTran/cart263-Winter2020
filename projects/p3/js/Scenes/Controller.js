@@ -81,7 +81,7 @@ class Controller extends Phaser.Scene {
   handleDrag(draggableZoneParent, momentInstance) {
     this.input.enableDebug(draggableZoneParent);
     draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
-      //console.debug("Dragging: " + this.name);
+      console.debug("Dragging: " + this.name);
       draggableZoneParent.setPosition(dragX, dragY);
       momentInstance.refresh();
       // Find nearest zone from this gameObject being dragged
@@ -94,9 +94,11 @@ class Controller extends Phaser.Scene {
       let lengthDragZonesActive = this.scene.draggableZonesActive.length;
       for (let i = 0; i < lengthDragZonesActive; i++) {
         currentMinNeighbour = i;
-        for(let j = i + 1; j < lengthDragZonesActive; j++) { // TODO fix this I think
+        for(let j = i + 1; j < lengthDragZonesActive; j++) { 
           console.debug("Closest neighbour: " + this.scene.draggableZonesActive[currentMinNeighbour].name);
-          if(j != i && thisPosXY
+          if(
+            j != i && 
+            thisPosXY
             .distance(this.scene.draggableZonesActive[j]
               .getCenter()) < 
                 thisPosXY
@@ -104,7 +106,7 @@ class Controller extends Phaser.Scene {
                     .getCenter() ) ) 
           {
             console.debug("Is it ever true");
-            currentMinNeighbour = j;
+            currentMinNeighbour = j; // TODO fix this I think the current go compares itself and gets two truths
           }  
           if( 
             thisPosXY.
@@ -116,11 +118,14 @@ class Controller extends Phaser.Scene {
             this.scene.draggableZonesActive[i] = this.scene.draggableZonesActive[currentMinNeighbour];
             this.scene.draggableZonesActive[currentMinNeighbour] = tempClosestNeighbour;
             // Sets the visual link visible
-            //this.scene.setLinkLineVisible(true);
+            this.scene.setLinkLineVisible(true);
             this.scene.updateLinkLinePos(this.x, this.y, this.scene.draggableZonesActive[currentMinNeighbour].x, this.scene.draggableZonesActive[currentMinNeighbour].y);
             // TODO update find nearest by sorting draggableZoneActive instead to fix current favoritist behavior
             // Cache the dragged go's current linked scene for ordering (distance among competiting scenes in range) comparison            
             // Enable linking on drop zone behaviour
+          }
+          else {
+            this.scene.setLinkLineVisible(false);
           }
         }
       }

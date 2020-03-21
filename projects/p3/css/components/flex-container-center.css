@@ -1,0 +1,11 @@
+.flex-container-center {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-left: 8vw;
+}
+
+.flex-container-center div {
+    margin: 3vw;
+}

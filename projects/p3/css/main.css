@@ -1,6 +1,6 @@
 @import "generic/html.css";
 @import "components/flex-container.css";
-@import "components/flex-container-row.css";
+@import "components/flex-container-center.css";
 @import "components/side__left-menu.css";
 @import "components/side__left-menu__item.css";
 @import "components/side__left-menu__top.css";
@@ -16,3 +16,4 @@
 @import "components/navBar.css";
 @import "components/nav-flex-container.css";
 @import "components/main--current-status__button.css";
+@import "components/flex-container-center__timeline-sequencer.css";

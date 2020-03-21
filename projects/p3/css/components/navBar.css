@@ -3,11 +3,20 @@
     overflow: hidden;
     width: 100%;
     padding-left: 2vw;
-    padding-bottom: 3.5vw;
+    padding-bottom: 1vw;
     font-size: 2vw;
 }
 
 /* Navbar links */
 #navBar a {
     color: blue;
+}
+
+#navBar div {
+    margin-left: 5vw;
+    cursor: pointer;
+}
+
+#navBar div:hover {
+    background-color: black;
 }

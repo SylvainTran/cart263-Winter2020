@@ -88,7 +88,7 @@ class Controller extends Phaser.Scene {
       draggableZoneParent.setPosition(dragX, dragY);
       momentInstance.refresh();
       // Find nearest zone from this gameObject being dragged
-      let closestNeighbour= this.scene.findClosestNeighbour(this);
+      let closestNeighbour = this.scene.findClosestNeighbour(this);
       // Sets the visual link visible if in range
       const rangeToLink = 500;
       if(Math.abs( this.getCenter().distance( closestNeighbour.getCenter() ) ) <= rangeToLink) {

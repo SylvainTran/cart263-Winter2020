@@ -41,24 +41,26 @@
     <div class="side__left-menu">
       <div class="side__left-menu__top">Kubernetes</div>
     </div>
-    <div id="navBar">
-      The <span style="color: skyblue;">Curating Room</span>
-      <img class="nav__hamburger-menu" src="assets/images/icons/hamburger-menu.png" alt="hamburger menu icon"/>
+    <div class="nav-flex-container">
+        <div id="navBar">
+          <div>The <span style="color: skyblue;">Curating Room</span><br><br></div>
+          <div>_Link Status: Alone</div> <!--Alone, Found a Friend, Found Two Friends-->
+          <div>_Moments waiting to be linked: [] </div>
+          <img class="nav__hamburger-menu" src="assets/images/icons/hamburger-menu.png" alt="hamburger menu icon"/>
+        </div>
     </div>
     <div class="main__game">
       <div id="main__world-node-container">      
 
       </div>
       <div>
-        <img class="main__primary-action" src="assets/images/icons/play-sequence.png" alt="play-sequence button"/>
+        <div class="main__primary-action"><button class="main--current-status__button">Create Link</button></div> <!--Find a Neighbour, When two neighbours are in range.-->
       </div>
     </div>
     <div class="main__log">
     </div>
     <div class="flex-container-row__triage-room">Triage Room</div>
     <div class="flex-container-row__stats-room">Stats Room</div>
-  </div>
-  <div class="flex-container-row">
   </div>
   <footer style="text-align: center; font-size: 5vw;">
     <hr>

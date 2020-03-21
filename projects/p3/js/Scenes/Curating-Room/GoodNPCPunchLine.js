@@ -17,7 +17,7 @@ class GoodNPCPunchLine extends Phaser.Scene {
       this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
       this.setupCamera();
       this.debugZoneViewport();
-      let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'George says: I bet I lift more than your dad does.', { fontFamily: 'Press Start 2P', fontSize: '50px' }).setOrigin(0.5);
+      let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'George the Blacksmith NPC says:\nI bet I lift more than your dad does.\nRelationship + 10.', { fontFamily: 'Press Start 2P', fontSize: '50px' }).setOrigin(0.5);
       // Temporary
       // thisText.setFontStyle('Press Start 2P');
       // thisText.setFontSize('50px');

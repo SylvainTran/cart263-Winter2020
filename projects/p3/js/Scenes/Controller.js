@@ -28,7 +28,7 @@ class Controller extends Phaser.Scene {
     }
     const momentWidth = 150; // TODO find a better way
     const momentHeight = 150;
-    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xff0000, 5, true);
+    this.createLinkLine(momentWidth, momentHeight, 0, 0, 100, 100, 0xFFFFFF, 5, true);
     this.setLinkLineVisible(false);
   }
 

@@ -16,6 +16,7 @@ class RareLoot extends Phaser.Scene {
     create() {
       this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
       this.setupCamera();
+      let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You found Excalibur +10!\nThe princess that you need to rescue\nsmiles from far away.', { fontFamily: 'Press Start 2P', fontSize: '50px' }).setOrigin(0.5);
     }
   
     update(time, delta) {

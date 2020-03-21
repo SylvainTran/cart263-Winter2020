@@ -6,7 +6,8 @@ let sticky;
 function setup() {
   $hamburgerMenu = $('.nav__hamburger-menu');
   $navBar = $('#navBar');
-  sticky = $hamburgerMenu.offset().top;
+  const STICKY_OFFSET = 10;
+  sticky = $hamburgerMenu.offset().top - STICKY_OFFSET;
   window.onscroll = function() {
     handleNav();
   };

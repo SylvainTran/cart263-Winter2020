@@ -2,11 +2,12 @@
     overflow: hidden;
     width: 100%;
     height: 2vw;
+    padding-left: 2vw;
+    padding-bottom: 3.5vw;
+    font-size: 2vw;
 }
 
 /* Navbar links */
 #navBar a {
-    float: right;
-    display: block;
     color: blue;
 }

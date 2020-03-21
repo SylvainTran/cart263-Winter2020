@@ -1,12 +1,11 @@
 .nav__hamburger-menu {
-    width: 2em;
+    width: 4vw;
     position: fixed;
-    top: 10vw;
+    top: 5vw;
     right: 5px;
     cursor: pointer;
 }
 
 .nav__hamburger-menu:hover {
-    background-color:yellowgreen;
-    width: 3em;
+    width: 6vw;
 }

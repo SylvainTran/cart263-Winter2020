@@ -1,5 +1,6 @@
 .main__primary-action {
-    width: 5em;
+    height: 10vw;
+    width: 10vw;
     position: relative;
     bottom: 5px;
     float: right;
@@ -7,5 +8,6 @@
 }
 
 .main__primary-action:hover {
-    width: 6.5em;
+    height: 12vw;
+    width: 12vw;
 }

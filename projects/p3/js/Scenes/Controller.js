@@ -68,6 +68,8 @@ class Controller extends Phaser.Scene {
     
     // Create a parent zone for touch and dragging the scene
     let draggableZoneParent = this.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({ draggable: true }).setOrigin(0);
+    // Set some data for this go, namely the number of connections it has and which connections these are
+    draggableZoneParent.setData( { maxActiveConnections: 3, activeConnections: 0, firstConnection: null, secondConnection: null });
     // Create the instance and setup the drag handling
     let momentInstance = new moment(key, draggableZoneParent);
     this.handleDrag(draggableZoneParent, momentInstance);
@@ -82,7 +84,7 @@ class Controller extends Phaser.Scene {
   handleDrag(draggableZoneParent, momentInstance) {
     this.input.enableDebug(draggableZoneParent);
     draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
-      console.debug("Dragging: " + this.name);
+      //console.debug("Dragging: " + this.name);
       draggableZoneParent.setPosition(dragX, dragY);
       momentInstance.refresh();
       // Find nearest zone from this gameObject being dragged
@@ -90,12 +92,42 @@ class Controller extends Phaser.Scene {
       // Sets the visual link visible if in range
       const rangeToLink = 500;
       if(Math.abs( this.getCenter().distance( closestNeighbour.getCenter() ) ) <= rangeToLink) {
+        let updateDataAndActiveConnections = true;
+        // If this go already has a connection to closestNeighbour, we don't want to re-create new connections with it
+        if(this.getData('firstConnection') === closestNeighbour || this.getData('secondConnection') === closestNeighbour) {
+          updateDataAndActiveConnections = false;
+        }       
+        // Display logic
         this.scene.setLinkLineVisible(true);
-        this.scene.updateLinkLinePos(this.x, this.y, closestNeighbour.x, closestNeighbour.y); 
+        this.scene.updateLinkLinePos(this.x, this.y, closestNeighbour.x, closestNeighbour.y);
+        // Data logic
+        if(updateDataAndActiveConnections) {
+          // Update this go's first and second connections
+          // If this go already has a first connected scene, then add closestNeighbour as the second connection
+          if(this.getData('firstConnection') !== null) {
+            this.setData('secondConnection', closestNeighbour);
+          }
+          else {
+            this.setData('firstConnection', closestNeighbour);
+          }
+          // Update the number of active connections this go currently has, if not over limit
+          this.scene.updateActiveConnections(this, true);
+        }
       }
       else {
+        // Display logic
         this.scene.setLinkLineVisible(false);
+        // Data logic - Temporary, currently this doesn't take into account when you separate a scene from only one neighbour (the one that became too far too link with)     
+        // TODO Need to flush the farthest neigbour from go's scene connections data if it has more than one active connections already
+        this.setData('firstConnection', null);
+        this.setData('secondConnection', null);
+        this.scene.updateActiveConnections(this, false);        
       }
+      // Snap first two closest scenes joined together
+      const maxSnap = 3;
+      // Need to know, upon draggging a go, how many active current connection it already has
+      let currentlySnapped = this.getData('activeConnections');
+      console.log("Currently snapped with this go: " + currentlySnapped);
     }));
   }
 
@@ -120,6 +152,26 @@ class Controller extends Phaser.Scene {
     }
     //console.log("Closest neighbour: " + otherScenes[indexClosest].name);
     return otherScenes[indexClosest];
+  }
+
+  updateActiveConnections(gameObject, add) {
+    console.debug("Updating connections");
+    if(add) { // Add connection
+      if(gameObject.getData('activeConnections') < gameObject.getData('maxActiveConnections')) {
+        let activeConnections = gameObject.getData('activeConnections');
+        console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
+        gameObject.setData('activeConnections', ++activeConnections);
+        console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
+      }  
+    }
+    else { // Remove connection
+      if(gameObject.getData('activeConnections') > 0) {
+        let activeConnections = gameObject.getData('activeConnections');
+        console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
+        gameObject.setData('activeConnections', --activeConnections);
+        console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
+      }  
+    }
   }
 
   update(time, delta) {

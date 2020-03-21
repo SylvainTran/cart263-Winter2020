@@ -85,61 +85,43 @@ class Controller extends Phaser.Scene {
       draggableZoneParent.setPosition(dragX, dragY);
       momentInstance.refresh();
       // Find nearest zone from this gameObject being dragged
-      // Compare this go's pos (x, y) with each zone's pos (x, y) in draggableZonesActive
-      // Refresh cache pos instead for optimization later
-      const rangeToLink = 1000;
-      let thisPosXY = this.getCenter();
-      let currentMinNeighbour = 0;
-      let tempClosestNeighbour;
-      let lengthDragZonesActive = this.scene.draggableZonesActive.length;
-      for (let i = 0; i < lengthDragZonesActive; i++) {
-        currentMinNeighbour = i;
-        for(let j = i + 1; j < lengthDragZonesActive; j++) { 
-          console.debug("Closest neighbour: " + this.scene.draggableZonesActive[currentMinNeighbour].name);
-          if(
-            j != i && 
-            thisPosXY
-            .distance(this.scene.draggableZonesActive[j]
-              .getCenter()) < 
-                thisPosXY
-                  .distance(this.scene.draggableZonesActive[currentMinNeighbour]
-                    .getCenter() ) ) 
-          {
-            console.debug("Is it ever true");
-            currentMinNeighbour = j; // TODO fix this I think the current go compares itself and gets two truths
-          }  
-          if( 
-            thisPosXY.
-              distance(this.scene.draggableZonesActive[currentMinNeighbour]
-                .getCenter()) 
-                < rangeToLink) 
-          {
-            tempClosestNeighbour = this.scene.draggableZonesActive[i];
-            this.scene.draggableZonesActive[i] = this.scene.draggableZonesActive[currentMinNeighbour];
-            this.scene.draggableZonesActive[currentMinNeighbour] = tempClosestNeighbour;
-            // Sets the visual link visible
-            this.scene.setLinkLineVisible(true);
-            this.scene.updateLinkLinePos(this.x, this.y, this.scene.draggableZonesActive[currentMinNeighbour].x, this.scene.draggableZonesActive[currentMinNeighbour].y);
-            // TODO update find nearest by sorting draggableZoneActive instead to fix current favoritist behavior
-            // Cache the dragged go's current linked scene for ordering (distance among competiting scenes in range) comparison            
-            // Enable linking on drop zone behaviour
-          }
-          else {
-            this.scene.setLinkLineVisible(false);
-          }
-        }
+      let closestNeighbour= this.scene.findClosestNeighbour(this);
+      // Sets the visual link visible if in range
+      const rangeToLink = 500;
+      if(Math.abs( this.getCenter().distance( closestNeighbour.getCenter() ) ) <= rangeToLink) {
+        this.scene.setLinkLineVisible(true);
+        this.scene.updateLinkLinePos(this.x, this.y, closestNeighbour.x, closestNeighbour.y); 
       }
+      else {
+        this.scene.setLinkLineVisible(false);
+      }
+    }));
+  }
 
-      // all nodes start separated
-      // the scene used to drag first is first in the list
-      // the next one appended is the second in the order, and so on
-    })); // end of drag
+  //findClosestNeighbour(gameObject)
+  //@args: gameObject
+  //Find this dragged scene's closest neighbour, excluding self, by comparing distances from the center of the scene. Returns the closest go
+  findClosestNeighbour(gameObject) {
+    // 1. Find out which scenes to compare with other than self
+    let otherScenes = this.draggableZonesActive.filter( (go) => {
+      return go != gameObject;
+    });
+    //console.log("Other scenes: " + otherScenes[0].name + ", " + otherScenes[1].name);
+
+    // 2. Find closest distance from self to these scenes, by iterative approximation
+    let indexClosest = 0; // First hypothesis
+    for(let i = 0; i < otherScenes.length; i++) {
+      if(Math.abs(gameObject.getCenter().distance( otherScenes[i].getCenter())) 
+        < Math.abs(gameObject.getCenter().distance(otherScenes[indexClosest].getCenter())) ) 
+      {
+        indexClosest = i;
+      }
+    }
+    //console.log("Closest neighbour: " + otherScenes[indexClosest].name);
+    return otherScenes[indexClosest];
   }
 
   update(time, delta) {
-    // Update the link line's position if currently visible
-    // if(this.scene.linkLine.visible) {
-    //   this.updateLinkLinePos(x1, y1, x2, y2)
-    // }
+
   }
 }

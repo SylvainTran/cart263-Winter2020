@@ -110,6 +110,15 @@ class Controller extends Phaser.Scene {
           else {
             this.setData('firstConnection', closestNeighbour);
           }
+          // Update the closestNeighbour's own first and second connections
+          if(closestNeighbour.getData('firstConnection') !== null) {
+            closestNeighbour.setData('secondConnection', this);
+          }
+          else {
+            closestNeighbour.setData('firstConnection', this);
+          }
+          console.debug("Closest neighbour's own first connection: " + closestNeighbour.getData('firstConnection').name);
+          console.debug("Closest neighbour's own second connection: " + closestNeighbour.getData('secondConnection').name);
           // Update the number of active connections this go currently has, if not over limit
           this.scene.updateActiveConnections(this, true);
         }

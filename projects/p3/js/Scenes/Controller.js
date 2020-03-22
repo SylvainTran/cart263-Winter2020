@@ -84,60 +84,93 @@ class Controller extends Phaser.Scene {
   handleDrag(draggableZoneParent, momentInstance) {
     this.input.enableDebug(draggableZoneParent);
     draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
-      //console.debug("Dragging: " + this.name);
-      draggableZoneParent.setPosition(dragX, dragY);
-      momentInstance.refresh();
-      // Find nearest zone from this gameObject being dragged
-      let closestNeighbour = this.scene.findClosestNeighbour(this);
-      // Sets the visual link visible if in range
-      const rangeToLink = 500;
-      if(Math.abs( this.getCenter().distance( closestNeighbour.getCenter() ) ) <= rangeToLink) {
-        let updateDataAndActiveConnections = true;
-        // If this go already has a connection to closestNeighbour, we don't want to re-create new connections with it
-        if(this.getData('firstConnection') === closestNeighbour || this.getData('secondConnection') === closestNeighbour) {
-          updateDataAndActiveConnections = false;
-        }       
-        // Display logic
-        this.scene.setLinkLineVisible(true);
-        this.scene.updateLinkLinePos(this.x, this.y, closestNeighbour.x, closestNeighbour.y);
-        // Data logic
-        if(updateDataAndActiveConnections) {
-          // Update this go's first and second connections
-          // If this go already has a first connected scene, then add closestNeighbour as the second connection
-          if(this.getData('firstConnection') !== null) {
-            this.setData('secondConnection', closestNeighbour);
-          }
-          else {
-            this.setData('firstConnection', closestNeighbour);
-          }
-          // Update the closestNeighbour's own first and second connections
-          if(closestNeighbour.getData('firstConnection') !== null) {
-            closestNeighbour.setData('secondConnection', this);
-          }
-          else {
-            closestNeighbour.setData('firstConnection', this);
-          }
-          console.debug("Closest neighbour's own first connection: " + closestNeighbour.getData('firstConnection').name);
-          console.debug("Closest neighbour's own second connection: " + closestNeighbour.getData('secondConnection').name);
-          // Update the number of active connections this go currently has, if not over limit
-          this.scene.updateActiveConnections(this, true);
-        }
-      }
-      else {
-        // Display logic
-        this.scene.setLinkLineVisible(false);
-        // Data logic - Temporary, currently this doesn't take into account when you separate a scene from only one neighbour (the one that became too far too link with)     
-        // TODO Need to flush the farthest neigbour from go's scene connections data if it has more than one active connections already
-        this.setData('firstConnection', null);
-        this.setData('secondConnection', null);
-        this.scene.updateActiveConnections(this, false);        
-      }
-      // Snap first two closest scenes joined together
-      const maxSnap = 3;
-      // Need to know, upon draggging a go, how many active current connection it already has
-      let currentlySnapped = this.getData('activeConnections');
-      console.log("Currently snapped with this go: " + currentlySnapped);
+      // 1. Work on Single Responsibility principle: Update drag zone pos and display only
+      this.scene.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
+      // 2. A separate object to query the connections object on this particular drag zone instance
+      this.scene.querySceneConnectionManager(this);
     }));
+  }
+
+  querySceneConnectionManager(go) {
+    // Find nearest zone from this gameObject being dragged
+    let closestNeighbour = this.findClosestNeighbour(go);
+    // Sets the visual link visible if in range
+    const rangeToLink = 500;
+    // TODO Only check for neighbours if you're in range of having one -- does this pre-reaction good to have?
+    // TODO Distance check + and IF and only IF user presses Create Link, update connections then
+    if (this.checkDistance(go, closestNeighbour, rangeToLink)) {
+      updateDataAndActiveConnections = true;
+      // If this go already has a connection to closestNeighbour, we don't want to re-create new connections with it
+      if (this.orderConnections(go, closestNeighbour)) {
+        updateDataAndActiveConnections = false;
+      }
+      // Display logic
+      this.displayLink(go, closestNeighbour, true);
+      // User interaction logic
+      // If player clicks on the 'Create Link' contextual button while the current game state is two linked moments on
+      // Snap the current dragged go and its closest neighbour together
+      // Linking them and locking to prevent finding another neighbour while locked
+      // Data logic
+      if (updateDataAndActiveConnections) {
+        console.debug("Current link state: " + updateDataAndActiveConnections);
+        // Update this go's first and second connections
+        this.updateConnections(go, closestNeighbour);
+        console.debug("Closest neighbour's own first connection: " + closestNeighbour.getData('firstConnection').name);
+        //console.debug("Closest neighbour's own second connection: " + closestNeighbour.getData('secondConnection').name);
+        // Update the number of active connections this go currently has, if not over limit
+        // TODO and IF and only IF user presses Create Link
+        this.updateActiveConnections(go, true);
+      }
+    }
+    else {
+      // Display logic
+      this.setLinkLineVisible(false);
+      // Data logic - Temporary, currently this doesn't take into account when you separate a scene from only one neighbour (the one that became too far too link with)     
+      // TODO Need to flush the farthest neigbour from go's scene connections data if it has more than one active connections already
+      go.setData('firstConnection', null);
+      go.setData('secondConnection', null);
+      this.updateActiveConnections(go, false);
+    }
+    // Snap first two closest scenes joined together
+    const maxSnap = 3;
+    // Need to know, upon draggging a go, how many active current connection it already has
+    let currentlySnapped = go.getData('activeConnections');
+    console.log("Currently snapped with this go: " + currentlySnapped);
+  }
+
+  displayLink(go, closestNeighbour, visible) {
+    this.setLinkLineVisible(visible);
+    this.updateLinkLinePos(go.x, go.y, closestNeighbour.x, closestNeighbour.y);
+  }
+
+  updateDragZone(draggableZoneParent, dragX, dragY, momentInstance) {
+    draggableZoneParent.setPosition(dragX, dragY);
+    momentInstance.refresh();
+  }
+
+  orderConnections(go, closestNeighbour) {
+    return go.getData('firstConnection') === closestNeighbour || go.getData('secondConnection') === closestNeighbour;
+  }
+
+  checkDistance(go, closestNeighbour, rangeToLink) {
+    return Math.abs(go.getCenter().distance(closestNeighbour.getCenter())) <= rangeToLink;
+  }
+
+  updateConnections(go, closestNeighbour) {
+    // If this go already has a first connected scene, then add closestNeighbour as the second connection
+    if (go.getData('firstConnection') !== null) {
+      go.setData('secondConnection', closestNeighbour);
+    }
+    else {
+      go.setData('firstConnection', closestNeighbour);
+    }
+    // Update the closestNeighbour's own first and second connections
+    if (closestNeighbour.getData('firstConnection') !== null) {
+      closestNeighbour.setData('secondConnection', go);
+    }
+    else {
+      closestNeighbour.setData('firstConnection', go);
+    }
   }
 
   //findClosestNeighbour(gameObject)
@@ -184,6 +217,9 @@ class Controller extends Phaser.Scene {
   }
 
   update(time, delta) {
-
+    // Add listener to context button for updateDataAndActiveConnections to be true checked on click
+    // if this.scene.updateDataAndActiveConnections is true
+    // change the contextual primary action button to show that linking is possible
+    // enable 
   }
 }

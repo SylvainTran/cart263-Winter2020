@@ -1,29 +1,3 @@
-$('document').ready(setup);
-let $hamburgerMenu;
-let $navBar;
-let sticky;
-
-function setup() {
-  $hamburgerMenu = $('.nav__hamburger-menu');
-  $navBar = $('#navBar');
-  const STICKY_OFFSET = 10;
-  sticky = $hamburgerMenu.offset().top - STICKY_OFFSET;
-  window.onscroll = function() {
-    handleNav();
-  };
-}
-
-function handleNav() {
-  if(window.pageYOffset >= sticky)
-  {
-    $navBar.addClass('sticky');
-    $hamburgerMenu.addClass('sticky');
-  } else {
-    $navBar.removeClass('sticky');
-    $hamburgerMenu.removeClass('sticky');
-  } 
-}
-
 // Config file for phaser
 //
 // Physics to arcade
@@ -52,3 +26,43 @@ let config = {
   ]
 };
 let game = new Phaser.Game(config);
+
+$('document').ready(setup);
+let $hamburgerMenu;
+let $navBar;
+let sticky;
+// If two moments are currently linked
+let updateDataAndActiveConnections = false;
+
+function setup() {
+  $hamburgerMenu = $('.nav__hamburger-menu');
+  $navBar = $('#navBar');
+  const STICKY_OFFSET = 10;
+  sticky = $hamburgerMenu.offset().top - STICKY_OFFSET;
+  window.onscroll = function() {
+    handleNav();
+  };
+
+  // Handle the contextual primary action button
+  $('.main--current-status__button').on('click', handlePrimaryActionBt);
+}
+
+function handleNav() {
+  if(window.pageYOffset >= sticky)
+  {
+    $navBar.addClass('sticky');
+    $hamburgerMenu.addClass('sticky');
+  } else {
+    $navBar.removeClass('sticky');
+    $hamburgerMenu.removeClass('sticky');
+  } 
+}
+
+function handlePrimaryActionBt() {
+  console.log('Clicked on primary action button');
+  // If updateDataAndActiveConnections is true
+  console.debug('State of link: ' + updateDataAndActiveConnections);
+  if(updateDataAndActiveConnections) {
+    console.debug('Currently able to link');
+  }
+}

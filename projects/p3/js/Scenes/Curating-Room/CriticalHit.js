@@ -3,6 +3,7 @@ class CriticalHit extends Phaser.Scene {
       super(key);
       this.parent = parent;
       this.count = 0;
+      this.momentConnectionManager = new MomentConnectionManager(this);
     }
   
     init() {

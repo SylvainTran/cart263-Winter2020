@@ -1,3 +1,7 @@
+// This scene would be reduced to handling systems around each individual scene
+// in the Curating-Room, also handling the MomentFactory
+// I.e., Each scene in the curating-room would have their own MomentConnectionManager
+// LinkManager
 class Controller extends Phaser.Scene { 
   constructor() {
     super({key: 'Controller'});
@@ -68,10 +72,10 @@ class Controller extends Phaser.Scene {
     
     // Create a parent zone for touch and dragging the scene
     let draggableZoneParent = this.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({ draggable: true }).setOrigin(0);
-    // Set some data for this go, namely the number of connections it has and which connections these are
-    draggableZoneParent.setData( { maxActiveConnections: 3, activeConnections: 0, firstConnection: null, secondConnection: null });
     // Create the instance and setup the drag handling
     let momentInstance = new moment(key, draggableZoneParent);
+    // Set some data for this parent zone, namely its moment scene, the number of connections it has and which connections these are
+    draggableZoneParent.setData( { moment: momentInstance, maxActiveConnections: 3, activeConnections: 0, firstConnection: null, secondConnection: null });
     this.handleDrag(draggableZoneParent, momentInstance);
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
@@ -90,7 +94,7 @@ class Controller extends Phaser.Scene {
       this.scene.querySceneConnectionManager(this);
     }));
   }
-
+  
   querySceneConnectionManager(go) {
     // Find nearest zone from this gameObject being dragged
     let closestNeighbour = this.findClosestNeighbour(go);
@@ -146,74 +150,6 @@ class Controller extends Phaser.Scene {
   updateDragZone(draggableZoneParent, dragX, dragY, momentInstance) {
     draggableZoneParent.setPosition(dragX, dragY);
     momentInstance.refresh();
-  }
-
-  orderConnections(go, closestNeighbour) {
-    return go.getData('firstConnection') === closestNeighbour || go.getData('secondConnection') === closestNeighbour;
-  }
-
-  checkDistance(go, closestNeighbour, rangeToLink) {
-    return Math.abs(go.getCenter().distance(closestNeighbour.getCenter())) <= rangeToLink;
-  }
-
-  updateConnections(go, closestNeighbour) {
-    // If this go already has a first connected scene, then add closestNeighbour as the second connection
-    if (go.getData('firstConnection') !== null) {
-      go.setData('secondConnection', closestNeighbour);
-    }
-    else {
-      go.setData('firstConnection', closestNeighbour);
-    }
-    // Update the closestNeighbour's own first and second connections
-    if (closestNeighbour.getData('firstConnection') !== null) {
-      closestNeighbour.setData('secondConnection', go);
-    }
-    else {
-      closestNeighbour.setData('firstConnection', go);
-    }
-  }
-
-  //findClosestNeighbour(gameObject)
-  //@args: gameObject
-  //Find this dragged scene's closest neighbour, excluding self, by comparing distances from the center of the scene. Returns the closest go
-  findClosestNeighbour(gameObject) {
-    // 1. Find out which scenes to compare with other than self
-    let otherScenes = this.draggableZonesActive.filter( (go) => {
-      return go != gameObject;
-    });
-    //console.log("Other scenes: " + otherScenes[0].name + ", " + otherScenes[1].name);
-
-    // 2. Find closest distance from self to these scenes, by iterative approximation
-    let indexClosest = 0; // First hypothesis
-    for(let i = 0; i < otherScenes.length; i++) {
-      if(Math.abs(gameObject.getCenter().distance( otherScenes[i].getCenter())) 
-        < Math.abs(gameObject.getCenter().distance(otherScenes[indexClosest].getCenter())) ) 
-      {
-        indexClosest = i;
-      }
-    }
-    //console.log("Closest neighbour: " + otherScenes[indexClosest].name);
-    return otherScenes[indexClosest];
-  }
-
-  updateActiveConnections(gameObject, add) {
-    console.debug("Updating connections");
-    if(add) { // Add connection
-      if(gameObject.getData('activeConnections') < gameObject.getData('maxActiveConnections')) {
-        let activeConnections = gameObject.getData('activeConnections');
-        console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
-        gameObject.setData('activeConnections', ++activeConnections);
-        console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
-      }  
-    }
-    else { // Remove connection
-      if(gameObject.getData('activeConnections') > 0) {
-        let activeConnections = gameObject.getData('activeConnections');
-        console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
-        gameObject.setData('activeConnections', --activeConnections);
-        console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
-      }  
-    }
   }
 
   update(time, delta) {

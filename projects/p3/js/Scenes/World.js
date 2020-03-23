@@ -1,7 +1,9 @@
-class World extends Phaser.Scene {
+class World extends Moment {
 
   constructor() {
-    super({key: 'World'});
+    super({
+      key: 'World'
+    });
   }
 
   init(data) {
@@ -17,12 +19,13 @@ class World extends Phaser.Scene {
     // Physics bounds
     this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
     this.cameras.main.setSize(window.innerWidth, window.innerHeight);
+    // Link line linking each moment/scenes
+    let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Connect three moments to create a sequence.');
     // Deal with resizing event
     this.scale.on('resize', this.resize, this);
   }
 
-  resize(newGameSize)
-  {
+  resize(newGameSize) {
     let width = newGameSize.width;
     let height = newGameSize.height;
     this.cameras.resize(width, height);

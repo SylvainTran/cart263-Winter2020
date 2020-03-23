@@ -39,7 +39,7 @@ function setup() {
   $navBar = $('#navBar');
   const STICKY_OFFSET = 10;
   sticky = $hamburgerMenu.offset().top - STICKY_OFFSET;
-  window.onscroll = function() {
+  window.onscroll = function () {
     handleNav();
   };
 
@@ -48,21 +48,20 @@ function setup() {
 }
 
 function handleNav() {
-  if(window.pageYOffset >= sticky)
-  {
+  if (window.pageYOffset >= sticky) {
     $navBar.addClass('sticky');
     $hamburgerMenu.addClass('sticky');
   } else {
     $navBar.removeClass('sticky');
     $hamburgerMenu.removeClass('sticky');
-  } 
+  }
 }
 
 function handlePrimaryActionBt() {
   console.log('Clicked on primary action button');
   // If updateDataAndActiveConnections is true
   console.debug('State of link: ' + updateDataAndActiveConnections);
-  if(updateDataAndActiveConnections) {
+  if (updateDataAndActiveConnections) {
     console.debug('Currently able to link');
   }
 }

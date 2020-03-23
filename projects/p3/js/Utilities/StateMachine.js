@@ -1,62 +1,54 @@
 // StateMachine
 //
-// To separate different states. Read tutorial from: https://www.mkelly.me/blog/phaser-finite-state-machine/
+// To separate different stateArray. From P2
 class StateMachine {
-    constructor(init, states, stateArgs) {
-      this.init = init;
-      this.states = states;
-      this.stateArgs = stateArgs;
-      this.state = null;
+  constructor(enterState, stateArray, context) {
+    this.enterState = enterState;
+    this.stateArray = stateArray;
+    this.context = context;
+    this.state = null;
 
-      for (const state of Object.values(this.states)) {
-        state.stateMachine = this;
-      }
-    }
-    // Step into the state (called on each Phaser update frame)
-    step() {
-      if (this.state === null) {
-        this.state = this.init;
-        this.states[this.state].enter(...this.stateArgs);
-      }
-      this.states[this.state].execute(...this.stateArgs);
-    }
-    // Transition into a given state (called conditionally)
-    transition(newState, ...enterArgs) {
-      this.state = newState;
-      this.states[this.state].enter(...this.stateArgs, ...enterArgs); // rest operator to simplify manipulation of args in classes -- pass the current scene and a ref to the player
+    for (const state of Object.values(this.stateArray)) {
+      state.stateMachine = this;
     }
   }
-  
-  // Base state class for specialized states
-  class State {
-    // Called upon init
-    enter(scene, player) {
-  
+  // Step into the state (called on each Phaser update frame)
+  step(context) {
+    if (this.state === null) {
+      this.state = this.enterState;
+      console.log(this.context[2]);
+      this.stateArray[this.state].enter(...this.context);
     }
-    // Called principally
-    execute(scene, player) {
-  
-    }
+    this.stateArray[this.state].execute(...this.context);
+  }
+  // Transition into a given state (called conditionally)
+  transition(newState, context) {
+    console.log(newState);
+    this.state = newState;
+    console.log(context[2]);
+    this.context = context;
+    this.stateArray[this.state].enter(...context);
+  }
+}
+
+// Player stateArray  
+class PlayerIdleState extends State {
+  enter(scene, player) {
+    console.log("Player is Idle");
   }
 
-  // Player states
-  class PlayerIdleState extends State {
-    enter(scene, player) {
-      console.log("Player is Idle");
-    }
-  
-    execute(scene, player) {
+  execute(scene, player) {
 
-    }
+  }
+}
+
+//Player's moving state
+class MovingState extends State {
+  enter(scene, player) {
+    console.log("Player is starting to move");
   }
 
-  //Player's moving state
-  class MovingState extends State {
-    enter(scene, player) {
-      console.log("Player is starting to move");
-    }
-  
-    execute(scene, player) {
+  execute(scene, player) {
 
-    }
   }
+}

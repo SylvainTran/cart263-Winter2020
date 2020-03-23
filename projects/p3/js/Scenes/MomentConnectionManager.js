@@ -2,75 +2,65 @@
 // the game to dynamically create many links reactively through the environment rather than
 // through a single object dragged
 class MomentConnectionManager {
-    constructor(scene){
-        this.scene = scene;
+    constructor(parent) {
+        this.parent = parent;
+        this.rangeToLink = 500; // Range at which connections are possible
     }
 
-    orderConnections(go, closestNeighbour) {
-        return go.getData('firstConnection') === closestNeighbour || go.getData('secondConnection') === closestNeighbour;
+    checkForAvailableConnections(thisMoment, closestNeighbour) {
+        return Math.abs(thisMoment.getCenter().distance(closestNeighbour.getCenter())) <= this.rangeToLink;
     }
 
-    checkDistance(go, closestNeighbour, rangeToLink) {
-        return Math.abs(go.getCenter().distance(closestNeighbour.getCenter())) <= rangeToLink;
+    snapAvailableNeighbours(dragHandler, closestNeighbour) {
+        // // If already in snap or linked state, return
+        // if(thisMoment.getData('moment').momentFSM.state !== 'IdleMomentState') {
+        //     console.log('Not idle ' + thisMoment.getData('moment').momentFSM.state);
+        //     return;
+        // }
+        // if(closestNeighbour.getData('moment').momentFSM.state !== 'IdleMomentState') {
+        //     console.log('Neighbour not idle ');
+        //     return;
+        // }
+        // Update each moment's state to be "snapped"
+        dragHandler.getData('moment').momentFSM.transition('SnappedState', [dragHandler.getData('moment').parent, dragHandler.getData('moment'), closestNeighbour]);
+        closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);
     }
 
-    updateConnections(go, closestNeighbour) {
-        // If this go already has a first connected scene, then add closestNeighbour as the second connection
-        if (go.getData('firstConnection') !== null) {
-            go.setData('secondConnection', closestNeighbour);
-        }
-        else {
-            go.setData('firstConnection', closestNeighbour);
+    orderConnections(thisMoment, closestNeighbour) {
+        return thisMoment.getData('firstConnection') === closestNeighbour || thisMoment.getData('secondConnection') === closestNeighbour;
+    }
+
+    updateConnections(thisMoment, closestNeighbour) {
+        // If this thisMoment already has a first connected scene, then add closestNeighbour as the second connection
+        if (thisMoment.getData('firstConnection') !== null) {
+            thisMoment.setData('secondConnection', closestNeighbour);
+        } else {
+            thisMoment.setData('firstConnection', closestNeighbour);
         }
         // Update the closestNeighbour's own first and second connections
         if (closestNeighbour.getData('firstConnection') !== null) {
-            closestNeighbour.setData('secondConnection', go);
+            closestNeighbour.setData('secondConnection', thisMoment);
+        } else {
+            closestNeighbour.setData('firstConnection', thisMoment);
         }
-        else {
-            closestNeighbour.setData('firstConnection', go);
-        }
-    }
-
-    //findClosestNeighbour(gameObject)
-    //@args: gameObject
-    //Find this dragged scene's closest neighbour, excluding self, by comparing distances from the center of the scene. Returns the closest go
-    findClosestNeighbour(gameObject) {
-        // 1. Find out which scenes to compare with other than self
-        let otherScenes = this.draggableZonesActive.filter( (go) => {
-            return go != gameObject;
-        });
-        //console.log("Other scenes: " + otherScenes[0].name + ", " + otherScenes[1].name);
-
-        // 2. Find closest distance from self to these scenes, by iterative approximation
-        let indexClosest = 0; // First hypothesis
-        for(let i = 0; i < otherScenes.length; i++) {
-            if(Math.abs(gameObject.getCenter().distance( otherScenes[i].getCenter())) 
-            < Math.abs(gameObject.getCenter().distance(otherScenes[indexClosest].getCenter())) ) 
-            {
-            indexClosest = i;
-            }
-        }
-        //console.log("Closest neighbour: " + otherScenes[indexClosest].name);
-        return otherScenes[indexClosest];
     }
 
     updateActiveConnections(gameObject, add) {
         console.debug("Updating connections");
-        if(add) { // Add connection
-            if(gameObject.getData('activeConnections') < gameObject.getData('maxActiveConnections')) {
-            let activeConnections = gameObject.getData('activeConnections');
-            console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
-            gameObject.setData('activeConnections', ++activeConnections);
-            console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
-            }  
-        }
-        else { // Remove connection
-            if(gameObject.getData('activeConnections') > 0) {
-            let activeConnections = gameObject.getData('activeConnections');
-            console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
-            gameObject.setData('activeConnections', --activeConnections);
-            console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
-            }  
+        if (add) { // Add connection
+            if (gameObject.getData('activeConnections') < gameObject.getData('maxActiveConnections')) {
+                let activeConnections = gameObject.getData('activeConnections');
+                console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
+                gameObject.setData('activeConnections', ++activeConnections);
+                console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
+            }
+        } else { // Remove connection
+            if (gameObject.getData('activeConnections') > 0) {
+                let activeConnections = gameObject.getData('activeConnections');
+                console.debug("Old number of active connections: " + gameObject.getData('activeConnections'));
+                gameObject.setData('activeConnections', --activeConnections);
+                console.debug("New number of active connections: " + gameObject.getData('activeConnections'));
+            }
         }
     }
 }

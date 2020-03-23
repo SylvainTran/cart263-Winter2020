@@ -10,32 +10,40 @@
   <link rel="stylesheet" type="text/css" href="css/main.css" />
   <!-- Library script(s) -->
   <script src="./js/Libraries/phaser.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script
-    src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-    crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
   </script>
   <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
   <script src="https://d3js.org/d3-selection.v1.min.js"></script>
   <script src="https://d3js.org/d3-drag.v1.min.js"></script>
-  <!-- My script(s) -->
-  <script src="js/Entities/Person.js"></script>
-  <script src="js/Utilities/StateMachine.js"></script>
+  <!-- Finite state machines -->
+  <script src="js/Utilities/State.js"></script>
+  <script src="js/Utilities/IdleMomentState.js"></script>
+  <script src="js/Utilities/SnappedState.js"></script>
+  <script src="js/Utilities/LinkedState.js"></script>
+  <!-- My scene script(s) -->
+  <script src="js/Scenes/Curating-Room/Moment.js"></script>
   <script src="js/Scenes/Curating-Room/CriticalHit.js"></script>
   <script src="js/Scenes/Curating-Room/GoodNPCPunchLine.js"></script>
   <script src="js/Scenes/Curating-Room/RareLoot.js"></script>
   <script src="js/Scenes/World.js"></script>
   <script src="js/Scenes/MomentConnectionManager.js"></script>
+  <!-- My utility scripts -->
+  <script src="js/Utilities/Strategy.js"></script>
+  <script src="js/Utilities/Context.js"></script>
+  <script src="js/Utilities/FindClosestNeighbour.js"></script>
+  <script src="js/Utilities/StateMachine.js"></script>
+  <script src="js/Entities/Person.js"></script>
   <script src="js/Scenes/Controller.js"></script>
   <script src="js/Scenes/BootScene.js"></script>
+  <!-- App's main entry point -->
   <script src="js/Main.js"></script>
 
   <head profile="http://www.w3.org/2005/10/profile">
-  <link rel="icon" 
-        type="image/png" 
-        href="./assets/images q/sprites/CashBag.png">
-</head>
+    <link rel="icon" type="image/png" href="./assets/images q/sprites/CashBag.png">
+  </head>
 
 <body>
   <div class="flex-container">
@@ -43,20 +51,21 @@
       <div class="side__left-menu__top">Kubernetes</div>
     </div>
     <div class="nav-flex-container">
-        <div id="navBar">
-          <div><span style="color: skyblue;">The Curating Room</span><br><br></div>
-          <div><span style="color: skyblue;">Progress Journal</span><br><br></div>
-          <div><span style="color: skyblue;">Your Day in Statistics</span><br><br></div>
-          <div><span style="color: skyblue;">About</span><br><br></div>
-          <img class="nav__hamburger-menu" src="assets/images/icons/hamburger-menu.png" alt="hamburger menu icon"/>
-        </div>
+      <div id="navBar">
+        <div><span style="color: skyblue;">The Curating Room</span><br><br></div>
+        <div><span style="color: skyblue;">Progress Journal</span><br><br></div>
+        <div><span style="color: skyblue;">Your Day in Statistics</span><br><br></div>
+        <div><span style="color: skyblue;">About</span><br><br></div>
+        <img class="nav__hamburger-menu" src="assets/images/icons/hamburger-menu.png" alt="hamburger menu icon" />
+      </div>
     </div>
     <div class="main__game">
-      <div id="main__world-node-container">      
+      <div id="main__world-node-container">
 
       </div>
       <div>
-        <div class="main__primary-action"><button class="main--current-status__button">Create Link</button></div> <!--Find a Neighbour, When two neighbours are in range.-->
+        <div class="main__primary-action"><button class="main--current-status__button">Create Link</button></div>
+        <!--Find a Neighbour, When two neighbours are in range.-->
       </div>
     </div>
     <div class="main__log">

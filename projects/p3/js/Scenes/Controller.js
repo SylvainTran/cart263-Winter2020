@@ -98,7 +98,6 @@ class Controller extends Phaser.Scene {
     } else {
       this.displayLink(dragHandler, closestNeighbour, false);
     }
-    let lockedState; // Only update the data if the user locks them together, in which case firstCon and seconCon are guaranteed to be stable
   }
 
   updateDragZone(draggableZoneParent, dragX, dragY, momentInstance) {

@@ -10,6 +10,11 @@ class RareLoot extends Moment {
       LinkedState: new LinkedState()
     }, [parent, this]);
     console.log(this.momentFSM.state);
+    // Double-linked list variables
+    this.doublyLinkedList = new DoublyLinkedList(this);
+    this.isDoublyLinkedListOwner = false; // Is this scene the owner (i.e., head or first scene) of a current scene linked list sequence?
+    this.previous = null; // The previous connected moment to this scene in the linked list
+    this.next = null; // The next connected moment to this scene in the linked list
   }
 
   init() {

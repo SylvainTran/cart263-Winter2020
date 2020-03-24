@@ -13,18 +13,20 @@ class SnappedState extends State {
     execute(dragHandler, moment, closestNeighbour) {
         // Temporary: if the createLink global variable was turned on by clicking on Create Link button, transition to Linked State
         if(createLink) {
-            this.leaveSnappedState('LinkedState', moment, dragHandler, closestNeighbour);
+            this.leaveSnappedState('LinkedState', dragHandler, moment, closestNeighbour);
             createLink = false;
         }
         //If the user moves the dragHandler out of range of the link snap range, then transition back to idle
         if ((Math.abs(dragHandler.getCenter().distance(closestNeighbour.getCenter())) >= 500)) {
-            this.leaveSnappedState('IdleMomentState', moment, dragHandler, closestNeighbour);
+            this.leaveSnappedState('IdleMomentState', dragHandler, moment, closestNeighbour);
         }
     }
 
-    leaveSnappedState(newState, moment, dragHandler, closestNeighbour) {
-        moment.momentFSM.transition(newState, [dragHandler, moment, closestNeighbour]);
-        closestNeighbour.getData('moment').momentFSM.transition(newState, [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), dragHandler]);
+    leaveSnappedState(newState, dragHandler, moment, closestNeighbour) {
+        let context = [dragHandler, moment, closestNeighbour];
+        moment.momentFSM.transition(newState, context);
+        // TODO ask pippin, two owners here if both transition into linked state?
+        //closestNeighbour.getData('moment').momentFSM.transition(newState, [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), dragHandler]);
     }
 
     exit(dragHandler, moment, closestNeighbour) {

@@ -16,16 +16,13 @@ class StateMachine {
   step(context) {
     if (this.state === null) {
       this.state = this.enterState;
-      console.log(this.context[2]);
       this.stateArray[this.state].enter(...this.context);
     }
     this.stateArray[this.state].execute(...this.context);
   }
   // Transition into a given state (called conditionally)
   transition(newState, context) {
-    console.log(newState);
     this.state = newState;
-    console.log(context[2]);
     this.context = context;
     this.stateArray[this.state].enter(...context);
   }

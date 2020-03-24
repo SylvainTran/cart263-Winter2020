@@ -9,6 +9,12 @@ class CriticalHit extends Moment {
       SnappedState: new SnappedState(),
       LinkedState: new LinkedState()
     }, [parent, this]);
+
+    // Double-linked list variables
+    this.doublyLinkedList = new DoublyLinkedList(this);
+    this.isDoublyLinkedListOwner = false; // Is this scene the owner (i.e., head or first scene) of a current scene linked list sequence?
+    this.previous = null; // The previous connected moment to this scene in the linked list
+    this.next = null; // The next connected moment to this scene in the linked list
   }
 
   init() {

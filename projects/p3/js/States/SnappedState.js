@@ -4,6 +4,9 @@
 class SnappedState extends State {
     constructor() {
         super();
+        this.randomSnapDir = Math.random();
+        this.snapValue = 300;
+        this.negSnapValue = -300;
     }
 
     enter(dragHandler, moment, closestNeighbour) {
@@ -11,6 +14,9 @@ class SnappedState extends State {
     }
 
     execute(dragHandler, moment, closestNeighbour) {
+        if(moment.isSnappedOwner) {
+            this.displaySnappedState(dragHandler, moment, closestNeighbour);
+        }
         // Temporary: if the createLink global variable was turned on by clicking on Create Link button, transition to Linked State
         if(createLink) {
             this.leaveSnappedState('LinkedState', dragHandler, moment, closestNeighbour);
@@ -20,6 +26,19 @@ class SnappedState extends State {
         if ((Math.abs(dragHandler.getCenter().distance(closestNeighbour.getCenter())) >= 500)) {
             this.leaveSnappedState('IdleMomentState', dragHandler, moment, closestNeighbour);
         }
+    }
+
+    displaySnappedState(dragHandler, moment, closestNeighbour) {
+        // Put the same Y-pos for dragHandler and closestNeighbour
+        // Set an offset between the two of 300 pixels
+        if(this.randomSnapDir < 0.5) {
+            closestNeighbour.setPosition(dragHandler.x + this.snapValue, dragHandler.y + this.snapValue);
+        }
+        else {
+            closestNeighbour.setPosition(dragHandler.x + this.negSnapValue, dragHandler.y + this.negSnapValue);
+        }
+        moment.refresh();
+        closestNeighbour.getData('moment').refresh();
     }
 
     leaveSnappedState(newState, dragHandler, moment, closestNeighbour) {

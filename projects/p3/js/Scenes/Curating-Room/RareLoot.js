@@ -10,6 +10,9 @@ class RareLoot extends Moment {
       LinkedState: new LinkedState()
     }, [parent, this]);
     console.log(this.momentFSM.state);
+
+    // Snap flag that says this is scene has already been snapped with a currently neighbour
+    this.isSnappedOwner = false;
     // Double-linked list variables
     this.doublyLinkedList = new DoublyLinkedList(this);
     this.isDoublyLinkedListOwner = false; // Is this scene the owner (i.e., head or first scene) of a current scene linked list sequence?

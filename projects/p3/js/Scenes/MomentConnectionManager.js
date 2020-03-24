@@ -12,6 +12,18 @@ class MomentConnectionManager {
     }
 
     snapAvailableNeighbours(dragHandler, closestNeighbour) {
+        // If this scene or its closestNeighbour is already snapped, return
+        if(dragHandler.getData('moment').momentFSM.state ==='SnappedState' || closestNeighbour.getData('moment').momentFSM.state === 'SnappedState') {
+            return;
+        }
+        // Update the dragged scene as the "snap owner"
+        // If neither are snap owners yet
+        if (!dragHandler.getData('moment').isSnappedOwner &&
+            !closestNeighbour.getData('moment').isSnappedOwner) {
+            dragHandler.getData('moment').isSnappedOwner = true;
+            // Disable drag event on the neighbour
+            closestNeighbour.disableInteractive();
+        }
         // Update each moment's state to be "snapped"
         dragHandler.getData('moment').momentFSM.transition('SnappedState', [dragHandler.getData('moment').parent, dragHandler.getData('moment'), closestNeighbour]);
         closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);

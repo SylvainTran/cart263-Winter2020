@@ -23,6 +23,15 @@ class Controller extends Phaser.Scene {
     this.createMoment('CriticalHit', CriticalHit);
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
+    // Scene population test 1   
+    this.createMoment('CriticalHit2', CriticalHit);
+    this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
+    this.createMoment('RareLoot2', RareLoot);
+    // Scene population test 2 
+    this.createMoment('CriticalHit3', CriticalHit);
+    this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
+    this.createMoment('RareLoot3', RareLoot);
+
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
     this.draggableZonesActive = [];

@@ -33,6 +33,7 @@ let $navBar;
 let sticky;
 // If two moments are currently linked
 let updateDataAndActiveConnections = false;
+let createLink = false;
 
 function setup() {
   $hamburgerMenu = $('.nav__hamburger-menu');
@@ -57,11 +58,7 @@ function handleNav() {
   }
 }
 
+// Temporary global lever for snapped state transitions to linked state
 function handlePrimaryActionBt() {
-  console.log('Clicked on primary action button');
-  // If updateDataAndActiveConnections is true
-  console.debug('State of link: ' + updateDataAndActiveConnections);
-  if (updateDataAndActiveConnections) {
-    console.debug('Currently able to link');
-  }
+  createLink = true;
 }

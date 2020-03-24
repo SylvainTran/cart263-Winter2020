@@ -30,7 +30,7 @@ class RareLoot extends Moment {
   }
 
   update(time, delta) {
-    this.momentFSM.step();
+    this.momentFSM.step([this.parent, this, closestNeighbour]);
   }
 
   setupCamera() {

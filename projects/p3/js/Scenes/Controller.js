@@ -23,7 +23,7 @@ class Controller extends Phaser.Scene {
     this.createMoment('CriticalHit', CriticalHit);
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
-    // Create the main canvas that will hold other pocket games     
+    // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
     this.draggableZonesActive = [];
     // cache only the Zones gameObjects that are active <- for now
@@ -32,6 +32,7 @@ class Controller extends Phaser.Scene {
         this.draggableZonesActive.push(element);
       }
     }
+    // Create the line used for linking scenes
     this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0xFFFFFF, 5, true);
   }
 
@@ -47,7 +48,7 @@ class Controller extends Phaser.Scene {
   createMoment(key, moment) {
     const leftMargin = 100;
     const topMargin = 100;
-    // Create a random range to spawn the game moments in the main canvas
+    // TODO fix not spawning inside inner margins. Create a random range to spawn the game moments in the main canvas
     let x = Phaser.Math.Between(leftMargin, window.innerWidth);
     let y = Phaser.Math.Between(topMargin, window.innerHeight);
 
@@ -89,16 +90,12 @@ class Controller extends Phaser.Scene {
     const seekNeighbourMoment = new Context(new FindClosestNeighbour(dragHandler, this.draggableZonesActive));
     closestNeighbour = seekNeighbourMoment.operation();
     let availableConnections = dragHandler.getData('moment').momentConnectionManager.checkForAvailableConnections(dragHandler, closestNeighbour);
-    //console.log("Available connections: " + availableConnections);
-    // At this point, neighbour scenes in range can be snapped (AND THEN) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped
-    // console.log("This is: " + dragHandler.name);
-    // console.log("Closest Neighbour: " + closestNeighbour.name);
-    if(availableConnections) {
+    // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
+    if (availableConnections) {
       dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
       // Todo find a better place to call/render the link line
       this.displayLink(dragHandler, closestNeighbour, true);
-    }
-    else {
+    } else {
       this.displayLink(dragHandler, closestNeighbour, false);
     }
     let lockedState; // Only update the data if the user locks them together, in which case firstCon and seconCon are guaranteed to be stable
@@ -125,6 +122,22 @@ class Controller extends Phaser.Scene {
 
   updateLinkLinePos(x1, y1, x2, y2) {
     this.scene.linkLine.setTo(x1, y1, x2, y2);
+  }
+
+  lockSnappedScenes() {
+    // TODO
+  }
+
+  sequenceLinkedScenes() {
+    // TODO
+  }
+
+  parametrizeLinkedScenes() {
+    // TODO
+  }
+
+  shuffleNewScenes() {
+    // TODO
   }
 
   update(time, delta) {

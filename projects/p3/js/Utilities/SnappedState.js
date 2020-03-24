@@ -11,13 +11,16 @@ class SnappedState extends State {
     }
 
     execute(dragHandler, moment, closestNeighbour) {
-        console.log(Math.abs(dragHandler.getCenter().distance(closestNeighbour.getCenter())));
+        // Listen for input Return or Create Link button to create a Transition to Linked State
         //If the user moves the dragHandler out of range of the link snap range, then transition back to idle
         if ((Math.abs(dragHandler.getCenter().distance(closestNeighbour.getCenter())) >= 500)) {
-            console.log('State before transiti. ' + moment.momentFSM.state);
-            moment.momentFSM.transition('IdleMomentState', [dragHandler, moment, closestNeighbour]);
-            console.log('State after transiti. ' + moment.momentFSM.state);
+            this.leaveSnappedState(moment, dragHandler, closestNeighbour);
         }
+    }
+
+    leaveSnappedState(moment, dragHandler, closestNeighbour) {
+        moment.momentFSM.transition('IdleMomentState', [dragHandler, moment, closestNeighbour]);
+        closestNeighbour.getData('moment').momentFSM.transition('IdleMomentState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), dragHandler]);
     }
 
     exit(dragHandler, moment, closestNeighbour) {

@@ -12,15 +12,6 @@ class MomentConnectionManager {
     }
 
     snapAvailableNeighbours(dragHandler, closestNeighbour) {
-        // // If already in snap or linked state, return
-        // if(thisMoment.getData('moment').momentFSM.state !== 'IdleMomentState') {
-        //     console.log('Not idle ' + thisMoment.getData('moment').momentFSM.state);
-        //     return;
-        // }
-        // if(closestNeighbour.getData('moment').momentFSM.state !== 'IdleMomentState') {
-        //     console.log('Neighbour not idle ');
-        //     return;
-        // }
         // Update each moment's state to be "snapped"
         dragHandler.getData('moment').momentFSM.transition('SnappedState', [dragHandler.getData('moment').parent, dragHandler.getData('moment'), closestNeighbour]);
         closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);

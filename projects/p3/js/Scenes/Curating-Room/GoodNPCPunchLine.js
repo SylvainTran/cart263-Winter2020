@@ -35,6 +35,7 @@ class GoodNPCPunchLine extends Moment {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
+    createLinkEmitter.on('createLink', this.momentFSM.stateArray['SnappedState'].leaveSnappedState);
   }
 
   //debugZoneViewport()
@@ -53,7 +54,7 @@ class GoodNPCPunchLine extends Moment {
   }
 
   update(time, delta) {
-    this.momentFSM.step([this.parent, this, closestNeighbour]);
+    this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
   }
 
   refresh() {

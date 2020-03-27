@@ -43,9 +43,6 @@ function setup() {
   window.onscroll = function () {
     handleNav();
   };
-
-  // Handle the contextual primary action button
-  $('.main--current-status__button').on('click', handlePrimaryActionBt);
 }
 
 function handleNav() {
@@ -56,9 +53,4 @@ function handleNav() {
     $navBar.removeClass('sticky');
     $hamburgerMenu.removeClass('sticky');
   }
-}
-
-// Temporary global lever for snapped state transitions to linked state
-function handlePrimaryActionBt() {
-  createLink = true;
 }

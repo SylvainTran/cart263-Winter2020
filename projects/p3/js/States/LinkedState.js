@@ -4,6 +4,9 @@
 class LinkedState extends State {
     constructor() {
         super();
+        this.randomSnapDir = Math.random();
+        this.snapValue = 300;
+        this.negSnapValue = -300;
     }
 
     enter(dragHandler, moment, closestNeighbour) {
@@ -16,16 +19,16 @@ class LinkedState extends State {
         // Meaning, update the doubly linked list
         // After setting this dragged handler as the owner of the list
         // Set the dragged scene as the owner of the doubly linked list, to preserve the sequence's order
-        this.setNewDoublyLinkedListOwner(moment);
-        if (moment.isDoublyLinkedListOwner) {
+        this.setNewDoublyLinkedListOwner(dragHandler.getData('moment'));
+        // console.debug(dragHandler.getData('moment'));
+        if (dragHandler.getData('moment').isDoublyLinkedListOwner) {
             // Append the closestNeighbour to the tail of the doubly linked list
-            moment.doublyLinkedList.append(closestNeighbour.getData('moment'));
-            // TODO Tag the scene for UX
+            dragHandler.getData('moment').doublyLinkedList.append(dragHandler.scene.getClosestNeighbour().getData('moment'));
         }
-        // TODO Permanent link display for draghandler and closestNeighbour
-        // Link cannot be broken anymore (unless this is added later)
-        this.displayLink(dragHandler, moment, closestNeighbour, true);
-        // This particular scene cannot be re-snapped but can still be linked to from other, yet un-snapped scenes 
+
+        if(dragHandler.getData('moment').isSnappedOwner) {
+            //this.displaySnappedState(dragHandler, moment, closestNeighbour);
+        }
     }
 
     // Set this dragged moment as the owner of the linked list
@@ -34,6 +37,14 @@ class LinkedState extends State {
             return;
         }
         moment.isDoublyLinkedListOwner = true;
+    }
+
+    displaySnappedState(dragHandler, moment, closestNeighbour) {
+        // Put the same Y-pos for dragHandler and closestNeighbour
+        // Set an offset between the two of 300 pixels
+        dragHandler.scene.getClosestNeighbour().setPosition(dragHandler.x + this.snapValue, dragHandler.y + this.snapValue);
+        dragHandler.getData('moment').refresh();
+        dragHandler.scene.getClosestNeighbour().getData('moment').refresh();
     }
 
     exit(dragHandler, moment, closestNeighbour) {
@@ -50,7 +61,7 @@ class LinkedState extends State {
     }
 
     displayLink(thisMoment, moment, closestNeighbour, visible) {
-        console.log('Displaying link')
+        //console.log('Displaying link')
         thisMoment.scene.setLinkLineVisible(visible);
         thisMoment.scene.updateLinkLinePos(thisMoment.x, thisMoment.y, closestNeighbour.x, closestNeighbour.y);
     }

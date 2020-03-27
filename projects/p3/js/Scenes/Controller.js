@@ -7,6 +7,10 @@ class Controller extends Phaser.Scene {
     super({
       key: 'Controller'
     });
+    this.currentlyDraggedScene = null;
+    this.currentlyDraggedSceneNeighbour = null;
+    this.createdLinkButton = null;
+    this.createdLinkButtonAlready = false;
   }
 
   init() {
@@ -24,13 +28,13 @@ class Controller extends Phaser.Scene {
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
     // Scene population test 1   
-    this.createMoment('CriticalHit2', CriticalHit);
-    this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
-    this.createMoment('RareLoot2', RareLoot);
-    // Scene population test 2 
-    this.createMoment('CriticalHit3', CriticalHit);
-    this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
-    this.createMoment('RareLoot3', RareLoot);
+    // this.createMoment('CriticalHit2', CriticalHit);
+    // this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
+    // this.createMoment('RareLoot2', RareLoot);
+    // // Scene population test 2 
+    // this.createMoment('CriticalHit3', CriticalHit);
+    // this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
+    // this.createMoment('RareLoot3', RareLoot);
 
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
@@ -87,6 +91,8 @@ class Controller extends Phaser.Scene {
   handleDrag(draggableZoneParent, momentInstance) {
     this.input.enableDebug(draggableZoneParent);
     draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
+      // Cache the currentlyDraggedScene for events handling such as Create Link
+      this.scene.setCurrentlyDraggedScene(this);
       // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
       this.scene.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
       // 2. A separate object to query the connections object on this particular drag zone instance
@@ -98,6 +104,8 @@ class Controller extends Phaser.Scene {
     // Find nearest moment scene from this gameObject being dragged along, using a Strategy pattern for flexibility
     const seekNeighbourMoment = new Context(new FindClosestNeighbour(dragHandler, this.draggableZonesActive));
     closestNeighbour = seekNeighbourMoment.operation();
+    // Cache it for event handling
+    this.setCurrentlyDraggedSceneNeighbour(closestNeighbour);
     let availableConnections = dragHandler.getData('moment').momentConnectionManager.checkForAvailableConnections(dragHandler, closestNeighbour);
     // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
     if (availableConnections) {
@@ -132,6 +140,36 @@ class Controller extends Phaser.Scene {
     this.scene.linkLine.setTo(x1, y1, x2, y2);
   }
 
+  createLinkButton(context) {
+    this.scene.createdLinkButtonAlready = true;
+    // 1. Adding a listener to the leaveSnapState method in the SnappedState.js 
+    // composed in every scene
+    this.scene.createdLinkButton = this.add.circle(1800, 750, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
+      createLinkEmitter.emit('createLink', 'LinkedState', context);
+    });
+    console.debug('Created link bt');
+  }
+
+  getClosestNeighbour() {
+    return this.scene.currentlyDraggedSceneNeighbour;
+  }
+
+  getCurrentlyDraggedScene() {
+    return this.scene.currentlyDraggedScene;
+  }
+
+  getCreateLinkButton() {
+    return this.scene.createLinkButton;
+  }
+
+  setCurrentlyDraggedScene(scene) {
+    this.scene.currentlyDraggedScene = scene;
+  }
+
+  setCurrentlyDraggedSceneNeighbour(neighbour) {
+    this.scene.currentlyDraggedSceneNeighbour = neighbour;
+  }
+
   lockSnappedScenes() {
     // TODO
   }
@@ -149,8 +187,20 @@ class Controller extends Phaser.Scene {
   }
 
   update(time, delta) {
-
+    // Spawn a context button for linking scenes only if there are snapped scenes
+    if (this.getCurrentlyDraggedScene() != null && this.getClosestNeighbour() != null) {
+      if (this.scene.createdLinkButtonAlready) {
+        //console.log(this.getCurrentlyDraggedScene());
+        //console.log('Already a create link button in existence');
+        return;
+      }
+      // Create the context for creating a link scenes button bottom right
+      let context = [this.getCurrentlyDraggedScene(), this.getClosestNeighbour()];
+      this.createLinkButton(context);
+    }
+    // Else flush currently dragged scene and neighbour, and remove create link button
   }
 }
-
+// Global variables (for now)
 let closestNeighbour;
+let createLinkEmitter = new Phaser.Events.EventEmitter();

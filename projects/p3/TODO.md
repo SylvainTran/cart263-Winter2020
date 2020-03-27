@@ -30,3 +30,11 @@ Core Features
     about any kind of story possible
     
     Player can progress in finding all the desired moments
+
+
+Things to fix
+
+    Creating a link and then moving away does not refresh the controller's cache
+    and the link button should disappear knowing this
+
+    Leavning snap range and getting back to the same closest neighbour does not re-enter snap state

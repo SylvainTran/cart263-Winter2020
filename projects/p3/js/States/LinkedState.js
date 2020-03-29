@@ -11,20 +11,25 @@ class LinkedState extends State {
 
     enter(dragHandler, moment, closestNeighbour) {
         console.log("Entering linked state");
-        this.linkLine = this.createLinkLine(dragHandler, 160, 160, 0, 0, 100, 100, 0xFFFFFF, 5, true);
-    }
-
-    execute(dragHandler, moment, closestNeighbour) {
-        // Now update the data for this moment and closestNeighbour
-        // Meaning, update the doubly linked list
-        // After setting this dragged handler as the owner of the list
-        // Set the dragged scene as the owner of the doubly linked list, to preserve the sequence's order
+        console.debug(dragHandler);
         this.setNewDoublyLinkedListOwner(dragHandler.getData('moment'));
         // console.debug(dragHandler.getData('moment'));
         if (dragHandler.getData('moment').isDoublyLinkedListOwner) {
             // Append the closestNeighbour to the tail of the doubly linked list
             dragHandler.getData('moment').doublyLinkedList.append(dragHandler.scene.getClosestNeighbour().getData('moment'));
         }
+        this.linkLine = this.createLinkLine(dragHandler, 160, 160, 0, 0, 100, 100, 0xFFFFFF, 5, true);
+    }
+
+    execute(dragHandler, moment, closestNeighbour) {
+        // Done with these, reset them in Controller.js
+        // dragHandler.scene.setCurrentlyDraggedScene(null);
+        // dragHandler.scene.setCurrentlyDraggedSceneNeighbour(null);        
+
+        // Now update the data for this moment and closestNeighbour
+        // Meaning, update the doubly linked list
+        // After setting this dragged handler as the owner of the list
+        // Set the dragged scene as the owner of the doubly linked list, to preserve the sequence's order
 
         if(dragHandler.getData('moment').isSnappedOwner) {
             //this.displaySnappedState(dragHandler, moment, closestNeighbour);

@@ -20,7 +20,7 @@ class World extends Moment {
     this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
     this.cameras.main.setSize(window.innerWidth, window.innerHeight);
     // Link line linking each moment/scenes
-    let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Connect three moments to create a sequence.').setOrigin(0.5);
+    let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Welcome to the Curating Room. Connect two life moments to curate story pairs.').setOrigin(0.5);
     // Deal with resizing event
     this.scale.on('resize', this.resize, this);
   }

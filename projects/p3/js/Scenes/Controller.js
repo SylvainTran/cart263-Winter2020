@@ -63,6 +63,21 @@ class Controller extends Phaser.Scene {
     this.input.on('dragend', this.spawnContextualButton);
     // Create the line used for linking scenes
     this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0xFFFFFF, 5, true);
+
+    // Setup background graphics
+    this.setupBackgroundGraphics();
+  }
+
+  // Raining/Snowing passive moments in the background -- may be cybernetics-like system optimizing factors in polish phase of project
+  setupBackgroundGraphics() {
+    backgroundScenes = this.add.graphics();
+    const backgroundSceneAmount = 15;
+    // Random sized circles
+    shapes = new Array(backgroundSceneAmount).fill(null).map(function (nul, i) {
+      return new Phaser.Geom.Circle(Phaser.Math.Between(0, 800), Phaser.Math.Between(0, 600), Phaser.Math.Between(25, 75));
+    });
+    // Rect area corresponding to the main camera
+    rect = Phaser.Geom.Rectangle.Clone(this.cameras.main);
   }
 
   createMainCanvas(addToActiveDisplay) {
@@ -77,7 +92,7 @@ class Controller extends Phaser.Scene {
   createMoment(key, moment) {
     const width = this.scale.width;
     const height = this.scale.height;
-    const offset = 150; 
+    const offset = 150;
     let x = Phaser.Math.Between(offset, width - this.momentWidth * 2);
     let y = Phaser.Math.Between(offset, height - this.momentHeight * 2);
 
@@ -106,12 +121,10 @@ class Controller extends Phaser.Scene {
 
   // Handle click on the zone that will pop up the sequencer data window
   handleClick(draggableZoneParent, momentInstance) {
-    draggableZoneParent.on('pointerdown', () => 
-      {
-        //On click, spawn the sequencer data window
-        this.popSequencerDataWindow(momentInstance);
-      }
-    );
+    draggableZoneParent.on('pointerdown', () => {
+      //On click, spawn the sequencer data window
+      this.popSequencerDataWindow(momentInstance);
+    });
   }
 
   // Pop up the sequencer data window, gets the scene's data and uses it to 
@@ -119,6 +132,7 @@ class Controller extends Phaser.Scene {
   popSequencerDataWindow(scene) {
     let sceneData = scene.sequencingData;
     console.debug(sceneData);
+
   }
   //handleDrag(draggableZoneParent, momentInstance)
   //@args: draggableZoneParent {GameObject.Zone}, momentInstance {Phaser.Scene}
@@ -141,7 +155,7 @@ class Controller extends Phaser.Scene {
     closestNeighbour = seekNeighbourMoment.operation();
 
     // If closest neighbour is already linked / paired to another scene, return
-    if(closestNeighbour.getData('moment').momentFSM.stateArray['LinkedState'].isLinked) {
+    if (closestNeighbour.getData('moment').momentFSM.stateArray['LinkedState'].isLinked) {
       return;
     }
     // Cache the closest neighbour and available connections found for event handling
@@ -157,8 +171,7 @@ class Controller extends Phaser.Scene {
       dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
       // Todo find a better place to call/render the link line
       this.displayLink(dragHandler, closestNeighbour, true);
-    }
-    else {
+    } else {
       this.displayLink(dragHandler, closestNeighbour, false);
     }
   }
@@ -194,7 +207,7 @@ class Controller extends Phaser.Scene {
     // composed in every scene
     const width = this.scale.width;
     const height = this.scale.height;
-    const offset = 150; 
+    const offset = 150;
     this.createdLinkButton = this.add.circle(width - offset, height - offset, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
       createLinkEmitter.emit('createLink', 'LinkedState', context);
     });
@@ -256,11 +269,32 @@ class Controller extends Phaser.Scene {
   }
 
   update(time, delta) {
+    // Update shapes' position
+    shapes.forEach(function (shape, i) {
+      shape.x += (1 + 0.1 * i);
+      shape.y += (1 + 0.1 * i);
+    });
+    // Wrap these background shapes in a rect area corresponding to the controller's camera
+    Phaser.Actions.WrapInRectangle(shapes, rect, 72);
+    // Draw the shapes
+    this.draw();
+  }
 
+  // Draw passive moments in the background
+  draw() {
+    backgroundScenes.clear();
+    shapes.forEach(function (shape, i) {
+      backgroundScenes
+        .fillStyle((i) => {
+            // Black/gray circles
+            return 0x000000;
+          }, 0.5)
+            .fillCircleShape(shape);
+    });
   }
 
   spawnContextualButton() {
-    if(this.scene.getAvailableConnections() === true) {
+    if (this.scene.getAvailableConnections() === true) {
       // Don't recreate a button if there's already one
       if (this.scene.createdLinkButtonAlready) {
         return;
@@ -276,3 +310,6 @@ class Controller extends Phaser.Scene {
 // Global variables (for now)
 let closestNeighbour;
 let createLinkEmitter = new Phaser.Events.EventEmitter();
+let backgroundScenes;
+let shapes;
+let rect;

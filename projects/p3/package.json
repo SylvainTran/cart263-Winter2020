@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/peelingSun/cart263-Winter2020/issues"
   },
-  "homepage": "https://github.com/peelingSun/cart263-Winter2020#readme"
+  "homepage": "https://github.com/peelingSun/cart263-Winter2020#readme",
+  "dependencies": {
+    "phaser3-rex-plugins": "^1.1.11"
+  }
 }

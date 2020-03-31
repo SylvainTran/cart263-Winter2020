@@ -19,6 +19,8 @@ class Controller extends Phaser.Scene {
     this.availableConnections = false;
     // The linked list array updated from each scene that is in a linked state. Used for the sequencer
     this.linkedScenesList = [];
+    // Whether to exit the scene parameter menu or not (temporary)
+    this.sceneParameterOpen = false;
   }
 
   init() {
@@ -28,7 +30,9 @@ class Controller extends Phaser.Scene {
   }
 
   preload() {
-
+    this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
+    this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
+    this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
   }
 
   create() {
@@ -120,23 +124,98 @@ class Controller extends Phaser.Scene {
   }
 
   // Handle click on the zone that will pop up the sequencer data window
-  handleClick(draggableZoneParent, momentInstance) {
-    draggableZoneParent.on('pointerdown', () => {
+  handleClick(draggableZoneParent, scene) {
+    draggableZoneParent.on('pointerdown', (pointer) => {
       //On click, spawn the sequencer data window
-      this.popSequencerDataWindow(momentInstance);
-    });
+      //Check if there's no window already popped up
+      this.popSequencerDataWindow(scene, pointer);
+    }, this.scene);
   }
 
   // Pop up the sequencer data window, gets the scene's data and uses it to 
   // Display what sliders/options will be tweakble by the user
-  popSequencerDataWindow(scene) {
-    let sceneData = scene.sequencingData;
-    console.debug(sceneData);
+  popSequencerDataWindow(scene, pointer) {
+    const MENU_SPAWN_OFFSET = 85;
+    const readSceneData = (button) => {
+      console.log(button.text);
+      // Access the scene parameter passed and
+      // Do things to change the scene's parameters
+      if (button.text === "text") {
+        console.debug("changing representation of scene");
+        // TODO make user select this / change this...
+        let newText = "CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
+        scene.sequencingData.representation.text = newText;
+      } else if (button.text === "sound") {
+  
+      } else if (button.text === "image") {
+  
+      } else if (button.text === "game") {
+  
+      } else if (button.text === "sound") {
+  
+      } else if (button.text === "ephemeral") {
+  
+      }
+    }  
 
     // Access the sequencer data window inside the scene
-
-
+    if (menu === undefined) {
+      console.debug(pointer);
+      menu = this.createMenu(this, pointer.x + MENU_SPAWN_OFFSET, pointer.y + MENU_SPAWN_OFFSET, sceneMenuParameters, readSceneData);
+    } else if (!menu.isInTouching(pointer)) {
+      menu.collapse();
+      menu = undefined;
+    }
   }
+
+  // From Mr. Rex Rainbow (MIT license)
+  createMenu(scene, x, y, items, onClick) {
+    let menu = scene.rexUI.add.menu({
+      x: x,
+      y: y,
+
+      items: items,
+      createButtonCallback: (item, i) => {
+        return scene.rexUI.add.label({
+          background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+          text: scene.add.text(0, 0, item.name, {
+            fontSize: '20px'
+          }),
+          icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
+          space: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10,
+            icon: 10
+          }
+        })
+      },
+
+      easeIn: {
+        duration: 500,
+        orientation: 'y'
+      },
+
+      easeOut: {
+        duration: 100,
+        orientation: 'y'
+      },
+    });
+
+    menu
+      .on('button.over', (button) => {
+        button.getElement('background').setStrokeStyle(1, 0xffffff);
+      })
+      .on('button.out', (button) => {
+        button.getElement('background').setStrokeStyle();
+      })
+      .on('button.click', (button) => {
+        onClick(button);
+      })
+    return menu;
+  }
+
   //handleDrag(draggableZoneParent, momentInstance)
   //@args: draggableZoneParent {GameObject.Zone}, momentInstance {Phaser.Scene}
   //handle dragging behaviour event on each momentInstance created, by using the draggableZoneParent gameObject
@@ -289,10 +368,10 @@ class Controller extends Phaser.Scene {
     shapes.forEach(function (shape, i) {
       backgroundScenes
         .fillStyle((i) => {
-            // Black/gray circles
-            return 0x000000;
-          }, 0.5)
-            .fillCircleShape(shape);
+          // Black/gray circles
+          return 0x000000;
+        }, 0.5)
+        .fillCircleShape(shape);
     });
   }
 
@@ -316,3 +395,35 @@ let createLinkEmitter = new Phaser.Events.EventEmitter();
 let backgroundScenes;
 let shapes;
 let rect;
+let menu;
+// UI for scene parameters
+let sceneMenuParameters = [{
+    name: "representation",
+    children: [{
+        name: "text"
+      },
+      {
+        name: "sound"
+      },
+      {
+        name: "image"
+      },
+      {
+        name: "game"
+      }
+    ]
+  },
+  {
+    name: "ephemeral",
+    children: [{
+        name: "yes"
+      },
+      {
+        name: "no"
+      }
+    ]
+  }
+];
+const COLOR_PRIMARY = 0x4e342e;
+const COLOR_LIGHT = 0x7b5e57;
+const COLOR_DARK = 0x260e04;

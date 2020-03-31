@@ -24,13 +24,14 @@ class CriticalHit extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": "text",
+      "representation": { "text": "Critical Hit!", "sound" : null, "image" : null, "game": null },
       "action": "null",
       "consequence": "null",
       "highlight": "null",
       "ephemeral": "false",
       "speed": "1"
     };
+    this.sceneTextRepresentation = null;
   }
 
   init() {
@@ -45,7 +46,7 @@ class CriticalHit extends Moment {
     this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
     this.setLinkLineVisible(false);
     this.setupCamera();
-    let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You landed a critical hit!\nMassive Bonus Exp gained.', {
+    this.sceneTextRepresentation = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You landed a critical hit!\nMassive Bonus Exp gained.', {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
@@ -65,6 +66,16 @@ class CriticalHit extends Moment {
   }
 
   update(time, delta) {
+    // Update scene representation parameters:
+
+    // Text
+    this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
+    // Sound
+
+    // Image
+
+    // Game
+
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
     if(this.momentFSM.stateArray['LinkedState'].isLinked && 
         !this.updatedLinkedScenesList) {

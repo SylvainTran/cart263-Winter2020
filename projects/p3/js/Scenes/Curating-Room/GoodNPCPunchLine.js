@@ -24,7 +24,7 @@ class GoodNPCPunchLine extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": "text",
+      "representation": { "text": "Good Old NPC Dialogue!", "sound" : null, "image" : null, "game": null },
       "action": "null",
       "consequence": "null",
       "highlight": "null",

@@ -25,7 +25,7 @@ class RareLoot extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": "text",
+      "representation": { "text": "You got a rare loot!", "sound" : null, "image" : null, "game": null },
       "action": "null",
       "consequence": "null",
       "highlight": "null",

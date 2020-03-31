@@ -21,11 +21,8 @@ class MomentConnectionManager {
         if (!dragHandler.getData('moment').isSnappedOwner &&
             !closestNeighbour.getData('moment').isSnappedOwner) {
             dragHandler.getData('moment').isSnappedOwner = true;
-            // Disable drag event on the neighbour
-            // closestNeighbour.disableInteractive();
         }
-        // TODO Flush all the isSnapped owners if pressed Create Link twice to cancel links?
-        // Update each moment's state to be "snapped"
+        // Transition each moment's state to be "snapped"
         dragHandler.getData('moment').momentFSM.transition('SnappedState', [dragHandler.getData('moment').parent, dragHandler.getData('moment'), closestNeighbour]);
         closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);
     }

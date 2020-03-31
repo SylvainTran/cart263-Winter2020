@@ -7,33 +7,31 @@ class LinkedState extends State {
         this.randomSnapDir = Math.random();
         this.snapValue = 300;
         this.negSnapValue = -300;
+        this.linkLine = null;
+        this.isLinked = false;
     }
 
     enter(dragHandler, moment, closestNeighbour) {
-        console.log("Entering linked state");
-        console.debug(dragHandler);
+        // Tag this scene's linked state for event handling
+        this.isLinked = true;
+        // Set the new owner of the doubly linked list between this scene and its closest neighbour
         this.setNewDoublyLinkedListOwner(dragHandler.getData('moment'));
-        // console.debug(dragHandler.getData('moment'));
-        if (dragHandler.getData('moment').isDoublyLinkedListOwner) {
+        if(dragHandler.getData('moment').isDoublyLinkedListOwner) {
+            // Create the doubly linked list if we're the owner
+            dragHandler.getData('moment').doublyLinkedList = new DoublyLinkedList(dragHandler.getData('moment'));
             // Append the closestNeighbour to the tail of the doubly linked list
             dragHandler.getData('moment').doublyLinkedList.append(dragHandler.scene.getClosestNeighbour().getData('moment'));
         }
-        this.linkLine = this.createLinkLine(dragHandler, 160, 160, 0, 0, 100, 100, 0xFFFFFF, 5, true);
+        // Check if this linked state belongs to the owner
+        if(dragHandler.getData('moment').isSnappedOwner) {
+            this.displaySnappedState(dragHandler, moment, closestNeighbour);
+            // disable dragging on both to lock them away
+            dragHandler.scene.input.setDraggable([dragHandler, closestNeighbour], false);
+        }
     }
 
     execute(dragHandler, moment, closestNeighbour) {
-        // Done with these, reset them in Controller.js
-        // dragHandler.scene.setCurrentlyDraggedScene(null);
-        // dragHandler.scene.setCurrentlyDraggedSceneNeighbour(null);        
 
-        // Now update the data for this moment and closestNeighbour
-        // Meaning, update the doubly linked list
-        // After setting this dragged handler as the owner of the list
-        // Set the dragged scene as the owner of the doubly linked list, to preserve the sequence's order
-
-        if(dragHandler.getData('moment').isSnappedOwner) {
-            //this.displaySnappedState(dragHandler, moment, closestNeighbour);
-        }
     }
 
     // Set this dragged moment as the owner of the linked list
@@ -47,8 +45,8 @@ class LinkedState extends State {
     displaySnappedState(dragHandler, moment, closestNeighbour) {
         // Put the same Y-pos for dragHandler and closestNeighbour
         // Set an offset between the two of 300 pixels
-        dragHandler.scene.getClosestNeighbour().setPosition(dragHandler.x + this.snapValue, dragHandler.y + this.snapValue);
-        dragHandler.getData('moment').refresh();
+        dragHandler.scene.getClosestNeighbour().setPosition(dragHandler.x + this.snapValue, dragHandler.y);
+        //dragHandler.getData('moment').refresh();
         dragHandler.scene.getClosestNeighbour().getData('moment').refresh();
     }
 

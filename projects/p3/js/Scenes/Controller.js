@@ -7,14 +7,22 @@ class Controller extends Phaser.Scene {
     super({
       key: 'Controller'
     });
+    // The currently dragged scene by the user
     this.currentlyDraggedScene = null;
+    // The currently dragged scene's closest neighbour
     this.currentlyDraggedSceneNeighbour = null;
+    // The reference to the created link button at the bottom right
     this.createdLinkButton = null;
+    // If a create link button was already created
     this.createdLinkButtonAlready = false;
+    // The available connections to a currently dragged scene (criteria: in range and not linked already)
     this.availableConnections = false;
+    // The linked list array updated from each scene that is in a linked state. Used for the sequencer
+    this.linkedScenesList = [];
   }
 
   init() {
+    // Scenes' determined width and height
     this.momentWidth = 150;
     this.momentHeight = 150;
   }
@@ -29,23 +37,30 @@ class Controller extends Phaser.Scene {
     this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
     // Scene population test 1   
-    // this.createMoment('CriticalHit2', CriticalHit);
-    // this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
-    // this.createMoment('RareLoot2', RareLoot);
+    this.createMoment('CriticalHit2', CriticalHit);
+    this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
+    this.createMoment('RareLoot2', RareLoot);
     // // Scene population test 2 
-    // this.createMoment('CriticalHit3', CriticalHit);
-    // this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
-    // this.createMoment('RareLoot3', RareLoot);
+    this.createMoment('CriticalHit3', CriticalHit);
+    this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
+    this.createMoment('RareLoot3', RareLoot);
+
+    this.createMoment('RareLoot4', RareLoot);
 
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
+    // The array of draggable zones that are active
     this.draggableZonesActive = [];
-    // cache only the Zones gameObjects that are active <- for now
+
+    // Cache only the Zones gameObjects that are active
     for (const element of this.children.list) {
       if (element.type === 'Zone' && element.active) {
         this.draggableZonesActive.push(element);
       }
     }
+    // Spawn a contextual button for linking scenes only if there are snapped scenes
+    // And if and only if at drag end to prevent multiple buttons
+    this.input.on('dragend', this.spawnContextualButton);
     // Create the line used for linking scenes
     this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0xFFFFFF, 5, true);
   }
@@ -60,11 +75,11 @@ class Controller extends Phaser.Scene {
   //@args: key {string}, moment {Phaser.Scene}
   //creates moment using the key and moment parameters
   createMoment(key, moment) {
-    const leftMargin = 100;
-    const topMargin = 100;
-    // TODO fix not spawning inside inner margins. Create a random range to spawn the game moments in the main canvas
-    let x = Phaser.Math.Between(leftMargin, window.innerWidth);
-    let y = Phaser.Math.Between(topMargin, window.innerHeight);
+    const width = this.scale.width;
+    const height = this.scale.height;
+    const offset = 150; 
+    let x = Phaser.Math.Between(offset, width - this.momentWidth * 2);
+    let y = Phaser.Math.Between(offset, height - this.momentHeight * 2);
 
     // Create a parent zone for touch and dragging the scene
     let draggableZoneParent = this.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({
@@ -104,17 +119,27 @@ class Controller extends Phaser.Scene {
   querySceneConnectionManager(dragHandler) {
     // Find nearest moment scene from this gameObject being dragged along, using a Strategy pattern for flexibility
     const seekNeighbourMoment = new Context(new FindClosestNeighbour(dragHandler, this.draggableZonesActive));
-    // TODO encapsulate this
     closestNeighbour = seekNeighbourMoment.operation();
-    // Cache it for event handling
+
+    // If closest neighbour is already linked / paired to another scene, return
+    if(closestNeighbour.getData('moment').momentFSM.stateArray['LinkedState'].isLinked) {
+      return;
+    }
+    // Cache the closest neighbour and available connections found for event handling
     this.setCurrentlyDraggedSceneNeighbour(closestNeighbour);
     this.setAvailableConnections(dragHandler.getData('moment').momentConnectionManager.checkForAvailableConnections(dragHandler, closestNeighbour));
+
     // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
+    this.handleSnapping(dragHandler);
+  }
+
+  handleSnapping(dragHandler) {
     if (this.availableConnections) {
       dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
       // Todo find a better place to call/render the link line
       this.displayLink(dragHandler, closestNeighbour, true);
-    } else {
+    }
+    else {
       this.displayLink(dragHandler, closestNeighbour, false);
     }
   }
@@ -124,6 +149,7 @@ class Controller extends Phaser.Scene {
     momentInstance.refresh();
   }
 
+  //TODO cache a ref to a link go that will be kept inside the linked state, call this from there
   createLinkLine(x, y, x1, y1, x2, y2, color, width, visible) {
     this.scene.linkLine = this.add.line(x, y, x1, y1, x2, y2, color, visible).setOrigin(0)
       .setLineWidth(width);
@@ -150,11 +176,15 @@ class Controller extends Phaser.Scene {
     const width = this.scale.width;
     const height = this.scale.height;
     const offset = 150; 
-    console.log(width);
     this.createdLinkButton = this.add.circle(width - offset, height - offset, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
       createLinkEmitter.emit('createLink', 'LinkedState', context);
     });
     console.debug('Created link bt');
+  }
+
+  resetCurrentlyDragged() {
+    this.setCurrentlyDraggedScene(null);
+    this.setCurrentlyDraggedSceneNeighbour(null);
   }
 
   getClosestNeighbour() {
@@ -202,14 +232,20 @@ class Controller extends Phaser.Scene {
   }
 
   update(time, delta) {
-    // Spawn a context button for linking scenes only if there are snapped scenes
-    if (this.getAvailableConnections() == true) {
-      if (this.createdLinkButtonAlready) {
+
+  }
+
+  spawnContextualButton() {
+    if(this.scene.getAvailableConnections() === true) {
+      // Don't recreate a button if there's already one
+      if (this.scene.createdLinkButtonAlready) {
         return;
       }
       // Create the context for creating a link scenes button bottom right
-      let context = [this.getCurrentlyDraggedScene(), this.getClosestNeighbour()];
-      let linkButton = this.createLinkButton(context);
+      let context = [this.scene.getCurrentlyDraggedScene(), this.scene.getCurrentlyDraggedScene().getData('moment'), this.scene.getClosestNeighbour()];
+      let linkButton = this.scene.createLinkButton(context);
+      // Reset
+      this.scene.setAvailableConnections(false);
     }
   }
 }

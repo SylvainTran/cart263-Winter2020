@@ -14,10 +14,12 @@ class RareLoot extends Moment {
     // Snap flag that says this is scene has already been snapped with a currently neighbour
     this.isSnappedOwner = false;
     // Double-linked list variables
-    this.doublyLinkedList = new DoublyLinkedList(this);
+    this.doublyLinkedList = null;
     this.isDoublyLinkedListOwner = false; // Is this scene the owner (i.e., head or first scene) of a current scene linked list sequence?
     this.previous = null; // The previous connected moment to this scene in the linked list
     this.next = null; // The next connected moment to this scene in the linked list
+    // Whether this scene has updated the linked scene list variable in Controller.js already
+    this.updatedLinkedScenesList = false;
   }
 
   init() {
@@ -40,6 +42,19 @@ class RareLoot extends Moment {
 
   update(time, delta) {
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
+    if(this.momentFSM.stateArray['LinkedState'].isLinked && 
+        !this.updatedLinkedScenesList) {
+      // If this scene is linked and has not updated the master list yet, update the linkedScenesList master array in Controller.js
+      // Update the first reference if it's null (temporary)
+      if(this.parent.scene.linkedScenesList[0] === null) {
+        this.parent.scene.linkedScenesList[0] = this.doublyLinkedList;
+      }
+      else {
+        this.parent.scene.linkedScenesList.push(this.doublyLinkedList);
+      }
+      this.updatedLinkedScenesList = true;
+      console.debug(this.parent.scene.linkedScenesList);
+    }
   }
 
   setupCamera() {

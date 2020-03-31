@@ -15,8 +15,6 @@ class DoublyLinkedList {
         if (this.head === null) {
             this.head = newElement;
             this.tail = newElement;
-
-            return this;
         } else {
             newElement.previous = this.tail;
             this.tail.next = newElement;

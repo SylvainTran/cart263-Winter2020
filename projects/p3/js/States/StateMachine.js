@@ -18,7 +18,7 @@ class StateMachine {
       this.state = this.enterState;
       this.stateArray[this.state].enter(...this.context);
     }
-    this.stateArray[this.state].execute(...this.context);
+    this.stateArray[this.state].execute(...context);
   }
   // Transition into a given state (called conditionally)
   transition(newState, context) {

@@ -95,12 +95,31 @@ class Controller extends Phaser.Scene {
       firstConnection: null,
       secondConnection: null
     });
+    // Handle drag related events on this zone
     this.handleDrag(draggableZoneParent, momentInstance);
+    // Handle click related on this zone (sequencer data window)
+    this.handleClick(draggableZoneParent, momentInstance);
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
     this.scene.add(key, momentInstance, true);
   }
 
+  // Handle click on the zone that will pop up the sequencer data window
+  handleClick(draggableZoneParent, momentInstance) {
+    draggableZoneParent.on('pointerdown', () => 
+      {
+        //On click, spawn the sequencer data window
+        this.popSequencerDataWindow(momentInstance);
+      }
+    );
+  }
+
+  // Pop up the sequencer data window, gets the scene's data and uses it to 
+  // Display what sliders/options will be tweakble by the user
+  popSequencerDataWindow(scene) {
+    let sceneData = scene.sequencingData;
+    console.debug(sceneData);
+  }
   //handleDrag(draggableZoneParent, momentInstance)
   //@args: draggableZoneParent {GameObject.Zone}, momentInstance {Phaser.Scene}
   //handle dragging behaviour event on each momentInstance created, by using the draggableZoneParent gameObject
@@ -221,10 +240,15 @@ class Controller extends Phaser.Scene {
 
   sequenceLinkedScenes() {
     // TODO
+    // Pair consequences with actions -> Moments of reflection, anti-linear narrative?
+
   }
 
   parametrizeLinkedScenes() {
     // TODO
+    // 
+    // Parameters:
+    // 
   }
 
   shuffleNewScenes() {

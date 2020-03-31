@@ -19,6 +19,18 @@ class GoodNPCPunchLine extends Moment {
     this.next = null; // The next connected moment to this scene in the linked list    
     // Whether this scene has updated the linked scene list variable in Controller.js already
     this.updatedLinkedScenesList = false;
+    // Sequencing Parameters (JSON format for localStorage)
+    this.sequencingData = {
+      "sound": "false",
+      "volume": "0",
+      "loop": "false",
+      "representation": "text",
+      "action": "null",
+      "consequence": "null",
+      "highlight": "null",
+      "ephemeral": "false",
+      "speed": "1"
+    };
   }
 
   init() {

@@ -11,7 +11,8 @@ class World extends Moment {
   }
 
   preload() {
-
+    this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
+    this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
   }
 
   create() {

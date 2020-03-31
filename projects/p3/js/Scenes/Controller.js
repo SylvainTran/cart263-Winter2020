@@ -133,6 +133,9 @@ class Controller extends Phaser.Scene {
     let sceneData = scene.sequencingData;
     console.debug(sceneData);
 
+    // Access the sequencer data window inside the scene
+
+
   }
   //handleDrag(draggableZoneParent, momentInstance)
   //@args: draggableZoneParent {GameObject.Zone}, momentInstance {Phaser.Scene}

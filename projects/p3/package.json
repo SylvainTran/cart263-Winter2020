@@ -1,0 +1,25 @@
+{
+  "name": "kubernetes",
+  "version": "0.0.1",
+  "description": "game on cybernetics and systems, moments in life and video games. project for cart 263 (winter 2020)",
+  "main": "Main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peelingSun/cart263-Winter2020.git"
+  },
+  "keywords": [
+    "kubernetes",
+    "game",
+    "cart",
+    "moments"
+  ],
+  "author": "Sylvain serey Tran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peelingSun/cart263-Winter2020/issues"
+  },
+  "homepage": "https://github.com/peelingSun/cart263-Winter2020#readme"
+}

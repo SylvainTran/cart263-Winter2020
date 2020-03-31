@@ -6,6 +6,7 @@ let config = {
   width: window.innerWidth,
   height: window.innerHeight,
   backgroundColor: '#676767',
+  disableContextMenu: true,
   scale: {
     parent: 'main__world-node-container',
     mode: Phaser.Scale.CENTER_BOTH,

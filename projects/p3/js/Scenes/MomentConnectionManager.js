@@ -8,6 +8,9 @@ class MomentConnectionManager {
     }
 
     checkForAvailableConnections(thisMoment, closestNeighbour) {
+        if(closestNeighbour === null) {
+            return;
+        }
         return Math.abs(thisMoment.getCenter().distance(closestNeighbour.getCenter())) <= this.rangeToLink;
     }
 

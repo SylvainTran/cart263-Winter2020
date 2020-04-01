@@ -19,7 +19,7 @@ class Controller extends Phaser.Scene {
     this.availableConnections = false;
     // The linked list array updated from each scene that is in a linked state. Used for the sequencer
     this.linkedScenesList = [];
-    // Whether to exit the scene parameter menu or not (temporary)
+    // Whether to exit the scene parameter dialog or not (temporary)
     this.sceneParameterOpen = false;
   }
 
@@ -127,14 +127,7 @@ class Controller extends Phaser.Scene {
   handleClick(draggableZoneParent, scene) {
     draggableZoneParent.on('pointerdown', (pointer) => {
       //On click, spawn the sequencer data window
-      //Only handle click or drag if sceneParameter window is not open
-      if (!this.sceneParameterOpen) {
-        this.popSequencerDataWindow(scene, pointer);
-      } else {
-        menu.collapse();
-        menu = undefined;
-        this.sceneParameterOpen = false;
-      }
+      this.popSequencerDataWindow(scene, pointer);
     }, this.scene);
   }
 
@@ -149,22 +142,22 @@ class Controller extends Phaser.Scene {
       console.log(button.text);
       // Access the scene parameter passed and
       // Do things to change the scene's parameters
-      if (button.text === "text") {
+      if (button.text === "Text") {
         console.debug("changing representation of scene");
         // TODO make user select this / change this...
         // let newText = "TEST: CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
         // scene.sequencingData.representation.text = newText;
-      } else if (button.text === "sound") {
+      } else if (button.text === "Sound") {
         if (scene.sceneTextRepresentation) {
           // Read the scene as speak
           let textToSound = scene.sceneTextRepresentation.text;
           responsiveVoice.speak(textToSound, "UK English Male", soundOptions);
         }
-      } else if (button.text === "image") {
+      } else if (button.text === "Image") {
         //TODO        
-      } else if (button.text === "game") {
+      } else if (button.text === "Game") {
         //TODO
-      } else if (button.text === "ephemeral") {
+      } else if (button.text === "Ephemeral") {
         //TODO
         const TIME_TILL_GONE = 3;
         let visibility = false;
@@ -178,60 +171,120 @@ class Controller extends Phaser.Scene {
     }
 
     // Access the sequencer data window inside the scene
-    if (menu === undefined) {
+    if (dialog === undefined) {
       console.debug(pointer);
-      menu = this.createMenu(this, pointer.x + MENU_SPAWN_OFFSET, pointer.y + MENU_SPAWN_OFFSET, sceneMenuParameters, readSceneData);
-    } else if (!menu.isInTouching(pointer)) {
-      menu.collapse();
-      menu = undefined;
-      //this.sceneParameterOpen = false;
+      dialog = this.createDialog(this, pointer.x + MENU_SPAWN_OFFSET, pointer.y + MENU_SPAWN_OFFSET, sceneMenuParameters, readSceneData, scene);
+    } else if (!dialog.isInTouching(pointer)) {
+      try {
+        dialog.destroy();
+        dialog = undefined;
+      } catch (err) {
+        console.debug(err.message);
+      } finally {
+        console.debug("Returning anyways");
+        return;
+      }
     }
   }
 
   // From Mr. Rex Rainbow (MIT license)
-  createMenu(scene, x, y, items, onClick) {
-    let menu = scene.rexUI.add.menu({
-      x: x,
-      y: y,
-      items: items,
-      createButtonCallback: (item, index, items) => {
-        return scene.rexUI.add.label({
-          background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
-          text: scene.add.text(0, 0, item.name, {
-            fontSize: '20px'
-          }),
-          icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
-          space: {
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: 10,
-            icon: 10
-          }
-        })
-        },
-        easeIn: {
-          duration: 500,
-          orientation: 'y'
-        },
+  createDialog(sceneToSpawn, x, y, items, onClick, sceneClicked) {
 
-        easeOut: {
-          duration: 100,
-          orientation: 'y'
-        },
-      });
+    let createLabel = this.createLabel;
+    let dialog = sceneToSpawn.rexUI.add.dialog({
+        x: x,
+        y: y,
+        width: 250,
+        items: items,
+        background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, COLOR_PRIMARY),
+        title: createLabel(this, 'Moment Parameters').setDraggable(),
+        toolbar: [
+          createLabel(this, 'O'),
+          createLabel(this, 'X')
+        ],
+        content: createLabel(this, 'Choose a Representation'),
+        description: createLabel(this, sceneClicked.parent.name),
+        choices: [
+          createLabel(this, 'Text'),
+          createLabel(this, 'Sound'),
+          createLabel(this, 'Image'),
+          createLabel(this, 'Game')
+        ],
+        actions: [
+          createLabel(this, 'Confirm'),
+          createLabel(this, 'Exit')
+        ],
+        space: {
+          left: 20,
+          right: 20,
+          top: -20,
+          bottom: -20,
 
-    menu
-      .on('button.over', (button) => {
-        button.getElement('background').setStrokeStyle(1, 0xffffff);
-      })
-        .on('button.out', (button) => {
-          button.getElement('background').setStrokeStyle();
-        })
-          .on('button.click', (button) => {
-            onClick(button);
-          });
-    return menu;
+          title: 25,
+          titleLeft: 30,
+          content: 25,
+          description: 25,
+          descriptionLeft: 20,
+          descriptionRight: 20,
+          choices: 25,
+
+          toolbarItem: 5,
+          choice: 15,
+          action: 15,
+        },
+        expand: {
+          title: false,
+          // content: false,
+          // description: false,
+          // choices: false,
+          // actions: true,
+        },
+        align: {
+          title: 'center',
+          // content: 'left',
+          // description: 'left',
+          // choices: 'left',
+          actions: 'right', // 'center'|'left'|'right'
+        },
+        click: {
+          mode: 'release'
+        }
+      }).setDraggable('background')
+      .layout()
+        .popUp(1000);
+
+    // Tweening it
+    let tween = this.tweens.add({
+      targets: dialog,
+      scaleX: 1,
+      scaleY: 1,
+      ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 1000,
+      repeat: 0, // -1: infinity
+      yoyo: false
+    });
+    // Event handler for clicking items in the dialog
+    dialog.on('button.click', (button, groupName, index, pointer, event) => {
+      onClick(button);
+    }, this);
+    return dialog;
+  }
+
+  createLabel(scene, text) {
+    return scene.rexUI.add.label({
+      width: 40,
+      height: 40,
+      background: scene.rexUI.add.roundRectangle(0, 0, 100, 40, 20, 0x5e92f3),
+      text: scene.add.text(0, 0, text, {
+        fontSize: '24px'
+      }),
+      space: {
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: 10
+      }
+    });
   }
 
   //handleDrag(draggableZoneParent, momentInstance)
@@ -415,7 +468,7 @@ let createLinkEmitter = new Phaser.Events.EventEmitter();
 let backgroundScenes;
 let shapes;
 let rect;
-let menu;
+let dialog;
 // UI for scene parameters
 let sceneMenuParameters = [{
     name: "representation",

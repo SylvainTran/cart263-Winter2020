@@ -134,68 +134,94 @@ class Controller extends Phaser.Scene {
   // Pop up the sequencer data window, gets the scene's data and uses it to 
   // Display what sliders/options will be tweakble by the user
   popSequencerDataWindow(scene, pointer) {
-    // To prevent crashing
-    this.sceneParameterOpen = true;
     // Using closure to benefit from getting the scene parameter
-    const MENU_SPAWN_OFFSET = 85;
     const readSceneData = (button) => {
       console.log(button.text);
-      // Access the scene parameter passed and
-      // Do things to change the scene's parameters
-      if (button.text === "Text") {
-        console.debug("changing representation of scene");
-        // TODO make user select this / change this...
-        // let newText = "TEST: CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
-        // scene.sequencingData.representation.text = newText;
-      } else if (button.text === "Sound") {
-        if (scene.sceneTextRepresentation) {
-          // Read the scene as speak
-          let textToSound = scene.sceneTextRepresentation.text;
-          responsiveVoice.speak(textToSound, "UK English Male", soundOptions);
-        }
-      } else if (button.text === "Image") {
-        //TODO        
-      } else if (button.text === "Game") {
-        //TODO
-      } else if (button.text === "Ephemeral") {
-        //TODO
-        const TIME_TILL_GONE = 3;
-        let visibility = false;
-        setInterval(() => {
-          this.time.delayedCall(TIME_TILL_GONE + 2, () => {
-            visibility = !visibility;
-            scene.scene.setVisible(visibility);
-          }, [], this.scene);
-        }, TIME_TILL_GONE);
-      }
+      // Access the scene parameter passed and do things to change the scene's parameters
+      this.handleChoices(button, scene);
     }
+    // Handle whether to spawn the dialog or not
+    return this.handleDialogSpawn(pointer, readSceneData, scene);
+  }
 
-    // Access the sequencer data window inside the scene
+  handleDialogSpawn(pointer, readSceneData, scene) {
     if (dialog === undefined) {
       console.debug(pointer);
-      dialog = this.createDialog(this, pointer.x + MENU_SPAWN_OFFSET, pointer.y + MENU_SPAWN_OFFSET, sceneMenuParameters, readSceneData, scene);
-    } else if (!dialog.isInTouching(pointer)) {
+      dialog = this.createDialog(this, pointer.x, pointer.y, readSceneData, scene);
+    }
+    else if (!dialog.isInTouching(pointer)) {
       try {
         dialog.destroy();
         dialog = undefined;
-      } catch (err) {
+      }
+      catch (err) {
         console.debug(err.message);
-      } finally {
+      }
+      finally {
         console.debug("Returning anyways");
         return;
       }
     }
   }
 
+  handleChoices(button, scene) {
+    if (button.text === "Text") {
+      console.debug("changing representation of scene");
+      // TODO make user select this / change this...
+      let newText = "TEST: CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
+      scene.sequencingData.representation.text = newText;
+    }
+    else if (button.text === "Sound") {
+      if (scene.sceneTextRepresentation) {
+        // Read the scene as speak
+        this.handleResponsiveVoice(scene);
+      }
+    }
+    else if (button.text === "Image") {
+      //TODO        
+    }
+    else if (button.text === "Game") {
+      //TODO
+    }
+    else if (button.text === "Ephemeral") {
+      //TODO
+      this.handleEphemeral(scene);
+    }
+    else if (button.text === "Confirm") {
+      dialog.destroy();
+    }
+    else if (button.text === "Exit") {
+      dialog.destroy();
+    }
+  }
+
+  handleResponsiveVoice(scene) {
+    let textToSound = scene.sceneTextRepresentation.text;
+    let sceneToVoice = responsiveVoice.speak(textToSound, "UK English Male", soundOptions);
+    // Store it in the scene
+    scene.sequencingData.representation.sound = sceneToVoice;
+  }
+
+  handleEphemeral(scene) {
+    const TIME_TILL_GONE = 3;
+    let visibility = false;
+    setInterval(() => {
+      this.time.delayedCall(TIME_TILL_GONE + 2, () => {
+        visibility = !visibility;
+        scene.scene.setVisible(visibility);
+      }, [], this.scene);
+    }, TIME_TILL_GONE);
+    scene.sequencingData.representation.ephemeral = true;
+  }
+
   // From Mr. Rex Rainbow (MIT license)
-  createDialog(sceneToSpawn, x, y, items, onClick, sceneClicked) {
+  createDialog(sceneToSpawn, x, y, onClick, sceneClicked) {
 
     let createLabel = this.createLabel;
     let dialog = sceneToSpawn.rexUI.add.dialog({
         x: x,
         y: y,
         width: 250,
-        items: items,
         background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, COLOR_PRIMARY),
         title: createLabel(this, 'Moment Parameters').setDraggable(),
         toolbar: [
@@ -208,7 +234,8 @@ class Controller extends Phaser.Scene {
           createLabel(this, 'Text'),
           createLabel(this, 'Sound'),
           createLabel(this, 'Image'),
-          createLabel(this, 'Game')
+          createLabel(this, 'Game'),
+          createLabel(this, 'Ephemeral')
         ],
         actions: [
           createLabel(this, 'Confirm'),
@@ -241,10 +268,7 @@ class Controller extends Phaser.Scene {
         },
         align: {
           title: 'center',
-          // content: 'left',
-          // description: 'left',
-          // choices: 'left',
-          actions: 'right', // 'center'|'left'|'right'
+          actions: 'right',
         },
         click: {
           mode: 'release'
@@ -266,6 +290,12 @@ class Controller extends Phaser.Scene {
     // Event handler for clicking items in the dialog
     dialog.on('button.click', (button, groupName, index, pointer, event) => {
       onClick(button);
+    }, this);
+    dialog.on('button.over', (button, groupName, index) => {
+      button.getElement('background').setStrokeStyle(1, 0xffffff);
+    }, this);
+    dialog.on('button.out', (button, groupName, index) => {
+      button.getElement('background').setStrokeStyle();
     }, this);
     return dialog;
   }
@@ -469,40 +499,6 @@ let backgroundScenes;
 let shapes;
 let rect;
 let dialog;
-// UI for scene parameters
-let sceneMenuParameters = [{
-    name: "representation",
-    children: [{
-        name: "text",
-        children: []
-      },
-      {
-        name: "sound",
-        children: []
-      },
-      {
-        name: "image",
-        children: []
-      },
-      {
-        name: "game",
-        children: []
-      }
-    ]
-  },
-  {
-    name: "ephemeral",
-    children: [{
-        name: "yes",
-        children: []
-      },
-      {
-        name: "no",
-        children: []
-      }
-    ]
-  }
-];
 const COLOR_PRIMARY = 0xA9A9A9;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;

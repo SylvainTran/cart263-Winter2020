@@ -32,6 +32,7 @@ class RareLoot extends Moment {
       "ephemeral": "false",
       "speed": "1"
     };
+    this.sceneTextRepresentation = null;
   }
 
   init() {
@@ -45,7 +46,7 @@ class RareLoot extends Moment {
   create() {
     this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
     this.setupCamera();
-    let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You found \'Excalibur +10\' lying in some chest!\nThat\'s some pretty rare stuff.\nThe princess that you need to rescue\nsmiles from far away.', {
+    this.sceneTextRepresentation = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You found \'Excalibur +10\' lying in some chest!\nThat\'s some pretty rare stuff.\nThe princess that you need to rescue\nsmiles from far away.', {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
@@ -53,6 +54,16 @@ class RareLoot extends Moment {
   }
 
   update(time, delta) {
+    // Update scene representation parameters:
+
+    // Text
+    this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
+    // Sound
+    
+    // Image
+
+    // Game
+
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
     if(this.momentFSM.stateArray['LinkedState'].isLinked && 
         !this.updatedLinkedScenesList) {

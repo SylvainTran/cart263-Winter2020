@@ -73,7 +73,7 @@ class CriticalHit extends Moment {
     // Sound
 
     // Image
-
+    
     // Game
 
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);

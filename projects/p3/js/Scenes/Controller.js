@@ -127,14 +127,23 @@ class Controller extends Phaser.Scene {
   handleClick(draggableZoneParent, scene) {
     draggableZoneParent.on('pointerdown', (pointer) => {
       //On click, spawn the sequencer data window
-      //Check if there's no window already popped up
-      this.popSequencerDataWindow(scene, pointer);
+      //Only handle click or drag if sceneParameter window is not open
+      if (!this.sceneParameterOpen) {
+        this.popSequencerDataWindow(scene, pointer);
+      } else {
+        menu.collapse();
+        menu = undefined;
+        this.sceneParameterOpen = false;
+      }
     }, this.scene);
   }
 
   // Pop up the sequencer data window, gets the scene's data and uses it to 
   // Display what sliders/options will be tweakble by the user
   popSequencerDataWindow(scene, pointer) {
+    // To prevent crashing
+    this.sceneParameterOpen = true;
+    // Using closure to benefit from getting the scene parameter
     const MENU_SPAWN_OFFSET = 85;
     const readSceneData = (button) => {
       console.log(button.text);
@@ -143,20 +152,30 @@ class Controller extends Phaser.Scene {
       if (button.text === "text") {
         console.debug("changing representation of scene");
         // TODO make user select this / change this...
-        let newText = "CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
-        scene.sequencingData.representation.text = newText;
+        // let newText = "TEST: CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
+        // scene.sequencingData.representation.text = newText;
       } else if (button.text === "sound") {
-  
+        if (scene.sceneTextRepresentation) {
+          // Read the scene as speak
+          let textToSound = scene.sceneTextRepresentation.text;
+          responsiveVoice.speak(textToSound, "UK English Male", soundOptions);
+        }
       } else if (button.text === "image") {
-  
+        //TODO        
       } else if (button.text === "game") {
-  
-      } else if (button.text === "sound") {
-  
+        //TODO
       } else if (button.text === "ephemeral") {
-  
+        //TODO
+        const TIME_TILL_GONE = 3;
+        let visibility = false;
+        setInterval(() => {
+          this.time.delayedCall(TIME_TILL_GONE + 2, () => {
+            visibility = !visibility;
+            scene.scene.setVisible(visibility);
+          }, [], this.scene);
+        }, TIME_TILL_GONE);
       }
-    }  
+    }
 
     // Access the sequencer data window inside the scene
     if (menu === undefined) {
@@ -165,6 +184,7 @@ class Controller extends Phaser.Scene {
     } else if (!menu.isInTouching(pointer)) {
       menu.collapse();
       menu = undefined;
+      //this.sceneParameterOpen = false;
     }
   }
 
@@ -173,46 +193,31 @@ class Controller extends Phaser.Scene {
     let menu = scene.rexUI.add.menu({
       x: x,
       y: y,
-
       items: items,
-      createButtonCallback: (item, i) => {
-        return scene.rexUI.add.label({
-          background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
-          text: scene.add.text(0, 0, item.name, {
-            fontSize: '20px'
-          }),
-          icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
-          space: {
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: 10,
-            icon: 10
-          }
-        })
-      },
+      createButtonCallback: (item, index, items) => {
+          return container;
+        },
+        easeIn: {
+          duration: 500,
+          orientation: 'y'
+        },
 
-      easeIn: {
-        duration: 500,
-        orientation: 'y'
-      },
-
-      easeOut: {
-        duration: 100,
-        orientation: 'y'
-      },
-    });
+        easeOut: {
+          duration: 100,
+          orientation: 'y'
+        },
+      });
 
     menu
       .on('button.over', (button) => {
         button.getElement('background').setStrokeStyle(1, 0xffffff);
       })
-      .on('button.out', (button) => {
-        button.getElement('background').setStrokeStyle();
-      })
-      .on('button.click', (button) => {
-        onClick(button);
-      })
+        .on('button.out', (button) => {
+          button.getElement('background').setStrokeStyle();
+        })
+          .on('button.click', (button) => {
+            onClick(button);
+          });
     return menu;
   }
 
@@ -222,12 +227,14 @@ class Controller extends Phaser.Scene {
   handleDrag(draggableZoneParent, momentInstance) {
     this.input.enableDebug(draggableZoneParent);
     draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
-      // Cache the currentlyDraggedScene for events handling such as Create Link
-      this.scene.setCurrentlyDraggedScene(this);
-      // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
-      this.scene.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
-      // 2. A separate object to query the connections object on this particular drag zone instance
-      this.scene.querySceneConnectionManager(this);
+      if (!this.sceneParameterOpen) {
+        // Cache the currentlyDraggedScene for events handling such as Create Link
+        this.scene.setCurrentlyDraggedScene(this);
+        // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
+        this.scene.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
+        // 2. A separate object to query the connections object on this particular drag zone instance
+        this.scene.querySceneConnectionManager(this);
+      }
     }));
   }
 
@@ -400,30 +407,40 @@ let menu;
 let sceneMenuParameters = [{
     name: "representation",
     children: [{
-        name: "text"
+        name: "text",
+        children: []
       },
       {
-        name: "sound"
+        name: "sound",
+        children: []
       },
       {
-        name: "image"
+        name: "image",
+        children: []
       },
       {
-        name: "game"
+        name: "game",
+        children: []
       }
     ]
   },
   {
     name: "ephemeral",
     children: [{
-        name: "yes"
+        name: "yes",
+        children: []
       },
       {
-        name: "no"
+        name: "no",
+        children: []
       }
     ]
   }
 ];
-const COLOR_PRIMARY = 0x4e342e;
+const COLOR_PRIMARY = 0xA9A9A9;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
+let soundOptions = {
+  "rate": Math.random(),
+  "pitch": Math.random()
+}

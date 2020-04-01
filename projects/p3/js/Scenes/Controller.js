@@ -195,7 +195,20 @@ class Controller extends Phaser.Scene {
       y: y,
       items: items,
       createButtonCallback: (item, index, items) => {
-          return container;
+        return scene.rexUI.add.label({
+          background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 0, COLOR_PRIMARY),
+          text: scene.add.text(0, 0, item.name, {
+            fontSize: '20px'
+          }),
+          icon: scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_DARK),
+          space: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10,
+            icon: 10
+          }
+        })
         },
         easeIn: {
           duration: 500,

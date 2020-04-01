@@ -36,20 +36,29 @@ class Controller extends Phaser.Scene {
   }
 
   create() {
+    // Spawn the greeter dialog box to introduce the game
+    this.createTextBox(this, 100, 100, {
+      wrapWidth: 700,
+      fixedWidth: 750,
+      fixedHeight: 100,
+    }).start(greeterContent, 50);
+
+    // Level 1
+
     // Add the other scenes/moments    
     this.createMoment('CriticalHit', CriticalHit);
-    this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
+    //this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
     this.createMoment('RareLoot', RareLoot);
-    // Scene population test 1   
-    this.createMoment('CriticalHit2', CriticalHit);
-    this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
-    this.createMoment('RareLoot2', RareLoot);
-    // // Scene population test 2 
-    this.createMoment('CriticalHit3', CriticalHit);
-    this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
-    this.createMoment('RareLoot3', RareLoot);
 
-    this.createMoment('RareLoot4', RareLoot);
+    // Scene population test 1   
+    // this.createMoment('CriticalHit2', CriticalHit);
+    // this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
+    // this.createMoment('RareLoot2', RareLoot);
+    // // // Scene population test 2 
+    // this.createMoment('CriticalHit3', CriticalHit);
+    // this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
+    // this.createMoment('RareLoot3', RareLoot);
+    // this.createMoment('RareLoot4', RareLoot);
 
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
@@ -67,9 +76,89 @@ class Controller extends Phaser.Scene {
     this.input.on('dragend', this.spawnContextualButton);
     // Create the line used for linking scenes
     this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0xFFFFFF, 5, true);
-
+    // Make it invisible until connections start being made between scenes
+    this.setLinkLineVisible(false);
     // Setup background graphics
     this.setupBackgroundGraphics();
+  }
+
+  // Mr. Rex Rainbow
+  createTextBox(scene, x, y, config) {
+    const GetValue = Phaser.Utils.Objects.GetValue;
+    let wrapWidth = GetValue(config, 'wrapWidth', 0);
+    let fixedWidth = GetValue(config, 'fixedWidth', 0);
+    let fixedHeight = GetValue(config, 'fixedHeight', 0);
+    let textBox = scene.rexUI.add.textBox({
+        x: x,
+        y: y,
+        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
+          .setStrokeStyle(2, COLOR_LIGHT),
+        text: scene.getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
+        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
+        space: {
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: 20,
+          icon: 10,
+          text: 10,
+        }
+      })
+      .setOrigin(0)
+      .layout();
+    textBox
+      .setInteractive()
+      .on('pointerdown', function () {
+        let icon = this.getElement('action').setVisible(false);
+        this.resetChildVisibleState(icon);
+        if (this.isTyping) {
+          this.stop(true);
+        } else {
+          this.typeNextPage();
+        }
+      }, textBox)
+      .on('pageend', function () {
+        if (this.isLastPage) {
+          return;
+        }
+        let icon = this.getElement('action').setVisible(true);
+        this.resetChildVisibleState(icon);
+        icon.y -= 30;
+        let tween = scene.tweens.add({
+          targets: icon,
+          y: '+=30',
+          ease: 'Bounce',
+          duration: 500,
+          repeat: 0,
+          yoyo: false
+        });
+      }, textBox);
+    return textBox;
+  }
+  // Mr. Rex Rainbow
+  getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
+    return scene.add.text(0, 0, '', {
+        fontSize: '20px',
+        wordWrap: {
+          width: wrapWidth
+        },
+        maxLines: 3
+      })
+      .setFixedSize(fixedWidth, fixedHeight);
+  }
+  // Mr. Rex Rainbow
+  getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
+    return scene.rexUI.add.BBCodeText(0, 0, '', {
+      fixedWidth: fixedWidth,
+      fixedHeight: fixedHeight,
+
+      fontSize: '20px',
+      wrap: {
+        mode: 'word',
+        width: wrapWidth
+      },
+      maxLines: 3
+    })
   }
 
   // Raining/Snowing passive moments in the background -- may be cybernetics-like system optimizing factors in polish phase of project
@@ -145,19 +234,17 @@ class Controller extends Phaser.Scene {
   }
 
   handleDialogSpawn(pointer, readSceneData, scene) {
+    const OFFSET = 350;
     if (dialog === undefined) {
       console.debug(pointer);
-      dialog = this.createDialog(this, pointer.x, pointer.y, readSceneData, scene);
-    }
-    else if (!dialog.isInTouching(pointer)) {
+      dialog = this.createDialog(this, pointer.x + OFFSET, pointer.y, readSceneData, scene);
+    } else if (!dialog.isInTouching(pointer)) {
       try {
         dialog.destroy();
         dialog = undefined;
-      }
-      catch (err) {
+      } catch (err) {
         console.debug(err.message);
-      }
-      finally {
+      } finally {
         console.debug("Returning anyways");
         return;
       }
@@ -168,29 +255,23 @@ class Controller extends Phaser.Scene {
     if (button.text === "Text") {
       console.debug("changing representation of scene");
       // TODO make user select this / change this...
-      let newText = "TEST: CRITICAL HIT! LIMIT BREAK! OVERHIT! OVER 9K!";
+      let newText = "CHANGED THIS SCENE'S TEXT.";
       scene.sequencingData.representation.text = newText;
-    }
-    else if (button.text === "Sound") {
+    } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {
         // Read the scene as speak
         this.handleResponsiveVoice(scene);
       }
-    }
-    else if (button.text === "Image") {
+    } else if (button.text === "Image") {
       //TODO        
-    }
-    else if (button.text === "Game") {
+    } else if (button.text === "Game") {
       //TODO
-    }
-    else if (button.text === "Ephemeral") {
+    } else if (button.text === "Ephemeral") {
       //TODO
       this.handleEphemeral(scene);
-    }
-    else if (button.text === "Confirm") {
+    } else if (button.text === "Confirm") {
       dialog.destroy();
-    }
-    else if (button.text === "Exit") {
+    } else if (button.text === "Exit") {
       dialog.destroy();
     }
   }
@@ -224,10 +305,6 @@ class Controller extends Phaser.Scene {
         width: 250,
         background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, COLOR_PRIMARY),
         title: createLabel(this, 'Moment Parameters').setDraggable(),
-        toolbar: [
-          createLabel(this, 'O'),
-          createLabel(this, 'X')
-        ],
         content: createLabel(this, 'Choose a Representation'),
         description: createLabel(this, sceneClicked.parent.name),
         choices: [
@@ -275,7 +352,7 @@ class Controller extends Phaser.Scene {
         }
       }).setDraggable('background')
       .layout()
-        .popUp(1000);
+      .popUp(1000);
 
     // Tweening it
     let tween = this.tweens.add({
@@ -304,7 +381,7 @@ class Controller extends Phaser.Scene {
     return scene.rexUI.add.label({
       width: 40,
       height: 40,
-      background: scene.rexUI.add.roundRectangle(0, 0, 100, 40, 20, 0x5e92f3),
+      background: scene.rexUI.add.roundRectangle(0, 0, 100, 40, 20, COLOR_DARK),
       text: scene.add.text(0, 0, text, {
         fontSize: '24px'
       }),
@@ -506,3 +583,17 @@ let soundOptions = {
   "rate": Math.random(),
   "pitch": Math.random()
 }
+
+let greeterContent = `Tutorial: You are in the curating room.
+Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, we'll see how long you last.
+Listen up closely, rookie. By clicking on one of these circle-looking things, you can choose how to represent its meaning.
+Drag one of these moments next to another one and link them by pressing the 'Create Link' button on the bottom right of the screen.
+All the paired moments will be put together in the Sequencing Room. Then you'll have to deal with your choices. 
+Got it? That's how you do it. Go ahead now and try it.`;
+
+let questOneNarrationContent = `I have a quest for you. Seriously. The dungeons
+leading to my personal library were raided. My guards have forgotten 
+what the brigands looked like and even locked themselves down there accidently! 
+Please find a way to break the door open.`;
+
+let progressNotification = `You earned your loot! The horizon princess's library is expanding.`;

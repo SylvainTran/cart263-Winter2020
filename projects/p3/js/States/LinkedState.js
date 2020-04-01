@@ -17,6 +17,10 @@ class LinkedState extends State {
         // Set the new owner of the doubly linked list between this scene and its closest neighbour
         this.setNewDoublyLinkedListOwner(dragHandler.getData('moment'));
         if(dragHandler.getData('moment').isDoublyLinkedListOwner) {
+            // Shake and flash the camera for effect
+            const SHAKE_AMOUNT = 250;
+            dragHandler.scene.cameras.main.shake(SHAKE_AMOUNT);
+            dragHandler.scene.cameras.main.flash(SHAKE_AMOUNT);
             // Create the doubly linked list if we're the owner
             dragHandler.getData('moment').doublyLinkedList = new DoublyLinkedList(dragHandler.getData('moment'));
             // Append the closestNeighbour to the tail of the doubly linked list

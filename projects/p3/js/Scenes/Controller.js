@@ -585,15 +585,15 @@ let soundOptions = {
 }
 
 let greeterContent = `Tutorial: You are in the curating room.
-Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, we'll see how long you last.
-Listen up closely, rookie. By clicking on one of these circle-looking things, you can choose how to represent its meaning.
-Drag one of these moments next to another one and link them by pressing the 'Create Link' button on the bottom right of the screen.
-All the paired moments will be put together in the Sequencing Room. Then you'll have to deal with your choices. 
-Got it? That's how you do it. Go ahead now and try it.`;
+Tutorial: Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart some of her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, we'll see how long you last.
+Listen up closely, rookie. By clicking on one of these circle-looking things, you can choose how to represent their meaning.
+Hey, don't ask me what it means, I'm just repeating what the Emperor told me. Drag one of these circles next to another one and link them by pressing the 'Create Link' button on the bottom right of the screen.
+All these cute little circles--along with what they've got inside--will go in the Sequencing Room. (That's the link at the top). There, you'll have to deal with your choices. 
+Got it? That's how you do it. Go ahead now and try linking up two circles.`;
 
-let questOneNarrationContent = `I have a quest for you. Seriously. The dungeons
+let questOneNarrationContent = `The Horizon Princess: I have a quest for you. Seriously, you didn't do too bad for a first timer.\nThe Horizon Princess: The dungeons
 leading to my personal library were raided. My guards have forgotten 
-what the brigands looked like and even locked themselves down there accidently! 
-Please find a way to break the door open.`;
+what the brigands looked like and even locked themselves down there accidently!\n
+The Horizon Princess: Please find a way to break the door open.`;
 
 let progressNotification = `You earned your loot! The horizon princess's library is expanding.`;

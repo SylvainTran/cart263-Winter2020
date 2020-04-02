@@ -48,7 +48,6 @@ class RareLoot extends Moment {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
-    createLinkEmitter.on('createLink', this.momentFSM.stateArray['SnappedState'].leaveSnappedState);
   }
 
   update(time, delta) {
@@ -63,19 +62,6 @@ class RareLoot extends Moment {
     // Game
 
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
-    if(this.momentFSM.stateArray['LinkedState'].isLinked && 
-        !this.updatedLinkedScenesList) {
-      // If this scene is linked and has not updated the master list yet, update the linkedScenesList master array in Controller.js
-      // Update the first reference if it's null (temporary)
-      if(this.parent.scene.linkedScenesList[0] === null) {
-        this.parent.scene.linkedScenesList[0] = this.doublyLinkedList;
-      }
-      else {
-        this.parent.scene.linkedScenesList.push(this.doublyLinkedList);
-      }
-      this.updatedLinkedScenesList = true;
-      console.debug(this.parent.scene.linkedScenesList);
-    }
   }
 
   setupCamera() {
@@ -84,6 +70,10 @@ class RareLoot extends Moment {
     //this.cameras.main.setViewport(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
     this.cameras.main.setScroll(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
   }
+  // Set this moment as the owner of the linked list
+  setNewDoublyLinkedListOwner() {
+    this.isDoublyLinkedListOwner = true;
+  }  
 
   refresh() {
     this.cameras.main.setPosition(this.parent.x, this.parent.y);

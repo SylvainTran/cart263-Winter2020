@@ -24,6 +24,8 @@ class Controller extends Phaser.Scene {
     // Current level of the game at and its previous one for checking if it changed
     this.previousLevel = 0;
     this.currentLevel = 0;
+    // level config
+    this.levelConfig = null;
   }
 
   init() {
@@ -42,17 +44,10 @@ class Controller extends Phaser.Scene {
   levelManager(level) {
     let numberOfMoments = 0;
     let moments = [];
-    switch(level) {
+    switch (level) {
       case 0: numberOfMoments = 2; moments = [CriticalHit, RareLoot]; break;
       case 1: numberOfMoments = 3; moments = [GoodNPCPunchLine, RareLoot, CriticalHit]; break;
       case 2: numberOfMoments = 4; break;
-      case 3: numberOfMoments = 5; break;
-      case 4: numberOfMoments = 6; break;
-      case 5: numberOfMoments = 7; break;    
-      case 6: numberOfMoments = 8; break;    
-      case 7: numberOfMoments = 9; break;    
-      case 8: numberOfMoments = 10; break;    
-      case 9: numberOfMoments = 11; break;    
       default: numberOfMoments = 2; break;
     }
     const levelConfig = {
@@ -63,6 +58,8 @@ class Controller extends Phaser.Scene {
   }
 
   create() {
+    // Set-up an event handler
+    createLinkEmitter.on('createLink', this.handleLinking, this);
     // Spawn the greeter dialog box to introduce the game
     this.createTextBox(this, 100, 100, {
       wrapWidth: 700,
@@ -74,15 +71,8 @@ class Controller extends Phaser.Scene {
     this.handleLevel();
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
-    // The array of draggable zones that are active
-    this.draggableZonesActive = [];
-
-    // Cache only the Zones gameObjects that are active
-    for (const element of this.children.list) {
-      if (element.type === 'Zone' && element.active) {
-        this.draggableZonesActive.push(element);
-      }
-    }
+    // Set the array of draggable zones that are active
+    this.setDraggableActiveZones();
     // Spawn a contextual button for linking scenes only if there are snapped scenes
     // And if and only if at drag end to prevent multiple buttons
     this.input.on('dragend', this.spawnContextualButton);
@@ -92,6 +82,23 @@ class Controller extends Phaser.Scene {
     this.setLinkLineVisible(false);
     // Setup background graphics
     this.setupBackgroundGraphics();
+  }
+  
+  update(time, delta) {
+    // Handle scene transition
+    this.handleSceneTransition();
+    // Update shapes' position and display
+    this.handleBgShapes();
+  }
+
+  setDraggableActiveZones() {
+    this.draggableZonesActive = [];
+    // Cache only the Zones gameObjects that are active
+    for (const element of this.children.list) {
+      if (element.type === 'Zone' && element.active) {
+        this.draggableZonesActive.push(element);
+      }
+    }
   }
 
   handleLevel() {
@@ -199,14 +206,12 @@ class Controller extends Phaser.Scene {
   createMainCanvas(addToActiveDisplay) {
     this.World = new World('World');
     this.scene.add('World', this.World, addToActiveDisplay);
-    console.log("Added main canvas world.");
   }
 
   //createMoment(key, moment)
   //@args: key {string}, moment {Phaser.Scene}
   //creates moment using the key and moment parameters
   createMoment(key, moment) {
-    console.debug(key);
     const width = this.scale.width;
     const height = this.scale.height;
     const offset = 150;
@@ -260,7 +265,6 @@ class Controller extends Phaser.Scene {
   handleDialogSpawn(pointer, readSceneData, scene) {
     const OFFSET = 350;
     if (dialog === undefined) {
-      console.debug(pointer);
       dialog = this.createDialog(this, pointer.x + OFFSET, pointer.y, readSceneData, scene);
     } else if (!dialog.isInTouching(pointer)) {
       try {
@@ -449,13 +453,12 @@ class Controller extends Phaser.Scene {
     this.setAvailableConnections(dragHandler.getData('moment').momentConnectionManager.checkForAvailableConnections(dragHandler, closestNeighbour));
 
     // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
-    this.handleSnapping(dragHandler);
+    this.handleSnapping(dragHandler, closestNeighbour);
   }
 
-  handleSnapping(dragHandler) {
+  handleSnapping(dragHandler, closestNeighbour) {
     if (this.availableConnections) {
       dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
-      // Todo find a better place to call/render the link line
       this.displayLink(dragHandler, closestNeighbour, true);
     } else {
       this.displayLink(dragHandler, closestNeighbour, false);
@@ -487,7 +490,7 @@ class Controller extends Phaser.Scene {
   }
 
   // TODO disable emitter in Snapped state once this is used, or remove thsi button with its emit altogether
-  createLinkButton(context) {
+  createLinkButton() {
     this.createdLinkButtonAlready = true;
     // 1. Adding a listener to the leaveSnapState method in the SnappedState.js 
     // composed in every scene
@@ -495,9 +498,51 @@ class Controller extends Phaser.Scene {
     const height = this.scale.height;
     const offset = 150;
     this.createdLinkButton = this.add.circle(width - offset, height - offset, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
-      createLinkEmitter.emit('createLink', 'LinkedState', context);
+      createLinkEmitter.emit('createLink');
     });
-    console.debug('Created link bt');
+  }
+
+  handleLinking() {
+    // Update the dragged scene to be the doubly linked list owner
+    this.getCurrentlyDraggedScene().getData('moment').setNewDoublyLinkedListOwner();
+    // Shake and flash the camera for effect
+    const SHAKE_AMOUNT = 250;
+    this.getCurrentlyDraggedScene().scene.cameras.main.shake(SHAKE_AMOUNT);
+    this.getCurrentlyDraggedScene().scene.cameras.main.flash(SHAKE_AMOUNT);
+    // Create the doubly linked list if we're the owner
+    this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList = new DoublyLinkedList(this.getCurrentlyDraggedScene().getData('moment'));
+    // Append the closestNeighbour to the tail of the doubly linked list
+    this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList.append(this.getClosestNeighbour().getData('moment'));
+    // Destroy the link button if it exists
+    if (this.getCreateLinkButton()) {
+      this.getCreateLinkButton().destroy();
+      this.createdLinkButtonAlready = false;
+    }
+    // Check if this snapped state belongs to the owner
+    this.getCurrentlyDraggedScene().getData('moment').isSnappedOwner = true;
+    this.displaySnappedState(this.getCurrentlyDraggedScene(), this.getCurrentlyDraggedScene().getData('moment'), this.getClosestNeighbour());
+    // disable dragging on both to lock them away
+    this.input.setDraggable([this.getCurrentlyDraggedScene(), this.getClosestNeighbour()], false);    
+    // Disable link visual
+    this.displayLink(this.getCurrentlyDraggedScene, this.getClosestNeighbour, false);
+    // Transition the dragged scene
+    const context = [this.getCurrentlyDraggedScene(), this.getCurrentlyDraggedScene().getData('moment'), this.getClosestNeighbour()];
+    this.getCurrentlyDraggedScene().getData('moment').momentFSM.transition('LinkedState', context);
+    // Transition the closest neighbour
+    this.getClosestNeighbour().getData('moment').momentFSM.transition('LinkedState', context);
+    // Update the master linked scene list
+    this.linkedScenesList.push(this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList);
+    // Debug
+    console.debug(this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList);
+    console.debug(this.linkedScenesList);
+  }
+
+  displaySnappedState() {
+    // Put the same Y-pos for dragHandler and closestNeighbour
+    // Set an offset between the two of 300 pixels
+    const SNAP_OFFSET = 300;
+    this.getClosestNeighbour().setPosition(this.getCurrentlyDraggedScene().x + SNAP_OFFSET, this.getCurrentlyDraggedScene().y);
+    this.getClosestNeighbour().getData('moment').refresh();
   }
 
   resetCurrentlyDragged() {
@@ -556,12 +601,12 @@ class Controller extends Phaser.Scene {
 
   // Only check if the level changed
   levelChanged() {
-    let levelChanged = this.currentLevel > this.previousLevel? true: false;
+    let levelChanged = this.currentLevel > this.previousLevel ? true : false;
 
-    if(levelChanged) {
+    if (levelChanged) {
       const levelConfig = this.levelManager(this.currentLevel);
       const numberOfMoments = levelConfig.numberOfMoments;
-      const moments = levelConfig.moments;  
+      const moments = levelConfig.moments;
       // The old level's scenes are deleted from the list of active scenes in Phaser, but stored in the website as progression
       // TODO store local storage
       this.removeDuplicateScenes(numberOfMoments, moments);
@@ -579,12 +624,19 @@ class Controller extends Phaser.Scene {
     }
   }
 
-  update(time, delta) {
-    //Level management - change level if it has changed from the previous one
-    if(this.levelChanged()) {
+  handleSceneTransition() {
+    // Check if all the scenes for a level are linked to trigger end of level screen
+    if (this.linkedScenesList.length > this.levelManager(this.currentLevel).numberOfMoments) {
+      this.cameras.main.fadeIn(250);
+    }
+    // Change level if it has changed from the previous one
+    if (this.levelChanged()) {
       this.handleLevel(this.currentLevel);
     }
-    // Update shapes' position
+  }
+
+  handleBgShapes() {
+    // Update each shape's position
     shapes.forEach(function (shape, i) {
       shape.x += (1 + 0.1 * i);
       shape.y += (1 + 0.1 * i);
@@ -614,9 +666,7 @@ class Controller extends Phaser.Scene {
       if (this.scene.createdLinkButtonAlready) {
         return;
       }
-      // Create the context for creating a link scenes button bottom right
-      let context = [this.scene.getCurrentlyDraggedScene(), this.scene.getCurrentlyDraggedScene().getData('moment'), this.scene.getClosestNeighbour()];
-      let linkButton = this.scene.createLinkButton(context);
+      let linkButton = this.scene.createLinkButton();
       // Reset
       this.scene.setAvailableConnections(false);
     }

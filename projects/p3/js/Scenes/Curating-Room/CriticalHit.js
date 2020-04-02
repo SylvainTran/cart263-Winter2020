@@ -49,9 +49,6 @@ class CriticalHit extends Moment {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
-    //  Set-up an event handler
-    let context = ['LinkedState', this.parent.scene.getCurrentlyDraggedScene(), this.parent.scene.getClosestNeighbour()];
-    createLinkEmitter.on('createLink', this.momentFSM.stateArray['SnappedState'].leaveSnappedState);
   }
 
   //setupCamera()
@@ -76,19 +73,11 @@ class CriticalHit extends Moment {
     // Game
 
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
-    if(this.momentFSM.stateArray['LinkedState'].isLinked && 
-        !this.updatedLinkedScenesList) {
-      // If this scene is linked and has not updated the master list yet, update the linkedScenesList master array in Controller.js
-      // Update the first reference if it's null (temporary)
-      if(this.parent.scene.linkedScenesList[0] === null) {
-        this.parent.scene.linkedScenesList[0] = this.doublyLinkedList;
-      }
-      else {
-        this.parent.scene.linkedScenesList.push(this.doublyLinkedList);
-      }
-      this.updatedLinkedScenesList = true;
-      console.debug(this.parent.scene.linkedScenesList);
-    }
+  }
+
+  // Set this moment as the owner of the linked list
+  setNewDoublyLinkedListOwner() {
+    this.isDoublyLinkedListOwner = true;
   }
 
   //refresh()

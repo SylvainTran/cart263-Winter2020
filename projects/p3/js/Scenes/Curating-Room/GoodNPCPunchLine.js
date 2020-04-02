@@ -9,7 +9,6 @@ class GoodNPCPunchLine extends Moment {
       SnappedState: new SnappedState(),
       LinkedState: new LinkedState()
     }, [parent, this]);
-
     // Snap flag that says this is scene has already been snapped with a currently neighbour
     this.isSnappedOwner = false;
     // Double-linked list variables
@@ -24,7 +23,7 @@ class GoodNPCPunchLine extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": { "text": "Good Old NPC Dialogue!", "sound" : null, "image" : null, "game": null },
+      "representation": { "text": "Good Old NPC Dialogue!", "sound" : null, "image" : null, "game": false },
       "action": "null",
       "consequence": "null",
       "highlight": "null",

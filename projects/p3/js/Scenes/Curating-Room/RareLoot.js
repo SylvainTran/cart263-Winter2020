@@ -9,8 +9,6 @@ class RareLoot extends Moment {
       SnappedState: new SnappedState(),
       LinkedState: new LinkedState()
     }, [parent, this]);
-    console.log(this.momentFSM.state);
-
     // Snap flag that says this is scene has already been snapped with a currently neighbour
     this.isSnappedOwner = false;
     // Double-linked list variables
@@ -25,7 +23,7 @@ class RareLoot extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": { "text": "You got a rare loot!", "sound" : null, "image" : null, "game": null },
+      "representation": { "text": "You got a rare loot!", "sound" : null, "image" : null, "game": false },
       "action": "null",
       "consequence": "null",
       "highlight": "null",

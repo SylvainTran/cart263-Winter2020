@@ -21,6 +21,9 @@ class Controller extends Phaser.Scene {
     this.linkedScenesList = [];
     // Whether to exit the scene parameter dialog or not (temporary)
     this.sceneParameterOpen = false;
+    // Current level of the game at and its previous one for checking if it changed
+    this.previousLevel = 0;
+    this.currentLevel = 0;
   }
 
   init() {
@@ -35,6 +38,30 @@ class Controller extends Phaser.Scene {
     this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
   }
 
+  // Assigns the number of moments for each level
+  levelManager(level) {
+    let numberOfMoments = 0;
+    let moments = [];
+    switch(level) {
+      case 0: numberOfMoments = 2; moments = [CriticalHit, RareLoot]; break;
+      case 1: numberOfMoments = 3; moments = [GoodNPCPunchLine, RareLoot, CriticalHit]; break;
+      case 2: numberOfMoments = 4; break;
+      case 3: numberOfMoments = 5; break;
+      case 4: numberOfMoments = 6; break;
+      case 5: numberOfMoments = 7; break;    
+      case 6: numberOfMoments = 8; break;    
+      case 7: numberOfMoments = 9; break;    
+      case 8: numberOfMoments = 10; break;    
+      case 9: numberOfMoments = 11; break;    
+      default: numberOfMoments = 2; break;
+    }
+    const levelConfig = {
+      numberOfMoments: numberOfMoments,
+      moments: moments
+    };
+    return levelConfig;
+  }
+
   create() {
     // Spawn the greeter dialog box to introduce the game
     this.createTextBox(this, 100, 100, {
@@ -43,23 +70,8 @@ class Controller extends Phaser.Scene {
       fixedHeight: 100,
     }).start(greeterContent, 50);
 
-    // Level 1
-
-    // Add the other scenes/moments    
-    this.createMoment('CriticalHit', CriticalHit);
-    //this.createMoment('GoodNPCPunchLine', GoodNPCPunchLine);
-    this.createMoment('RareLoot', RareLoot);
-
-    // Scene population test 1   
-    // this.createMoment('CriticalHit2', CriticalHit);
-    // this.createMoment('GoodNPCPunchLine2', GoodNPCPunchLine);
-    // this.createMoment('RareLoot2', RareLoot);
-    // // // Scene population test 2 
-    // this.createMoment('CriticalHit3', CriticalHit);
-    // this.createMoment('GoodNPCPunchLine3', GoodNPCPunchLine);
-    // this.createMoment('RareLoot3', RareLoot);
-    // this.createMoment('RareLoot4', RareLoot);
-
+    // Level Management - Starting at level 0. Will be refactored into event-driven pattern later
+    this.handleLevel();
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
     // The array of draggable zones that are active
@@ -80,6 +92,17 @@ class Controller extends Phaser.Scene {
     this.setLinkLineVisible(false);
     // Setup background graphics
     this.setupBackgroundGraphics();
+  }
+
+  handleLevel() {
+    // The current level is modified from a different method
+    // Get the current level's config by querying the level manager with the current level
+    const levelConfig = this.levelManager(this.currentLevel);
+    const numberOfMoments = levelConfig.numberOfMoments;
+    const moments = levelConfig.moments;
+    for (let i = 0; i < numberOfMoments; i++) {
+      this.createMoment(`${moments[i].name} ${i}`, moments[i]);
+    }
   }
 
   // Mr. Rex Rainbow
@@ -183,6 +206,7 @@ class Controller extends Phaser.Scene {
   //@args: key {string}, moment {Phaser.Scene}
   //creates moment using the key and moment parameters
   createMoment(key, moment) {
+    console.debug(key);
     const width = this.scale.width;
     const height = this.scale.height;
     const offset = 150;
@@ -265,9 +289,9 @@ class Controller extends Phaser.Scene {
     } else if (button.text === "Image") {
       //TODO        
     } else if (button.text === "Game") {
-      //TODO
+      // Flag the scene as a mini-playable in the sequencing room
+      scene.sequencingData.representation.game = true;
     } else if (button.text === "Ephemeral") {
-      //TODO
       this.handleEphemeral(scene);
     } else if (button.text === "Confirm") {
       dialog.destroy();
@@ -530,7 +554,36 @@ class Controller extends Phaser.Scene {
     // TODO
   }
 
+  // Only check if the level changed
+  levelChanged() {
+    let levelChanged = this.currentLevel > this.previousLevel? true: false;
+
+    if(levelChanged) {
+      const levelConfig = this.levelManager(this.currentLevel);
+      const numberOfMoments = levelConfig.numberOfMoments;
+      const moments = levelConfig.moments;  
+      // The old level's scenes are deleted from the list of active scenes in Phaser, but stored in the website as progression
+      // TODO store local storage
+      this.removeDuplicateScenes(numberOfMoments, moments);
+      // Update the last level's index if the current one changed
+      this.previousLevel = this.currentLevel;
+    }
+    return levelChanged;
+  }
+
+  removeDuplicateScenes(numberOfMoments, moments) {
+    for (let i = 0; i < numberOfMoments; i++) {
+      if (this.scene.children.getChildren()[i].key === moments[i].name) {
+        this.scene.children.getChildren()[i].remove();
+      }
+    }
+  }
+
   update(time, delta) {
+    //Level management - change level if it has changed from the previous one
+    if(this.levelChanged()) {
+      this.handleLevel(this.currentLevel);
+    }
     // Update shapes' position
     shapes.forEach(function (shape, i) {
       shape.x += (1 + 0.1 * i);
@@ -585,7 +638,7 @@ let soundOptions = {
 }
 
 let greeterContent = `Tutorial: You are in the curating room.
-Tutorial: Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart some of her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, we'll see how long you last.
+Tutorial: Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart some of her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, let's see how long you last.
 Listen up closely, rookie. By clicking on one of these circle-looking things, you can choose how to represent their meaning.
 Hey, don't ask me what it means, I'm just repeating what the Emperor told me. Drag one of these circles next to another one and link them by pressing the 'Create Link' button on the bottom right of the screen.
 All these cute little circles--along with what they've got inside--will go in the Sequencing Room. (That's the link at the top). There, you'll have to deal with your choices. 

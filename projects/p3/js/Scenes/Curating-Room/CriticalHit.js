@@ -9,7 +9,6 @@ class CriticalHit extends Moment {
       SnappedState: new SnappedState(),
       LinkedState: new LinkedState()
     }, [parent, this]);
-
     // Snap flag that says this is scene has already been snapped with a currently neighbour
     this.isSnappedOwner = false;
     // Double-linked list variables
@@ -24,7 +23,7 @@ class CriticalHit extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": { "text": "Critical Hit!", "sound" : null, "image" : null, "game": null },
+      "representation": { "text": "Critical Hit!", "sound" : null, "image" : null, "game": false },
       "action": "null",
       "consequence": "null",
       "highlight": "null",

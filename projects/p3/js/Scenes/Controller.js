@@ -26,6 +26,10 @@ class Controller extends Phaser.Scene {
     this.currentLevel = 0;
     // level config
     this.levelConfig = null;
+    // Level's moment references (for later scene destruction)
+    this.scenesInLevel = [];
+    // Draggable zones in use in this level
+    this.draggableZonesActive = [];
   }
 
   init() {
@@ -68,11 +72,9 @@ class Controller extends Phaser.Scene {
     }).start(greeterContent, 50);
 
     // Level Management - Starting at level 0. Will be refactored into event-driven pattern later
-    this.handleLevel();
+    this.createLevel();
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
     this.createMainCanvas(true);
-    // Set the array of draggable zones that are active
-    this.setDraggableActiveZones();
     // Spawn a contextual button for linking scenes only if there are snapped scenes
     // And if and only if at drag end to prevent multiple buttons
     this.input.on('dragend', this.spawnContextualButton);
@@ -82,6 +84,7 @@ class Controller extends Phaser.Scene {
     this.setLinkLineVisible(false);
     // Setup background graphics
     this.setupBackgroundGraphics();
+    console.debug(this.draggableZonesActive);
   }
   
   update(time, delta) {
@@ -91,25 +94,32 @@ class Controller extends Phaser.Scene {
     this.handleBgShapes();
   }
 
-  setDraggableActiveZones() {
-    this.draggableZonesActive = [];
+  setDraggableActiveZones(draggableZone) {
     // Cache only the Zones gameObjects that are active
-    for (const element of this.children.list) {
-      if (element.type === 'Zone' && element.active) {
-        this.draggableZonesActive.push(element);
-      }
+    if(draggableZone.type === "Zone" && draggableZone.active) {
+      this.draggableZonesActive.push(draggableZone);
     }
   }
 
-  handleLevel() {
-    // The current level is modified from a different method
+  createLevel() {
+    // TODO store local storage
+    if(this.linkedScenesList) {
+      //localStorage.setItem("Level", this.linkedScenesList);
+      //JSON.parse(localStorage.getItem("Level"));  
+    }
+
     // Get the current level's config by querying the level manager with the current level
     const levelConfig = this.levelManager(this.currentLevel);
     const numberOfMoments = levelConfig.numberOfMoments;
     const moments = levelConfig.moments;
+    
     for (let i = 0; i < numberOfMoments; i++) {
-      this.createMoment(`${moments[i].name} ${i}`, moments[i]);
+      // Add a random hash at the end for now to prevent duplicate keys
+      let randomHash =  i + Math.random() + Math.random();
+      // Create the moment and also cache it for later destruction
+      this.scenesInLevel.push(this.createMoment(moments[i].name + randomHash, moments[i]));
     }
+    return this.scenesInLevel;
   }
 
   // Mr. Rex Rainbow
@@ -210,8 +220,13 @@ class Controller extends Phaser.Scene {
 
   //createMoment(key, moment)
   //@args: key {string}, moment {Phaser.Scene}
-  //creates moment using the key and moment parameters
+  //creates scenes using the key and moment parameters
   createMoment(key, moment) {
+    // Do something if scene manager is processing to prevent conflict
+    if(this.scene.manager.isProcessing) {
+      // WIP
+      //return;
+    }
     const width = this.scale.width;
     const height = this.scale.height;
     const offset = 150;
@@ -238,7 +253,12 @@ class Controller extends Phaser.Scene {
     this.handleClick(draggableZoneParent, momentInstance);
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
+    // Add to current draggable zones
+    this.setDraggableActiveZones(draggableZoneParent);
+    // Add the scenes
     this.scene.add(key, momentInstance, true);
+    // Return it to keep a reference for later scene destruction
+    return momentInstance;
   }
 
   // Handle click on the zone that will pop up the sequencer data window
@@ -489,7 +509,6 @@ class Controller extends Phaser.Scene {
     this.scene.linkLine.setTo(x1, y1, x2, y2);
   }
 
-  // TODO disable emitter in Snapped state once this is used, or remove thsi button with its emit altogether
   createLinkButton() {
     this.createdLinkButtonAlready = true;
     // 1. Adding a listener to the leaveSnapState method in the SnappedState.js 
@@ -578,10 +597,6 @@ class Controller extends Phaser.Scene {
     this.availableConnections = value;
   }
 
-  lockSnappedScenes() {
-    // TODO
-  }
-
   sequenceLinkedScenes() {
     // TODO
     // Pair consequences with actions -> Moments of reflection, anti-linear narrative?
@@ -602,37 +617,67 @@ class Controller extends Phaser.Scene {
   // Only check if the level changed
   levelChanged() {
     let levelChanged = this.currentLevel > this.previousLevel ? true : false;
-
+    console.debug(levelChanged);
     if (levelChanged) {
-      const levelConfig = this.levelManager(this.currentLevel);
-      const numberOfMoments = levelConfig.numberOfMoments;
-      const moments = levelConfig.moments;
-      // The old level's scenes are deleted from the list of active scenes in Phaser, but stored in the website as progression
-      // TODO store local storage
-      this.removeDuplicateScenes(numberOfMoments, moments);
       // Update the last level's index if the current one changed
       this.previousLevel = this.currentLevel;
     }
     return levelChanged;
   }
 
-  removeDuplicateScenes(numberOfMoments, moments) {
-    for (let i = 0; i < numberOfMoments; i++) {
-      if (this.scene.children.getChildren()[i].key === moments[i].name) {
-        this.scene.children.getChildren()[i].remove();
+  handleSceneTransition() {
+    // Check if all the scenes for a level are linked to trigger end of level screen
+    if (this.linkedScenesList.length >= this.levelManager(this.currentLevel).numberOfMoments - 1) {
+      ++this.currentLevel;
+      // Fade effect
+      this.cameras.main.fadeOut(1000);
+      this.cameras.main.fadeIn(1000);
+    }
+    // Change level if it has changed from the previous one
+    if (this.levelChanged()) {
+      // Pause all the scenes running in parallel to prevent conflicts with deletion
+      try {
+        this.pauseAllScenes();
+        this.removeScenes(this.scenesInLevel);
+        this.refresh();
+        this.restartLevelSettings();
+        this.createLevel(this.currentLevel);
+      } catch(err) {
+        console.error(err.message);
+      } finally {
+        console.log("WIP. Not there yet.");        
       }
     }
   }
 
-  handleSceneTransition() {
-    // Check if all the scenes for a level are linked to trigger end of level screen
-    if (this.linkedScenesList.length > this.levelManager(this.currentLevel).numberOfMoments) {
-      this.cameras.main.fadeIn(250);
-    }
-    // Change level if it has changed from the previous one
-    if (this.levelChanged()) {
-      this.handleLevel(this.currentLevel);
-    }
+  pauseAllScenes() {
+    this.scenesInLevel.forEach( (scene) => {
+      scene.scene.manager.pause(scene.scene.key);
+    });
+  }
+
+  removeScenes(scenesInLevel) {
+    // Destroy old zones
+    for (let i = 0; i < this.draggableZonesActive.length; i++) {
+      this.draggableZonesActive[i].destroy(true);
+    } 
+    for(let i = 0; i < scenesInLevel.length; i++) {
+      console.debug(scenesInLevel[i].scene.key);
+      this.scene.remove(scenesInLevel[i].scene.key);
+    }  
+    this.draggableZonesActive = [];
+  }
+
+  restartLevelSettings() {
+    // Reset references
+    this.currentlyDraggedScene = null;
+    this.currentlyDraggedSceneNeighbour = null;
+    this.createdLinkButton = null;
+    this.createdLinkButtonAlready = false;
+    this.availableConnections = false;
+    this.linkedScenesList = [];
+    this.sceneParameterOpen = false;
+    this.scenesInLevel = [];
   }
 
   handleBgShapes() {
@@ -670,6 +715,14 @@ class Controller extends Phaser.Scene {
       // Reset
       this.scene.setAvailableConnections(false);
     }
+  }
+
+  //refresh()
+  //@args: none
+  //Reset the position of the camera to that of the dragged zone parent (i.e., after having been dragged from Controller.js)
+  refresh() {
+    // Bring it to the top of the scene list render order
+    this.scene.bringToTop();
   }
 }
 // Global variables (for now)

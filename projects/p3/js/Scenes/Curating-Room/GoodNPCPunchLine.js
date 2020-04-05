@@ -18,12 +18,16 @@ class GoodNPCPunchLine extends Moment {
     this.next = null; // The next connected moment to this scene in the linked list    
     // Whether this scene has updated the linked scene list variable in Controller.js already
     this.updatedLinkedScenesList = false;
+    // Text from JSON
+    this.text = `If music be the food of love, play on,
+    Give me excess of it; that surfeiting,
+    The appetite may sicken, and so die.`;
     // Sequencing Parameters (JSON format for localStorage)
     this.sequencingData = {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": { "text": "Good Old NPC Dialogue!", "sound" : null, "image" : null, "game": false },
+      "representation": { "text": this.text, "sound" : null, "image" : null, "game": false },
       "action": "null",
       "consequence": "null",
       "highlight": "null",
@@ -45,7 +49,7 @@ class GoodNPCPunchLine extends Moment {
     this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
     this.setupCamera();
     this.debugZoneViewport();
-    this.sceneTextRepresentation = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'George the Blacksmith NPC says:\nI bet I lift more than your dad does.\nRelationship + 10.', {
+    this.sceneTextRepresentation = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, this.text, {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);

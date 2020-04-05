@@ -39,3 +39,43 @@ Libraries:
     - questionnaire moments inspired from catherine and boom town
     - systems of wasting time distraction exposed through manipulation of moments
     - serious game, game-based learning, gamification of overall stats/badges progression
+
+
+
+# User requirements / stories
+
+As a user of this game/website, I want to be able to
+    - See my progress
+    - Understand what the goal of the program/game/app is
+    - Be entertained
+    - Have my progress be persistent
+
+    As a player, I want to be able to
+        - Figure out what to do
+        - Expect consistent results with the same behaviours?
+        - Be surprised
+        - See the scenes change
+            - See what the effect of dragging a scene and linking it to another is concretely
+            - See what is going on if I let the game run on its own
+            - Be engaged intellectually
+
+        As a game designer, I want to know how this game
+            - Offer choices to the player that are non-trivial
+            - Shows the 3Cs are well-established
+            - Shows the controls are responsive and well-thought
+            - Offers replayability
+            - Achieves the intention of the product/intended experience
+            - Has a solid core game loop and mechanics support/feed the core design
+            - Is engaging and fun overall
+            - If the flow is good and progressively challenging?
+        
+            As a graphic designer, I want to see 
+                - If the game's visual aesthetics are coherent and if they fit the game's idea
+                - If the game takes into account sensory information / attentional capacity / composition   principles
+                - If the website is accessible to all
+                
+                As an artist, I want to see 
+                    - If the aesthetics are pleasing
+                    - If the polish is proper
+                    - If there is a layer of spiritual quality
+                    - If the game is able to convey a range of emotions 

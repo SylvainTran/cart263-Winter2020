@@ -90,6 +90,12 @@ class Controller extends Phaser.Scene {
   update(time, delta) {
     // Handle scene transition
     this.handleSceneTransition();
+
+    // Oscillate scenes
+    // for each scene that exists in the level, perlin noise movement
+    
+    // Generate datasets
+
     // Update shapes' position and display
     this.handleBgShapes();
   }
@@ -661,10 +667,10 @@ class Controller extends Phaser.Scene {
     for (let i = 0; i < this.draggableZonesActive.length; i++) {
       this.draggableZonesActive[i].destroy(true);
     } 
-    for(let i = 0; i < scenesInLevel.length; i++) {
-      console.debug(scenesInLevel[i].scene.key);
-      this.scene.remove(scenesInLevel[i].scene.key);
-    }  
+    // for(let i = 0; i < scenesInLevel.length; i++) {
+    //   console.debug(scenesInLevel[i].scene.key);
+    //   this.scene.remove(scenesInLevel[i].scene.key);
+    // }  
     this.draggableZonesActive = [];
   }
 

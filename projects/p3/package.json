@@ -1,7 +1,7 @@
 {
-  "name": "kubernetes",
+  "name": "The Dream of a Ridiculous Man - Caviar Kubernetes Remix",
   "version": "0.0.1",
-  "description": "game on cybernetics and systems, moments in life and video games. project for cart 263 (winter 2020)",
+  "description": "Computational experiment on a Fyodor Dostoevsky novel using Phaser, p5.js, RiTa, ml.js, unsplash API. Project for cart 263 (winter 2020)",
   "main": "Main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

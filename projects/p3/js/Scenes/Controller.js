@@ -79,9 +79,12 @@ class Controller extends Phaser.Scene {
     // And if and only if at drag end to prevent multiple buttons
     this.input.on('dragend', this.spawnContextualButton);
     // Create the line used for linking scenes
-    this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0xFFFFFF, 5, true);
+    this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0x000000, 5, true);
     // Make it invisible until connections start being made between scenes
     this.setLinkLineVisible(false);
+    // Perlin noise movement
+
+    this.startingYPos = 1000;
     // Setup background graphics
     this.setupBackgroundGraphics();
     console.debug(this.draggableZonesActive);
@@ -93,11 +96,41 @@ class Controller extends Phaser.Scene {
 
     // Oscillate scenes
     // for each scene that exists in the level, perlin noise movement
+    // this.perlinMovement();
     
     // Generate datasets
 
     // Update shapes' position and display
-    this.handleBgShapes();
+    // this.handleBgShapes();
+  }
+
+  perlinMovement() {
+    this.scenesInLevel.forEach((scene) => {
+      // If not already linked or being currently dragged, update position
+      console.debug(scene.parent);
+      console.debug(this.getCurrentlyDraggedScene());
+      if(scene.momentFSM.state !== "LinkedState" || scene.parent !== this.getCurrentlyDraggedScene()) {    
+        let tx = scene.parent.getData('tx');
+        let ty = scene.parent.getData('ty');
+        let speed = scene.parent.getData('speed');
+        // Update velocities based on noise 
+        console.debug(noise(tx));
+        scene.parent.setData('vx', map(noise(tx), 0, 1, -speed, speed));
+        scene.parent.setData('vy', map(noise(ty), 0, 1, -speed, speed));
+        // Update the positions
+        let vx = scene.parent.getData('vx');
+        let vy = scene.parent.getData('vy');
+        scene.parent.x += vx;
+        scene.parent.y += vy;
+        // Update the derivative of time wrt x and y
+        scene.parent.setData('tx', tx + 0.01);
+        scene.parent.setData('ty', tx + 0.02);
+        // Update the camera of the scene to be that of the parented zone
+        scene.refresh();
+        // Handle wrapping
+        this.handleWrapping(scene);      
+      }
+    });
   }
 
   setDraggableActiveZones(draggableZone) {
@@ -247,6 +280,11 @@ class Controller extends Phaser.Scene {
     let momentInstance = new moment(key, draggableZoneParent);
     // Set some data for this parent zone, namely its moment scene, the number of connections it has and which connections these are
     draggableZoneParent.setData({
+      vx: 0,
+      vy: 0,
+      tx: x,
+      ty: y,
+      speed: 10,
       moment: momentInstance,
       maxActiveConnections: 3,
       activeConnections: 0,
@@ -265,6 +303,25 @@ class Controller extends Phaser.Scene {
     this.scene.add(key, momentInstance, true);
     // Return it to keep a reference for later scene destruction
     return momentInstance;
+  }
+
+  handleWrapping(scene) {
+    const width = this.scale.width;
+    const height = this.scale.height;
+    let parent = scene.parent;
+    if (parent.x < 0) {
+      parent.x += width;
+    }
+    else if (parent.x > width) {
+      parent.x -= width;
+    }
+    // Off the top or bottom
+    if (parent.y < 0) {
+      parent.y += height;
+    }
+    else if (parent.y > height) {
+      parent.y -= height;
+    }
   }
 
   // Handle click on the zone that will pop up the sequencer data window
@@ -309,8 +366,10 @@ class Controller extends Phaser.Scene {
     if (button.text === "Text") {
       console.debug("changing representation of scene");
       // TODO make user select this / change this...
-      let newText = "CHANGED THIS SCENE'S TEXT.";
+      let newText = greeterContent;
       scene.sequencingData.representation.text = newText;
+      // Trigger the text animation
+      scene.playText(true);
     } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {
         // Read the scene as speak
@@ -358,15 +417,15 @@ class Controller extends Phaser.Scene {
         y: y,
         width: 250,
         background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, COLOR_PRIMARY),
-        title: createLabel(this, 'Moment Parameters').setDraggable(),
-        content: createLabel(this, 'Choose a Representation'),
-        description: createLabel(this, sceneClicked.parent.name),
+        title: createLabel(this, 'Chapter 1').setDraggable(),
+        //content: createLabel(this, ''),
+        //description: createLabel(this, sceneClicked.parent.name),
         choices: [
-          createLabel(this, 'Text'),
-          createLabel(this, 'Sound'),
-          createLabel(this, 'Image'),
-          createLabel(this, 'Game'),
-          createLabel(this, 'Ephemeral')
+          createLabel(this, 'Text')
+          // createLabel(this, 'Sound'),
+          // createLabel(this, 'Image'),
+          // createLabel(this, 'Game'),
+          // createLabel(this, 'Ephemeral')
         ],
         actions: [
           createLabel(this, 'Confirm'),
@@ -452,9 +511,12 @@ class Controller extends Phaser.Scene {
   //@args: draggableZoneParent {GameObject.Zone}, momentInstance {Phaser.Scene}
   //handle dragging behaviour event on each momentInstance created, by using the draggableZoneParent gameObject
   handleDrag(draggableZoneParent, momentInstance) {
-    this.input.enableDebug(draggableZoneParent);
+    //this.input.enableDebug(draggableZoneParent);
     draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
       if (!this.sceneParameterOpen) {
+        // Smoothen the pointer
+        const DAMPING = 0.75;
+        pointer.smoothFactor = DAMPING;
         // Cache the currentlyDraggedScene for events handling such as Create Link
         this.scene.setCurrentlyDraggedScene(this);
         // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
@@ -480,6 +542,8 @@ class Controller extends Phaser.Scene {
 
     // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
     this.handleSnapping(dragHandler, closestNeighbour);
+    // Handle text bifurcation between the dragged scene and its closest neighbour
+    this.handleTextBifurcation(dragHandler, closestNeighbour);
   }
 
   handleSnapping(dragHandler, closestNeighbour) {
@@ -491,12 +555,20 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  handleTextBifurcation(dragHandler, closestNeighbour) {
+    if (this.availableConnections) {
+      dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
+
+    } else {
+
+    }
+  }
+
   updateDragZone(draggableZoneParent, dragX, dragY, momentInstance) {
     draggableZoneParent.setPosition(dragX, dragY);
     momentInstance.refresh();
   }
 
-  //TODO cache a ref to a link go that will be kept inside the linked state, call this from there
   createLinkLine(x, y, x1, y1, x2, y2, color, width, visible) {
     this.scene.linkLine = this.add.line(x, y, x1, y1, x2, y2, color, visible).setOrigin(0)
       .setLineWidth(width);
@@ -738,15 +810,29 @@ let backgroundScenes;
 let shapes;
 let rect;
 let dialog;
-const COLOR_PRIMARY = 0xA9A9A9;
+const COLOR_PRIMARY = 0x000000;
 const COLOR_LIGHT = 0x7b5e57;
-const COLOR_DARK = 0x260e04;
+const COLOR_DARK = 0x000000;
 let soundOptions = {
   "rate": Math.random(),
   "pitch": Math.random()
 }
 
-let greeterContent = `Tutorial: You are in the curating room.
+// Fyodor Dostoevsky
+let greeterContent = 
+`I am a ridiculous person. Now they call me a madman. 
+That would be a promotion if it were not that I remain 
+as ridiculous in their eyes as before. But now I do not 
+resent it, they are all dear to me now, even when they 
+laugh at me -and, indeed, it is just then that they are 
+particularly dear to me. I could join in their laughter--not 
+exactly at myself, but through affection for them, if I did 
+not feel so sad as I look at them. Sad because they do not 
+know the truth and I do know it. Oh, how hard it is to be 
+the only one who knows the truth! But they won't understand 
+that. No, they won't understand it.`;
+
+let oldGreeterContent = `Tutorial: You are in the curating room.
 Tutorial: Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart some of her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, let's see how long you last.
 Listen up closely, rookie. By clicking on one of these circle-looking things, you can choose how to represent their meaning.
 Hey, don't ask me what it means, I'm just repeating what the Emperor told me. Drag one of these circles next to another one and link them by pressing the 'Create Link' button on the bottom right of the screen.

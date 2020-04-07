@@ -5,7 +5,7 @@ let config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
   height: window.innerHeight,
-  backgroundColor: '#676767',
+  backgroundColor: '#ffffff',
   disableContextMenu: true,
   scale: {
     parent: 'main__world-node-container',

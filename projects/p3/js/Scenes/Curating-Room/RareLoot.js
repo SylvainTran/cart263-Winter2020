@@ -23,7 +23,7 @@ class RareLoot extends Moment {
       "sound": "false",
       "volume": "0",
       "loop": "false",
-      "representation": { "text": "You got a rare loot!", "sound" : null, "image" : null, "game": false },
+      "representation": { "text": "Person.", "sound" : null, "image" : null, "game": false },
       "action": "null",
       "consequence": "null",
       "highlight": "null",
@@ -31,6 +31,11 @@ class RareLoot extends Moment {
       "speed": "1"
     };
     this.sceneTextRepresentation = null;
+    // Text position for animation
+    this.sceneTextPosX = null;
+    this.sceneTextPosY = null;
+    // Flag for animation
+    this.playingTextAnimation = false;
   }
 
   init() {
@@ -41,10 +46,32 @@ class RareLoot extends Moment {
 
   }
 
+  playText(playTextAnimation) {
+    playTextAnimation? this.playingTextAnimation = true: this.playingTextAnimation = false;
+  }
+
+
+  playTextAnimation() {
+    if(this.playingTextAnimation) {
+      // Increment pos value
+      const INCREASE_POS_Y = 5;
+      this.sceneTextPosY += INCREASE_POS_Y;
+      // Wrap back up when done, shake camera, and change text color then
+      if (this.sceneTextPosY  >= this.scale.height) {
+        this.sceneTextPosY = 0;
+      }
+      // Update display
+      this.sceneTextRepresentation.setPosition(this.sceneTextPosX, this.sceneTextPosY);
+    }
+  }
+
   create() {
     this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
     this.setupCamera();
-    this.sceneTextRepresentation = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'You found \'Excalibur +10\' lying in some chest!\nThat\'s some pretty rare stuff.\nThe princess that you need to rescue\nsmiles from far away.', {
+    // Setup text initial position and content
+    this.sceneTextPosX = this.cameras.main.centerX;
+    this.sceneTextPosY = this.cameras.main.centerY;    
+    this.sceneTextRepresentation = this.add.text(this.sceneTextPosX, this.sceneTextPosY, 'You landed a critical hit!\nMassive Bonus Exp gained.', {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
@@ -54,11 +81,14 @@ class RareLoot extends Moment {
     // Update scene representation parameters:
 
     // Text
+    // Change the y pos of the text from top to down (animate)
+    this.playTextAnimation();    
+    
     this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
     // Sound
-    
-    // Image
 
+    // Image
+    
     // Game
 
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
@@ -66,7 +96,7 @@ class RareLoot extends Moment {
 
   setupCamera() {
     this.cameras.main.setPosition(this.parent.x, this.parent.y);
-    this.cameras.main.setSize(GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
+    this.cameras.main.setSize(RareLoot.WIDTH, RareLoot.HEIGHT);
     //this.cameras.main.setViewport(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
     this.cameras.main.setScroll(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
   }

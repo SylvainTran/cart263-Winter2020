@@ -30,6 +30,16 @@ class MomentConnectionManager {
         closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);
     }
 
+    checkNeighbourTextStatus() {
+        // Check the status of the neighbour's text roll
+
+        // If there is something
+
+        // Bifurcate using RiTA semantic category
+
+        // 
+    }
+
     orderConnections(thisMoment, closestNeighbour) {
         return thisMoment.getData('firstConnection') === closestNeighbour || thisMoment.getData('secondConnection') === closestNeighbour;
     }

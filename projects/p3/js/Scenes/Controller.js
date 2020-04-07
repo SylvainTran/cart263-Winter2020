@@ -101,13 +101,13 @@ class Controller extends Phaser.Scene {
     // Generate datasets
 
     // Update shapes' position and display
-    // this.handleBgShapes();
+    this.handleBgShapes();
   }
 
   perlinMovement() {
     this.scenesInLevel.forEach((scene) => {
       // If not already linked or being currently dragged, update position
-      if(scene.momentFSM.state !== 'IdleMomentState') {
+      if(scene.parent === this.getCurrentlyDraggedScene() || scene.momentFSM.state !== 'IdleMomentState') {
         return;
       }
       // else if (scene.parent === this.getCurrentlyDraggedScene()) {

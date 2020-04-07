@@ -16,6 +16,7 @@ class SnappedState extends State {
             const context = [dragHandler, dragHandler.getData('moment'), closestNeighbour];
             // Transition to Idle state
             dragHandler.getData('moment').momentFSM.transition('IdleMomentState', context);
+            closestNeighbour.getData('moment').momentFSM.transition('IdleMomentState', context);
         }
     }
 

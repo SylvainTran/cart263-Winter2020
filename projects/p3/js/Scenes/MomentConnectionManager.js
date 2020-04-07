@@ -30,14 +30,19 @@ class MomentConnectionManager {
         closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);
     }
 
-    checkNeighbourTextStatus() {
+    checkNeighbourTextStatus(self, neighbour) {
         // Check the status of the neighbour's text roll
-
-        // If there is something
-
-        // Bifurcate using RiTA semantic category
-
-        // 
+        let selfScene = self.getData('moment');
+        let neighbourScene = neighbour.getData('moment');
+        if(neighbourScene.sceneTextRepresentation) {
+            // If playing animation and at the edge of its scene height
+            if(selfScene.playingTextAnimation && neighbourScene.playingTextAnimation) {
+                // Bifurcate using RiTA semantic category
+                console.debug("Bifurcating");
+                selfScene.setSceneTextRepresentation(neighbourScene.sceneTextRepresentation.text);
+                neighbourScene.setSceneTextRepresentation(selfScene.sceneTextRepresentation.text);
+            }
+        }
     }
 
     orderConnections(thisMoment, closestNeighbour) {

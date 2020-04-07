@@ -61,6 +61,13 @@ class CriticalHit extends Moment {
 
   }
 
+  setSceneTextRepresentation(value) {
+    if(value) {
+      let updatedText = this.sceneTextRepresentation.text + "\n" + value;
+      this.sceneTextRepresentation.setText(updatedText);
+    }
+  }
+
   playText(playTextAnimation) {
     playTextAnimation? this.playingTextAnimation = true: this.playingTextAnimation = false;
   }
@@ -71,7 +78,6 @@ class CriticalHit extends Moment {
   setupCamera() {
     this.cameras.main.setPosition(this.parent.x, this.parent.y);
     this.cameras.main.setSize(CriticalHit.WIDTH, CriticalHit.HEIGHT);
-    //this.cameras.main.setViewport(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
     this.cameras.main.setScroll(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
   }
 
@@ -82,7 +88,7 @@ class CriticalHit extends Moment {
     // Change the y pos of the text from top to down (animate)
     this.playTextAnimation();    
     
-    this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
+    // this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
     // Sound
 
     // Image

@@ -46,6 +46,15 @@ class RareLoot extends Moment {
 
   }
 
+
+  setSceneTextRepresentation(value) {
+    if(value) {
+      let updatedText = this.sceneTextRepresentation.text + "\n" + value;
+      this.sceneTextRepresentation.setText(updatedText);
+    }
+  }
+
+
   playText(playTextAnimation) {
     playTextAnimation? this.playingTextAnimation = true: this.playingTextAnimation = false;
   }
@@ -84,7 +93,7 @@ class RareLoot extends Moment {
     // Change the y pos of the text from top to down (animate)
     this.playTextAnimation();    
     
-    this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
+    //this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
     // Sound
 
     // Image
@@ -97,7 +106,6 @@ class RareLoot extends Moment {
   setupCamera() {
     this.cameras.main.setPosition(this.parent.x, this.parent.y);
     this.cameras.main.setSize(RareLoot.WIDTH, RareLoot.HEIGHT);
-    //this.cameras.main.setViewport(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
     this.cameras.main.setScroll(this.parent.x, this.parent.y, GoodNPCPunchLine.WIDTH, GoodNPCPunchLine.HEIGHT);
   }
   // Set this moment as the owner of the linked list

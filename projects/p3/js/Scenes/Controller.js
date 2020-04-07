@@ -30,6 +30,8 @@ class Controller extends Phaser.Scene {
     this.scenesInLevel = [];
     // Draggable zones in use in this level
     this.draggableZonesActive = [];
+    // Number of paired scenes
+    this.numberOfPairedScenes = 0;
   }
 
   init() {
@@ -51,7 +53,7 @@ class Controller extends Phaser.Scene {
     switch (level) {
       case 0: numberOfMoments = 2; moments = [CriticalHit, RareLoot]; break;
       case 1: numberOfMoments = 3; moments = [GoodNPCPunchLine, RareLoot, CriticalHit]; break;
-      case 2: numberOfMoments = 4; break;
+      case 2: numberOfMoments = 4; moments = [RareLoot, CriticalHit, GoodNPCPunchLine, RareLoot]; break;
       default: numberOfMoments = 2; break;
     }
     const levelConfig = {
@@ -89,7 +91,21 @@ class Controller extends Phaser.Scene {
     this.setupBackgroundGraphics();
     console.debug(this.draggableZonesActive);
   }
-  
+
+  adjustRotation(self, neighbour) {
+    // If there is an available closest neighbour to snap with, adjust rotation in rad of game objects to align to each other
+   if(this.availableConnections) {
+      let deltaY = self.y - neighbour.y;
+      let deltaX = self.x - neighbour.x;
+      let dist = sqrt(sq(deltaX) + sq(deltaY));
+      let alpha = asin(deltaY/dist);
+      let angle = 0;
+      deltaX > 0  && deltaY > 0 ? angle = alpha: angle = -alpha;
+      self.getData('moment').sceneTextRepresentation.setRotation(angle);
+      neighbour.getData('moment').sceneTextRepresentation.setRotation(angle);
+    }
+  }
+
   update(time, delta) {
     // Handle scene transition
     this.handleSceneTransition();
@@ -122,11 +138,12 @@ class Controller extends Phaser.Scene {
         // }    
         // return;
       // }
+      // Adjust dragged scene objects' rotation
+
       let tx = scene.parent.getData('tx');
       let ty = scene.parent.getData('ty');
       let speed = scene.parent.getData('speed');
       // Update velocities based on noise 
-      console.debug(noise(tx));
       scene.parent.setData('vx', map(noise(tx), 0, 1, -speed, speed));
       scene.parent.setData('vy', map(noise(ty), 0, 1, -speed, speed));
       // Update the positions
@@ -378,7 +395,7 @@ class Controller extends Phaser.Scene {
       console.debug("changing representation of scene");
       // TODO make user select this / change this...
       let newText = greeterContent;
-      scene.sequencingData.representation.text = newText;
+      scene.sceneTextRepresentation.setText(newText);
       // Trigger the text animation
       scene.playText(true);
     } else if (button.text === "Sound") {
@@ -555,6 +572,8 @@ class Controller extends Phaser.Scene {
     this.handleSnapping(dragHandler, closestNeighbour);
     // Handle text bifurcation between the dragged scene and its closest neighbour
     this.handleTextBifurcation(dragHandler, closestNeighbour);
+    // Adjust rotation
+    this.adjustRotation(dragHandler, closestNeighbour);
   }
 
   handleSnapping(dragHandler, closestNeighbour) {
@@ -568,7 +587,6 @@ class Controller extends Phaser.Scene {
 
   handleTextBifurcation(dragHandler, closestNeighbour) {
     if (this.availableConnections) {
-      dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
 
     } else {
 
@@ -611,38 +629,42 @@ class Controller extends Phaser.Scene {
   }
 
   handleLinking() {
+    let self = this.getCurrentlyDraggedScene();
+    let selfScene = self.getData('moment');
+    let neighbour = this.getClosestNeighbour();
+    let neighbourScene = neighbour.getData('moment');
     // Update the dragged scene to be the doubly linked list owner
-    this.getCurrentlyDraggedScene().getData('moment').setNewDoublyLinkedListOwner();
+    selfScene.setNewDoublyLinkedListOwner();
     // Shake and flash the camera for effect
     const SHAKE_AMOUNT = 250;
-    this.getCurrentlyDraggedScene().scene.cameras.main.shake(SHAKE_AMOUNT);
-    this.getCurrentlyDraggedScene().scene.cameras.main.flash(SHAKE_AMOUNT);
+    self.scene.cameras.main.shake(SHAKE_AMOUNT);
+    self.scene.cameras.main.flash(SHAKE_AMOUNT);
     // Create the doubly linked list if we're the owner
-    this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList = new DoublyLinkedList(this.getCurrentlyDraggedScene().getData('moment'));
+    selfScene.doublyLinkedList = new DoublyLinkedList(selfScene);
     // Append the closestNeighbour to the tail of the doubly linked list
-    this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList.append(this.getClosestNeighbour().getData('moment'));
+    selfScene.doublyLinkedList.append(neighbourScene);
     // Destroy the link button if it exists
     if (this.getCreateLinkButton()) {
       this.getCreateLinkButton().destroy();
       this.createdLinkButtonAlready = false;
     }
     // Check if this snapped state belongs to the owner
-    this.getCurrentlyDraggedScene().getData('moment').isSnappedOwner = true;
-    this.displaySnappedState(this.getCurrentlyDraggedScene(), this.getCurrentlyDraggedScene().getData('moment'), this.getClosestNeighbour());
+    selfScene.isSnappedOwner = true;
+    this.displaySnappedState(self, selfScene, neighbour);
     // disable dragging on both to lock them away
-    this.input.setDraggable([this.getCurrentlyDraggedScene(), this.getClosestNeighbour()], false);    
+    this.input.setDraggable([self, neighbour], false);    
     // Disable link visual
-    this.displayLink(this.getCurrentlyDraggedScene, this.getClosestNeighbour, false);
+    this.displayLink(self, neighbour, false);
     // Transition the dragged scene
-    const context = [this.getCurrentlyDraggedScene(), this.getCurrentlyDraggedScene().getData('moment'), this.getClosestNeighbour()];
-    this.getCurrentlyDraggedScene().getData('moment').momentFSM.transition('LinkedState', context);
+    const context = [self, selfScene, neighbour];
+    selfScene.momentFSM.transition('LinkedState', context);
     // Transition the closest neighbour
-    this.getClosestNeighbour().getData('moment').momentFSM.transition('LinkedState', context);
+    neighbourScene.momentFSM.transition('LinkedState', context);
+    // Update text bifurcation
+    selfScene.momentConnectionManager.checkNeighbourTextStatus(self, neighbour);
     // Update the master linked scene list
-    this.linkedScenesList.push(this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList);
-    // Debug
-    console.debug(this.getCurrentlyDraggedScene().getData('moment').doublyLinkedList);
-    console.debug(this.linkedScenesList);
+    this.linkedScenesList.push(selfScene.doublyLinkedList);
+    this.numberOfPairedScenes += 2;
   }
 
   displaySnappedState() {
@@ -715,8 +737,10 @@ class Controller extends Phaser.Scene {
 
   handleSceneTransition() {
     // Check if all the scenes for a level are linked to trigger end of level screen
-    if (this.linkedScenesList.length >= this.levelManager(this.currentLevel).numberOfMoments - 1) {
+    if (this.numberOfPairedScenes >= this.levelManager(this.currentLevel).numberOfMoments - 1) {
       ++this.currentLevel;
+      // Reset counter of paired scenes
+      this.numberOfPairedScenes = 0;
       // Fade effect
       this.cameras.main.fadeOut(1000);
       this.cameras.main.fadeIn(1000);

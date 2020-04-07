@@ -35,6 +35,11 @@ class GoodNPCPunchLine extends Moment {
       "speed": "1"
     };
     this.sceneTextRepresentation = null;
+    // Text position for animation
+    this.sceneTextPosX = null;
+    this.sceneTextPosY = null;
+    // Flag for animation
+    this.playingTextAnimation = false;    
   }
 
   init() {
@@ -49,10 +54,39 @@ class GoodNPCPunchLine extends Moment {
     this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
     this.setupCamera();
     this.debugZoneViewport();
-    this.sceneTextRepresentation = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, this.text, {
+    // Setup text initial position and content
+    this.sceneTextPosX = this.cameras.main.centerX;
+    this.sceneTextPosY = this.cameras.main.centerY;
+    this.sceneTextRepresentation = this.add.text(this.sceneTextPosX, this.sceneTextPosY, 'You landed a critical hit!\nMassive Bonus Exp gained.', {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
+  }
+
+
+  setSceneTextRepresentation(value) {
+    if(value) {
+      let updatedText = this.sceneTextRepresentation.text + "\n" + value;
+      this.sceneTextRepresentation.setText(updatedText);
+    }
+  }
+
+  playText(playTextAnimation) {
+    playTextAnimation? this.playingTextAnimation = true: this.playingTextAnimation = false;
+  }
+
+  playTextAnimation() {
+    if(this.playingTextAnimation) {
+      // Increment pos value
+      const INCREASE_POS_Y = 5;
+      this.sceneTextPosY += INCREASE_POS_Y;
+      // Wrap back up when done, shake camera, and change text color then
+      if (this.sceneTextPosY  >= this.scale.height) {
+        this.sceneTextPosY = 0;
+      }
+      // Update display
+      this.sceneTextRepresentation.setPosition(this.sceneTextPosX, this.sceneTextPosY);
+    }
   }
 
   //debugZoneViewport()
@@ -73,8 +107,11 @@ class GoodNPCPunchLine extends Moment {
   update(time, delta) {
     // Update scene representation parameters:
 
+    // Change the y pos of the text from top to down (animate)
+    this.playTextAnimation();    
+
     // Text
-    this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
+    // this.sceneTextRepresentation.setText(this.sequencingData.representation.text);
     // Sound
     
     // Image

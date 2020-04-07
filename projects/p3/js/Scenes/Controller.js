@@ -96,7 +96,7 @@ class Controller extends Phaser.Scene {
 
     // Oscillate scenes
     // for each scene that exists in the level, perlin noise movement
-    // this.perlinMovement();
+    this.perlinMovement();
     
     // Generate datasets
 
@@ -107,29 +107,40 @@ class Controller extends Phaser.Scene {
   perlinMovement() {
     this.scenesInLevel.forEach((scene) => {
       // If not already linked or being currently dragged, update position
-      console.debug(scene.parent);
-      console.debug(this.getCurrentlyDraggedScene());
-      if(scene.momentFSM.state !== "LinkedState" || scene.parent !== this.getCurrentlyDraggedScene()) {    
-        let tx = scene.parent.getData('tx');
-        let ty = scene.parent.getData('ty');
-        let speed = scene.parent.getData('speed');
-        // Update velocities based on noise 
-        console.debug(noise(tx));
-        scene.parent.setData('vx', map(noise(tx), 0, 1, -speed, speed));
-        scene.parent.setData('vy', map(noise(ty), 0, 1, -speed, speed));
-        // Update the positions
-        let vx = scene.parent.getData('vx');
-        let vy = scene.parent.getData('vy');
-        scene.parent.x += vx;
-        scene.parent.y += vy;
-        // Update the derivative of time wrt x and y
-        scene.parent.setData('tx', tx + 0.01);
-        scene.parent.setData('ty', tx + 0.02);
-        // Update the camera of the scene to be that of the parented zone
-        scene.refresh();
-        // Handle wrapping
-        this.handleWrapping(scene);      
+      if(scene.momentFSM.state !== 'IdleMomentState') {
+        return;
       }
+      // else if (scene.parent === this.getCurrentlyDraggedScene()) {
+        // Reset currently dragged scene after 3 seconds to give some time for the player to decide if they want to link the scene or not
+        // setTimeout( () => { 
+        //   this.setCurrentlyDraggedScene(null);
+        // }, 3000);
+        // // Destroy the create link button
+        // if (this.getCreateLinkButton()) {
+        //   this.getCreateLinkButton().destroy();
+        //   this.createdLinkButtonAlready = false;
+        // }    
+        // return;
+      // }
+      let tx = scene.parent.getData('tx');
+      let ty = scene.parent.getData('ty');
+      let speed = scene.parent.getData('speed');
+      // Update velocities based on noise 
+      console.debug(noise(tx));
+      scene.parent.setData('vx', map(noise(tx), 0, 1, -speed, speed));
+      scene.parent.setData('vy', map(noise(ty), 0, 1, -speed, speed));
+      // Update the positions
+      let vx = scene.parent.getData('vx');
+      let vy = scene.parent.getData('vy');
+      scene.parent.x += vx;
+      scene.parent.y += vy;
+      // Update the derivative of time wrt x and y
+      scene.parent.setData('tx', tx + 0.01);
+      scene.parent.setData('ty', tx + 0.02);
+      // Update the camera of the scene to be that of the parented zone
+      scene.refresh();
+      // Handle wrapping
+      this.handleWrapping(scene);      
     });
   }
 
@@ -695,7 +706,6 @@ class Controller extends Phaser.Scene {
   // Only check if the level changed
   levelChanged() {
     let levelChanged = this.currentLevel > this.previousLevel ? true : false;
-    console.debug(levelChanged);
     if (levelChanged) {
       // Update the last level's index if the current one changed
       this.previousLevel = this.currentLevel;

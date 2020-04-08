@@ -27,25 +27,3 @@ class StateMachine {
     this.stateArray[this.state].enter(...context);
   }
 }
-
-// Player stateArray  
-class PlayerIdleState extends State {
-  enter(scene, player) {
-    console.log("Player is Idle");
-  }
-
-  execute(scene, player) {
-
-  }
-}
-
-//Player's moving state
-class MovingState extends State {
-  enter(scene, player) {
-    console.log("Player is starting to move");
-  }
-
-  execute(scene, player) {
-
-  }
-}

@@ -23,7 +23,7 @@ let config = {
     }
   },
   scene: [
-    BootScene, Controller
+    Preloader, Controller
   ]
 };
 let game = new Phaser.Game(config);

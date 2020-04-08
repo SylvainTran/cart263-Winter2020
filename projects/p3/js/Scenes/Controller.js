@@ -32,6 +32,8 @@ class Controller extends Phaser.Scene {
     this.draggableZonesActive = [];
     // Number of paired scenes
     this.numberOfPairedScenes = 0;
+    // Player in the global world (first layer of reality) in controller.js/world.js
+    this.globalPlayer = null;
   }
 
   init() {
@@ -64,6 +66,18 @@ class Controller extends Phaser.Scene {
   }
 
   create() {
+    // Controller for the player in the main world
+    const spawnPoint = this.add.zone(this.scale.width/2, this.scale.height/2, 128, 128);
+    const scaleFactor = 2.5;
+    this.globalPlayer = new Player(this, spawnPoint.x, spawnPoint.y, "hero");
+    this.globalPlayer.setSize(64, 64).setScale(scaleFactor);
+    // Physics bounds
+    this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
+    this.globalPlayer.setCollideWorldBounds(true);
+    // Camera follow and zoom
+    //this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
+    //this.cameras.main.setZoom(3);
+
     // Set-up an event handler
     createLinkEmitter.on('createLink', this.handleLinking, this);
     // Spawn the greeter dialog box to introduce the game
@@ -84,12 +98,8 @@ class Controller extends Phaser.Scene {
     this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0x000000, 5, true);
     // Make it invisible until connections start being made between scenes
     this.setLinkLineVisible(false);
-    // Perlin noise movement
-
-    this.startingYPos = 1000;
     // Setup background graphics
     this.setupBackgroundGraphics();
-    console.debug(this.draggableZonesActive);
   }
 
   adjustRotation(self, neighbour) {
@@ -118,6 +128,11 @@ class Controller extends Phaser.Scene {
 
     // Update shapes' position and display
     this.handleBgShapes();
+
+    // Player input
+    // Update the player's FSM
+    //scene, player)
+    this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
   }
 
   perlinMovement() {
@@ -325,6 +340,8 @@ class Controller extends Phaser.Scene {
     this.handleClick(draggableZoneParent, momentInstance);
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
+    // Add collider with player
+    this.physics.add.collider(this.globalPlayer, draggableZoneParent, () => { console.log("collided with a scene"); }, () => { return true; }, this);
     // Add to current draggable zones
     this.setDraggableActiveZones(draggableZoneParent);
     // Add the scenes

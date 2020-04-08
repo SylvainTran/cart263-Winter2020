@@ -36,6 +36,10 @@ class RareLoot extends Moment {
     this.sceneTextPosY = null;
     // Flag for animation
     this.playingTextAnimation = false;
+    // Player instance in this world
+    this.globalPlayer = null;    
+    // Black circle marker
+    this.circle = null;
   }
 
   init() {
@@ -75,7 +79,7 @@ class RareLoot extends Moment {
   }
 
   create() {
-    this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
+    this.circle = this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
     this.setupCamera();
     // Setup text initial position and content
     this.sceneTextPosX = this.cameras.main.centerX;
@@ -84,6 +88,39 @@ class RareLoot extends Moment {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
+  }
+
+  createPlayer() {
+    // Increase size of circle to create the effect of creating a big world
+    const TRUE_SIZE = 300;
+    const MARGIN = 100;
+    this.circle.geom.setTo(this.circle.x, this.circle.y, TRUE_SIZE);
+    // Update size of drag handler parent too
+    this.parent.setSize(TRUE_SIZE * 2, TRUE_SIZE * 2, true);
+    // Update text offset as well
+    this.sceneTextPosX += TRUE_SIZE/2;
+    this.sceneTextPosY += TRUE_SIZE;    
+    // Spawn the player in the resized scene
+    const spawnPoint = this.add.zone(this.circle.x, this.circle.y, TRUE_SIZE, TRUE_SIZE);
+    const sceneScaleFactor = 0.75;
+    this.globalPlayer = new Player(this, spawnPoint.x + TRUE_SIZE, spawnPoint.y + TRUE_SIZE, "hero");
+    this.globalPlayer.setSize(64, 64).setScale(sceneScaleFactor);
+    // Physics bounds
+    this.physics.world.setBounds(spawnPoint.x, spawnPoint.y, TRUE_SIZE * 2, TRUE_SIZE * 2);
+    this.globalPlayer.setCollideWorldBounds(true);
+    // Camera follow
+    // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
+    // this.cameras.main.setZoom(1);
+    // Position the camera inside the black circle
+    this.cameras.main.setSize(TRUE_SIZE * 2, TRUE_SIZE * 2);
+    this.cameras.main.setBounds(spawnPoint.x, spawnPoint.y, TRUE_SIZE, TRUE_SIZE, true);
+    return this.globalPlayer;
+  }
+
+  // When the Global Player enters this scene's (dimension), then an instance of the player of this scene is rendered
+  // and enabled for keyboard input
+  initPlayer() {
+    this.globalPlayer = this.createPlayer();
   }
 
   update(time, delta) {
@@ -99,7 +136,9 @@ class RareLoot extends Moment {
     // Image
     
     // Game
-
+    if(this.globalPlayer) {
+      this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
+    }
     this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);
   }
 

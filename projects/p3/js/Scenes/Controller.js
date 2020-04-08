@@ -67,16 +67,7 @@ class Controller extends Phaser.Scene {
 
   create() {
     // Controller for the player in the main world
-    const spawnPoint = this.add.zone(this.scale.width/2, this.scale.height/2, 128, 128);
-    const scaleFactor = 2.5;
-    this.globalPlayer = new Player(this, spawnPoint.x, spawnPoint.y, "hero");
-    this.globalPlayer.setSize(64, 64).setScale(scaleFactor);
-    // Physics bounds
-    this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
-    this.globalPlayer.setCollideWorldBounds(true);
-    // Camera follow and zoom
-    //this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    //this.cameras.main.setZoom(3);
+    this.createPlayer();
 
     // Set-up an event handler
     createLinkEmitter.on('createLink', this.handleLinking, this);
@@ -127,11 +118,10 @@ class Controller extends Phaser.Scene {
     // Generate datasets
 
     // Update shapes' position and display
-    this.handleBgShapes();
+    // this.handleBgShapes();
 
     // Player input
     // Update the player's FSM
-    //scene, player)
     this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
   }
 
@@ -415,6 +405,15 @@ class Controller extends Phaser.Scene {
       scene.sceneTextRepresentation.setText(newText);
       // Trigger the text animation
       scene.playText(true);
+    } else if(button.text === "Enter Dimension") {
+      // Global player enters the selected scene
+      console.debug("Entering Dimension: " + scene.parent.name);
+      // Either play an animation player goes to sleep or make it invisible (and disable input temporarily)
+      // Then activate a method in the scene to activate the scene's player and focus camera
+      // If the scene is in snapped state, the player has the ability to enter it
+      if(scene.momentFSM.state === "SnappedState") {
+        scene.initPlayer();
+      }
     } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {
         // Read the scene as speak
@@ -433,6 +432,18 @@ class Controller extends Phaser.Scene {
       dialog.destroy();
     }
   }
+
+  createPlayer() {
+    const spawnPoint = this.add.zone(this.scale.width / 2, this.scale.height / 2, 128, 128);
+    const controllerScaleFactor = 2.5;
+    this.globalPlayer = new Player(this, spawnPoint.x, spawnPoint.y, "hero");
+    // Physics bounds
+    this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
+    this.globalPlayer.setCollideWorldBounds(true);
+    this.globalPlayer.setSize(64, 64).setScale(controllerScaleFactor);      
+    return this.globalPlayer;
+  }
+
 
   handleResponsiveVoice(scene) {
     let textToSound = scene.sceneTextRepresentation.text;
@@ -462,12 +473,12 @@ class Controller extends Phaser.Scene {
         y: y,
         width: 250,
         background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, COLOR_PRIMARY),
-        title: createLabel(this, 'Chapter 1').setDraggable(),
+        title: createLabel(this, 'Actions').setDraggable(),
         //content: createLabel(this, ''),
         //description: createLabel(this, sceneClicked.parent.name),
         choices: [
-          createLabel(this, 'Text')
-          // createLabel(this, 'Sound'),
+          createLabel(this, 'Text'),
+          createLabel(this, 'Enter Dimension'),
           // createLabel(this, 'Image'),
           // createLabel(this, 'Game'),
           // createLabel(this, 'Ephemeral')

@@ -17,3 +17,12 @@ TODO
 
 Sequencing
 
+    Time flows differently inside scenes
+    Can interact outside scene too, or be at risk vs. safety
+    Can rescue npcs / quests inside special scenes
+    scenes can reveal something abou tthe env. or allow the player to solve a puzzle in the World.js scene when placed on drag drop zone
+    Animations to climb in and out of scenes
+    Puzzle: Paired scenes interact with each other, maybe a scene is a stair and the other a ledge -- or one is a dark room and one is a light room,
+    figure out how to make one activate the other
+    Player explores in World.js and can pocket scenes for later use or enter / use them immediately in the surrounding environment
+    

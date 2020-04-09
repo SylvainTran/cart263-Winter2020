@@ -42,10 +42,12 @@ class CriticalHit extends Moment {
     this.circle = null;
     // Spawn point for player teleportation
     this.spawnPoint = null;
+    // Footstep sound
+    this.footstepSound = null;
   }
 
   init() {
-    console.log('Init CriticalHit');
+    console.log('Init Waters of Depression');
   }
 
   preload() {
@@ -66,6 +68,8 @@ class CriticalHit extends Moment {
     this.spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
     // Physics bounds
     this.physics.world.setBounds(this.spawnPoint.x, this.spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);
+    // Footstep sounds
+    this.footstepSound = this.sound.add('footstepWater');
   }
 
   // When the Global Player enters this scene's (dimension), then an instance of the player of this scene is rendered

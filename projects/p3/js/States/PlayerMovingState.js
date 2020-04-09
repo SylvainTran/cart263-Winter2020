@@ -9,6 +9,12 @@ class PlayerMovingState extends State {
     }
     // Update the velocity directly per case, and animations later on (some issue currently)
     updateVelocity(scene, player) {
+      if(player.cursors.left.isDown || player.cursors.right.isDown || player.cursors.up.isDown || player.cursors.down.isDown ) {
+        let footstepFromScene = scene.footstepSound;
+        if(!footstepFromScene.isPlaying) {
+          footstepFromScene.play();
+        }
+      }
       const playerSpeed = player.speed;
       if (player.cursors.left.isDown) {
         player.setVelocityX(-playerSpeed);

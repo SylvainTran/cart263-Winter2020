@@ -1,3 +1,21 @@
+/**
+* 
+THE DREAM OF A RIDICULOUS MAN
+
+A GAME ON THE SADNESS OF LIFE
+...
+
+Author: Sylvain Serey Tran
+PROJECT FOR CART 263 - WINTER 2020, BY DR. PIPPIN BAR
+
+Copyright/Attribution Notice: 
+Music (piano theme): HitCtrl
+Click on scene: p0ss
+Link button: NenadSimic
+Entering a Scene Dimension (Epic Amulet Item): CosmicD
+Footstep (Water): Little Robot Sound Factory
+*/
+
 // Config file for phaser
 //
 // Physics to arcade
@@ -29,6 +47,7 @@ let config = {
 let game = new Phaser.Game(config);
 
 $('document').ready(setup);
+
 let $hamburgerMenu;
 let $navBar;
 let sticky;

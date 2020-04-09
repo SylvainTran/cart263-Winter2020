@@ -7,6 +7,17 @@ class Preloader extends Phaser.Scene {
 
   preload() {
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
+    this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
+    this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
+    this.load.audio('ui-poing', ['assets/sounds/ui/poing.ogg']);
+    this.load.audio('linkButton', ['assets/sounds/ui/linkButton.wav']);
+    this.load.audio('sceneEnter', ['assets/sounds/SCENE_ENTER.wav']);
+    this.load.audio('pianoTheme', ['assets/sounds/PIANO_THEME.mp3',
+                                   'assets/sounds/PIANO_THEME.ogg']);
+    this.load.audio('footstepDirt', ['assets/sounds/FOOTSTEP_DIRT.mp3',
+                                      'assets/sounds/FOOTSTEP_DIRT.wav']);       
+    this.load.audio('footstepWater', ['assets/sounds/FOOTSTEP_WATER.mp3',
+                                   'assets/sounds/FOOTSTEP_WATER.wav']);    
   }
 
   create() {

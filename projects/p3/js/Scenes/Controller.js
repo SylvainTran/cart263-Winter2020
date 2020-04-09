@@ -36,6 +36,13 @@ class Controller extends Phaser.Scene {
     this.globalPlayer = null;
     // Player lock in a scene (only one incepted player at a time allowed)
     this.scenePlayerLock = false;
+    // Music and UI sounds
+    this.uiPoingSound = null;
+    this.linkButtonSound = null;
+    this.sceneEnterSound = null;
+    this.pianoTheme = null;
+    // Footstep sounds (Different per scene)
+    this.footstepSound = null;
   }
 
   init() {
@@ -46,8 +53,6 @@ class Controller extends Phaser.Scene {
 
   preload() {
     this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-    this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
-    this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
   }
 
   // Assigns the number of moments for each level
@@ -97,6 +102,15 @@ class Controller extends Phaser.Scene {
     // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
     // this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
     // this.cameras.main.setSize(320, 320);
+
+    // Sounds
+    this.uiPoingSound = this.sound.add('ui-poing');
+    this.linkButtonSound = this.sound.add('linkButton');
+    this.sceneEnterSound = this.sound.add('sceneEnter');
+    this.pianoTheme = this.sound.add('pianoTheme');
+    this.pianoTheme.play();
+    // Footstep sounds
+    this.footstepSound = this.sound.add('footstepDirt');
   }
 
   adjustRotation(self, neighbour) {
@@ -368,6 +382,8 @@ class Controller extends Phaser.Scene {
   // Handle click on the zone that will pop up the sequencer data window
   handleClick(draggableZoneParent, scene) {
     draggableZoneParent.on('pointerdown', (pointer) => {
+      // Play sound
+      this.uiPoingSound.play();
       //On click, spawn the sequencer data window
       this.popSequencerDataWindow(scene, pointer);
     }, this.scene);
@@ -420,6 +436,7 @@ class Controller extends Phaser.Scene {
         console.debug("Entering Dimension: " + scene.parent.name);
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
+          this.sceneEnterSound.play();
           // Disable input for the global player instance belonging to Controller
           this.globalPlayer.disableInteractive();
           scene.initPlayer();
@@ -663,6 +680,7 @@ class Controller extends Phaser.Scene {
     const height = this.scale.height;
     const offset = 150;
     this.createdLinkButton = this.add.circle(width - offset, height - offset, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
+      this.linkButtonSound.play();
       createLinkEmitter.emit('createLink');
     });
   }

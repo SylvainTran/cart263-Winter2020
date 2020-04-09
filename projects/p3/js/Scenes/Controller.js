@@ -93,6 +93,10 @@ class Controller extends Phaser.Scene {
     this.setLinkLineVisible(false);
     // Setup background graphics
     this.setupBackgroundGraphics();
+    // Setup camera
+    // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
+    // this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
+    // this.cameras.main.setSize(320, 320);
   }
 
   adjustRotation(self, neighbour) {
@@ -416,6 +420,8 @@ class Controller extends Phaser.Scene {
         console.debug("Entering Dimension: " + scene.parent.name);
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
+          // Disable input for the global player instance belonging to Controller
+          this.globalPlayer.disableInteractive();
           scene.initPlayer();
         }
       }
@@ -598,7 +604,7 @@ class Controller extends Phaser.Scene {
       return;
     }
     // Cache the closest neighbour and available connections found for event handling
-    this.setCurrentlyDraggedSceneNeighbour(closestNeighbour);
+    this.setCurrentlyDraggedSceneNeighbour(dragHandler, closestNeighbour);
     this.setAvailableConnections(dragHandler.getData('moment').momentConnectionManager.checkForAvailableConnections(dragHandler, closestNeighbour));
 
     // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
@@ -733,7 +739,8 @@ class Controller extends Phaser.Scene {
     this.currentlyDraggedScene = scene;
   }
 
-  setCurrentlyDraggedSceneNeighbour(neighbour) {
+  setCurrentlyDraggedSceneNeighbour(self, neighbour) {
+    self.setData('closestNeighbour', neighbour);
     this.currentlyDraggedSceneNeighbour = neighbour;
   }
 

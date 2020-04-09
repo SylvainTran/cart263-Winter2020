@@ -8,6 +8,7 @@ class Player extends MobileElement {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.cursors = scene.input.keyboard.createCursorKeys();
+        this.input = this.cursors;
         this.PlayerFSM = new StateMachine('Idle', playerStates, [scene, this]);
         this.inventory = 0;
     }

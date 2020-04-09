@@ -40,6 +40,8 @@ class RareLoot extends Moment {
     this.globalPlayer = null;    
     // Black circle marker
     this.circle = null;
+    // Spawn point for player teleportation
+    this.spawnPoint = null;
   }
 
   init() {
@@ -88,22 +90,37 @@ class RareLoot extends Moment {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
+    this.spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
+    // Physics bounds
+    this.physics.world.setBounds(this.spawnPoint.x, this.spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);
   }
 
   createPlayer() {
+    if(this.globalPlayer) {
+      let thisPlayer = this.globalPlayer;
+      thisPlayer.destroy(true);
+    }
     // Lock the player as unique in the Controller
     this.parent.scene.scenePlayerLock = true;
     // Spawn the player in the resized scene
-    const spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
     const sceneScaleFactor = 1;
-    this.globalPlayer = new Player(this, spawnPoint.x + this.circle.geom.radius, spawnPoint.y + this.circle.geom.radius, "hero");
+    this.globalPlayer = new Player(this, this.spawnPoint.x + this.circle.geom.radius, this.spawnPoint.y + this.circle.geom.radius, "hero");
     this.globalPlayer.setSize(64, 64).setScale(sceneScaleFactor);
-    // Physics bounds
-    this.physics.world.setBounds(spawnPoint.x, spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);
     this.globalPlayer.setCollideWorldBounds(true);
     // Camera follow
     // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
     // this.cameras.main.setZoom(2);
+    // Reposition / Transfer player between this scene and its closest neighbour
+    let closestNeighbour = this.parent.getData('closestNeighbour').getData('moment');
+    // Add a pointerdown event only once to prevent duplicates
+    this.parent.getData('closestNeighbour').once("pointerdown", (pointer, gameObject) => {
+      // Destroy 
+      console.debug(this.globalPlayer);
+      let thisPlayer = this.globalPlayer;
+      thisPlayer.destroy(true);
+      // Create a player in the closest neighbour
+      closestNeighbour.createPlayer();
+    });
     return this.globalPlayer;
   }
 

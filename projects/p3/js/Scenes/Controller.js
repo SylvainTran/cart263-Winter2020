@@ -409,11 +409,11 @@ class Controller extends Phaser.Scene {
       scene.playText(true);
     } else if(button.text === "Enter Dimension") {
       // Global player enters the selected scene
-      console.debug("Entering Dimension: " + scene.parent.name);
       // Either play an animation player goes to sleep or make it invisible (and disable input temporarily)
       // Then activate a method in the scene to activate the scene's player and focus camera
-      // If the scene is in snapped state, the player has the ability to enter it
-      if(scene.momentFSM.state === "SnappedState") {
+      // If the scene is in snapped state and if that is the currently dragged/active scene, the player has the ability to enter it 
+      if(scene.parent === this.getCurrentlyDraggedScene() && scene.momentFSM.state === "SnappedState") {
+        console.debug("Entering Dimension: " + scene.parent.name);
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
           scene.initPlayer();

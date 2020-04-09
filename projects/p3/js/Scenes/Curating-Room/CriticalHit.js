@@ -72,29 +72,17 @@ class CriticalHit extends Moment {
   }
 
   createPlayer() {
-    // Increase size of circle to create the effect of creating a big world
-    const TRUE_SIZE = 300;
-    const MARGIN = 100;
-    this.circle.geom.setTo(this.circle.x, this.circle.y, TRUE_SIZE);
-    // Update size of drag handler parent too
-    this.parent.setSize(TRUE_SIZE * 2, TRUE_SIZE * 2, true);
-    // Update text offset as well
-    this.sceneTextPosX += TRUE_SIZE/2;
-    this.sceneTextPosY += TRUE_SIZE;
     // Spawn the player in the resized scene
-    const spawnPoint = this.add.zone(this.circle.x, this.circle.y, TRUE_SIZE, TRUE_SIZE);
-    const sceneScaleFactor = 0.75;
-    this.globalPlayer = new Player(this, spawnPoint.x + TRUE_SIZE, spawnPoint.y + TRUE_SIZE, "hero");
+    const spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
+    const sceneScaleFactor = 1;
+    this.globalPlayer = new Player(this, spawnPoint.x + this.circle.geom.radius, spawnPoint.y + this.circle.geom.radius, "hero");
     this.globalPlayer.setSize(64, 64).setScale(sceneScaleFactor);
     // Physics bounds
-    this.physics.world.setBounds(spawnPoint.x, spawnPoint.y, TRUE_SIZE * 2, TRUE_SIZE * 2);
+    this.physics.world.setBounds(spawnPoint.x, spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);
     this.globalPlayer.setCollideWorldBounds(true);
     // Camera follow
     // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    // this.cameras.main.setZoom(1);
-    // Position the camera inside the black circle
-    this.cameras.main.setSize(TRUE_SIZE * 2, TRUE_SIZE * 2);
-    this.cameras.main.setBounds(spawnPoint.x, spawnPoint.y, TRUE_SIZE, TRUE_SIZE, true);
+    // this.cameras.main.setZoom(2);
     return this.globalPlayer;
   }
 

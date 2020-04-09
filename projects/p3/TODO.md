@@ -34,6 +34,8 @@ Core Features
 
 Things to fix
 
+    // Remove create link button when out of snap
+    
     // Reset the data inside the scenes
     dragHandler.setData('closestNeighbour', null);
     closestNeighbour.setData('closestNeighbour', null);

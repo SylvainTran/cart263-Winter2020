@@ -9,6 +9,7 @@ class Preloader extends Phaser.Scene {
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
     this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
     this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
+    this.load.audio('zap', ['assets/sounds/PLAYER_CREATED.ogg']);
     this.load.audio('ui-poing', ['assets/sounds/ui/poing.ogg']);
     this.load.audio('linkButton', ['assets/sounds/ui/linkButton.wav']);
     this.load.audio('sceneEnter', ['assets/sounds/SCENE_ENTER.wav']);

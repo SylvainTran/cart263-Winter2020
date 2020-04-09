@@ -44,6 +44,8 @@ class CriticalHit extends Moment {
     this.spawnPoint = null;
     // Footstep sound
     this.footstepSound = null;
+    // Player sounds
+    this.playerCreatedSound = null;
   }
 
   init() {
@@ -70,6 +72,8 @@ class CriticalHit extends Moment {
     this.physics.world.setBounds(this.spawnPoint.x, this.spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);
     // Footstep sounds
     this.footstepSound = this.sound.add('footstepWater');
+    // Player sounds
+    this.playerCreatedSound = this.sound.add('zap');
   }
 
   // When the Global Player enters this scene's (dimension), then an instance of the player of this scene is rendered
@@ -98,16 +102,24 @@ class CriticalHit extends Moment {
     // Add a pointerdown event only once to prevent duplicates
     this.parent.getData('closestNeighbour').once("pointerdown", (pointer, gameObject) => {
       // Flash
-      closestNeighbour.cameras.main.flash(1000);
-      this.cameras.main.flash(1000);
-      // Destroy 
-      console.debug(this.globalPlayer);
-      let thisPlayer = this.globalPlayer;
-      thisPlayer.destroy(true);
-      // Create a player in the closest neighbour
-      closestNeighbour.createPlayer();
+      if(this.globalPlayer) {
+        closestNeighbour.cameras.main.flash(1000);
+        this.cameras.main.flash(1000);  
+        // Destroy 
+        console.debug(this.globalPlayer);
+        this.destroyPlayer();
+        // Create a player in the closest neighbour
+        closestNeighbour.createPlayer();
+      }
     });
+    playerCreatedSound
     return this.globalPlayer;
+  }
+
+  destroyPlayer() {
+    let thisPlayer = this.globalPlayer;
+    thisPlayer.destroy(true);
+    this.globalPlayer = null;
   }
 
   setSceneTextRepresentation(value) {
@@ -179,7 +191,7 @@ class CriticalHit extends Moment {
   refresh() {
     this.cameras.main.setPosition(this.parent.x, this.parent.y);
     // Bring it to the top of the scene list render order
-    this.scene.bringToTop();
+    // this.scene.bringToTop();
   }
 }
 

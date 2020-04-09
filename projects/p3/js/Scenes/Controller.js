@@ -41,6 +41,8 @@ class Controller extends Phaser.Scene {
     this.linkButtonSound = null;
     this.sceneEnterSound = null;
     this.pianoTheme = null;
+    // Player sounds
+    this.playerCreatedSound = null;
     // Footstep sounds (Different per scene)
     this.footstepSound = null;
   }
@@ -73,6 +75,8 @@ class Controller extends Phaser.Scene {
   }
 
   create() {
+    // Player sounds
+    this.playerCreatedSound = this.sound.add('zap');
     // Controller for the player in the main world
     this.createPlayer();
 
@@ -142,7 +146,9 @@ class Controller extends Phaser.Scene {
 
     // Player input
     // Update the player's FSM
-    this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
+    if(this.globalPlayer) {
+      this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
+    }
   }
 
   perlinMovement() {
@@ -406,6 +412,12 @@ class Controller extends Phaser.Scene {
     const OFFSET = 350;
     if (dialog === undefined) {
       dialog = this.createDialog(this, pointer.x + OFFSET, pointer.y, readSceneData, scene);
+      // If the player is locked in a scene
+      if(this.scenePlayerLock) {
+        // WIP
+        // console.debug(dialog.getElement('choices'));
+        //dialog.getElement('choices')[dialog.getElement('choices').length] = this.createLabel(this, 'Leave Dimension');
+      }
     } else if (!dialog.isInTouching(pointer)) {
       try {
         dialog.destroy();
@@ -429,28 +441,28 @@ class Controller extends Phaser.Scene {
       scene.playText(true);
     } else if(button.text === "Enter Dimension") {
       // Global player enters the selected scene
-      // Either play an animation player goes to sleep or make it invisible (and disable input temporarily)
       // Then activate a method in the scene to activate the scene's player and focus camera
       // If the scene is in snapped state and if that is the currently dragged/active scene, the player has the ability to enter it 
       if(scene.parent === this.getCurrentlyDraggedScene() && scene.momentFSM.state === "SnappedState") {
         console.debug("Entering Dimension: " + scene.parent.name);
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
-          this.sceneEnterSound.play();
-          this.tweens.add({
-            targets: this.globalPlayer,
-            y: '+=50',
-            ease: 'Bounce',
-            duration: 500,
-            repeat: 0,
-            yoyo: false
-          });
-          // Flash
-          this.cameras.main.flash(1000);
-          // Disable input for the global player instance belonging to Controller
-          this.globalPlayer.disableInteractive();
+          // Scene effects
+          this.triggerSceneEffects();          
+          // Remove player from this scene
+          let thisPlayer = this.globalPlayer;
+          thisPlayer.destroy();
+          // Create a new player in the entered scene
           scene.initPlayer();
         }
+      }
+    } else if (button.text === "Leave Dimension (if entered)") {
+      if(this.scenePlayerLock) {
+        // Remove player lock to allow new creation
+        this.scenePlayerLock = false;
+        scene.destroyPlayer();
+        // Re-create player
+        this.globalPlayer = this.createPlayer();
       }
     } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {
@@ -471,14 +483,32 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  triggerSceneEffects() {
+    this.sceneEnterSound.play();
+    this.tweens.add({
+      targets: this.globalPlayer,
+      y: '+=50',
+      ease: 'Bounce',
+      duration: 500,
+      repeat: 0,
+      yoyo: false
+    });
+    // Flash
+    this.cameras.main.flash(1000);
+  }
+
   createPlayer() {
     const spawnPoint = this.add.zone(this.scale.width / 2, this.scale.height / 2, 128, 128);
     const controllerScaleFactor = 2.5;
     this.globalPlayer = new Player(this, spawnPoint.x, spawnPoint.y, "hero");
     // Physics bounds
     this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
-    this.globalPlayer.setCollideWorldBounds(true);
-    this.globalPlayer.setSize(64, 64).setScale(controllerScaleFactor);      
+    this.globalPlayer
+    .setCollideWorldBounds(true)
+      .setSize(64, 64).setScale(controllerScaleFactor)      
+        .setInteractive();
+    console.debug(this.playerCreatedSound);
+    this.playerCreatedSound.play();
     return this.globalPlayer;
   }
 
@@ -517,6 +547,7 @@ class Controller extends Phaser.Scene {
         choices: [
           createLabel(this, 'Text'),
           createLabel(this, 'Enter Dimension'),
+          createLabel(this, 'Leave Dimension (if entered)'),
           // createLabel(this, 'Image'),
           // createLabel(this, 'Game'),
           // createLabel(this, 'Ephemeral')
@@ -732,6 +763,12 @@ class Controller extends Phaser.Scene {
     // Update the master linked scene list
     this.linkedScenesList.push(selfScene.doublyLinkedList);
     this.numberOfPairedScenes += 2;
+    // Update player instances and player lock
+    this.scenePlayerLock = false;
+    // Re-create player
+    if(!this.globalPlayer) {
+      this.globalPlayer = this.createPlayer();
+    }
   }
 
   displaySnappedState() {
@@ -816,7 +853,7 @@ class Controller extends Phaser.Scene {
       this.cameras.main.fadeIn(1000);
     }
     // Change level if it has changed from the previous one
-    if (this.levelChanged()) {
+    if (this.levelChanged() && !this.scenePlayerLock) {
       // Pause all the scenes running in parallel to prevent conflicts with deletion
       try {
         this.pauseAllScenes();
@@ -824,6 +861,11 @@ class Controller extends Phaser.Scene {
         this.refresh();
         this.restartLevelSettings();
         this.createLevel(this.currentLevel);
+        if(this.globalPlayer) {
+          let thisPlayer = this.globalPlayer;
+          thisPlayer.destroy();
+        }
+        this.globalPlayer = this.createPlayer();
       } catch(err) {
         console.error(err.message);
       } finally {

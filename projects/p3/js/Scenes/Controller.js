@@ -34,6 +34,8 @@ class Controller extends Phaser.Scene {
     this.numberOfPairedScenes = 0;
     // Player in the global world (first layer of reality) in controller.js/world.js
     this.globalPlayer = null;
+    // Player lock in a scene (only one incepted player at a time allowed)
+    this.scenePlayerLock = false;
   }
 
   init() {
@@ -412,7 +414,10 @@ class Controller extends Phaser.Scene {
       // Then activate a method in the scene to activate the scene's player and focus camera
       // If the scene is in snapped state, the player has the ability to enter it
       if(scene.momentFSM.state === "SnappedState") {
-        scene.initPlayer();
+        // If the player has not been locked to a scene, allow creating a new one inside that scene
+        if(!this.scenePlayerLock) {
+          scene.initPlayer();
+        }
       }
     } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {

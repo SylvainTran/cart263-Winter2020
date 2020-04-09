@@ -66,12 +66,12 @@ class CriticalHit extends Moment {
   // When the Global Player enters this scene's (dimension), then an instance of the player of this scene is rendered
   // and enabled for keyboard input
   initPlayer() {
-    alert("init from inside the scene");
     this.globalPlayer = this.createPlayer();
-    console.debug(this.globalPlayer);
   }
 
   createPlayer() {
+    // Lock the player as unique in the Controller
+    this.parent.scene.scenePlayerLock = true;
     // Spawn the player in the resized scene
     const spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
     const sceneScaleFactor = 1;

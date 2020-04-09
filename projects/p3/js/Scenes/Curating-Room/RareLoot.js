@@ -91,6 +91,8 @@ class RareLoot extends Moment {
   }
 
   createPlayer() {
+    // Lock the player as unique in the Controller
+    this.parent.scene.scenePlayerLock = true;
     // Spawn the player in the resized scene
     const spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
     const sceneScaleFactor = 1;

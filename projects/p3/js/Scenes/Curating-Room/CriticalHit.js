@@ -66,7 +66,9 @@ class CriticalHit extends Moment {
   // When the Global Player enters this scene's (dimension), then an instance of the player of this scene is rendered
   // and enabled for keyboard input
   initPlayer() {
+    alert("init from inside the scene");
     this.globalPlayer = this.createPlayer();
+    console.debug(this.globalPlayer);
   }
 
   createPlayer() {

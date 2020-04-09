@@ -42,6 +42,8 @@ class RareLoot extends Moment {
     this.circle = null;
     // Spawn point for player teleportation
     this.spawnPoint = null;
+    // Footstep sound
+    this.footstepSound = null;
   }
 
   init() {
@@ -93,6 +95,8 @@ class RareLoot extends Moment {
     this.spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
     // Physics bounds
     this.physics.world.setBounds(this.spawnPoint.x, this.spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);
+    // Footstep sounds
+    this.footstepSound = this.sound.add('footstepWater');
   }
 
   createPlayer() {
@@ -114,6 +118,9 @@ class RareLoot extends Moment {
     let closestNeighbour = this.parent.getData('closestNeighbour').getData('moment');
     // Add a pointerdown event only once to prevent duplicates
     this.parent.getData('closestNeighbour').once("pointerdown", (pointer, gameObject) => {
+      // Flash
+      closestNeighbour.cameras.main.flash(1000);
+      this.cameras.main.flash(1000);
       // Destroy 
       console.debug(this.globalPlayer);
       let thisPlayer = this.globalPlayer;

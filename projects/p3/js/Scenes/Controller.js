@@ -437,6 +437,16 @@ class Controller extends Phaser.Scene {
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
           this.sceneEnterSound.play();
+          this.tweens.add({
+            targets: this.globalPlayer,
+            y: '+=50',
+            ease: 'Bounce',
+            duration: 500,
+            repeat: 0,
+            yoyo: false
+          });
+          // Flash
+          this.cameras.main.flash(1000);
           // Disable input for the global player instance belonging to Controller
           this.globalPlayer.disableInteractive();
           scene.initPlayer();
@@ -758,7 +768,9 @@ class Controller extends Phaser.Scene {
   }
 
   setCurrentlyDraggedSceneNeighbour(self, neighbour) {
+    // Update each's neighbour
     self.setData('closestNeighbour', neighbour);
+    neighbour.setData('closestNeighbour', self);
     this.currentlyDraggedSceneNeighbour = neighbour;
   }
 

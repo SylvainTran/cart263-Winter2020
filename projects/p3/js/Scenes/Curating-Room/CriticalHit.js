@@ -97,6 +97,9 @@ class CriticalHit extends Moment {
     let closestNeighbour = this.parent.getData('closestNeighbour').getData('moment');
     // Add a pointerdown event only once to prevent duplicates
     this.parent.getData('closestNeighbour').once("pointerdown", (pointer, gameObject) => {
+      // Flash
+      closestNeighbour.cameras.main.flash(1000);
+      this.cameras.main.flash(1000);
       // Destroy 
       console.debug(this.globalPlayer);
       let thisPlayer = this.globalPlayer;

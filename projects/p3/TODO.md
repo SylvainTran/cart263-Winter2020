@@ -34,7 +34,6 @@ Core Features
 
 Things to fix
 
-    Creating a link and then moving away does not refresh the controller's cache
-    and the link button should disappear knowing this
-
-    Leavning snap range and getting back to the same closest neighbour does not re-enter snap state
+    // Reset the data inside the scenes
+    dragHandler.setData('closestNeighbour', null);
+    closestNeighbour.setData('closestNeighbour', null);

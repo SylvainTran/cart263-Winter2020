@@ -13,7 +13,7 @@ Music (piano theme): HitCtrl
 Click on scene: p0ss
 Link button: NenadSimic
 Entering a Scene Dimension (Epic Amulet Item): CosmicD
-Footstep (Water): Little Robot Sound Factory
+Footstep (Dirt, Water): Little Robot Sound Factory
 */
 
 // Config file for phaser

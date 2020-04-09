@@ -90,7 +90,7 @@ class RareLoot extends Moment {
     // Setup text initial position and content
     this.sceneTextPosX = this.cameras.main.centerX;
     this.sceneTextPosY = this.cameras.main.centerY;    
-    this.sceneTextRepresentation = this.add.text(this.sceneTextPosX, this.sceneTextPosY, 'You landed a critical hit!\nMassive Bonus Exp gained.', {
+    this.sceneTextRepresentation = this.add.text(this.sceneTextPosX, this.sceneTextPosY, 'George', {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
@@ -179,7 +179,7 @@ class RareLoot extends Moment {
 
   refresh() {
     this.cameras.main.setPosition(this.parent.x, this.parent.y);
-    //this.scene.bringToTop();
+    this.scene.bringToTop();
   }
 }
 

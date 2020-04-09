@@ -447,6 +447,8 @@ class Controller extends Phaser.Scene {
         console.debug("Entering Dimension: " + scene.parent.name);
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
+          // Destroy dialog box
+          dialog.destroy();
           // Scene effects
           this.triggerSceneEffects();          
           // Remove player from this scene
@@ -458,6 +460,8 @@ class Controller extends Phaser.Scene {
       }
     } else if (button.text === "Leave Dimension (if entered)") {
       if(this.scenePlayerLock) {
+        // Destroy dialog box
+        dialog.destroy();
         // Remove player lock to allow new creation
         this.scenePlayerLock = false;
         scene.destroyPlayer();

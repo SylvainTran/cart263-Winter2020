@@ -90,10 +90,11 @@ class RareLoot extends Moment {
     // Setup text initial position and content
     this.sceneTextPosX = this.cameras.main.centerX;
     this.sceneTextPosY = this.cameras.main.centerY;    
-    this.sceneTextRepresentation = this.add.text(this.sceneTextPosX, this.sceneTextPosY, 'George', {
+    this.sceneTextRepresentation = this.add.text(this.sceneTextPosX, this.sceneTextPosY, 'Little Girl', {
       fontFamily: 'Press Start 2P',
       fontSize: '50px'
     }).setOrigin(0.5);
+    this.sceneTextRepresentation.setDisplaySize(200, 100);
     this.spawnPoint = this.add.zone(this.circle.x, this.circle.y, 64, 64);
     // Physics bounds
     this.physics.world.setBounds(this.spawnPoint.x, this.spawnPoint.y, this.circle.geom.radius * 2, this.circle.geom.radius *2);

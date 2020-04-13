@@ -1,11 +1,11 @@
 /**
- *  UI
+ * UI
  * 
- * Displays the dialogue UI.
+ * Displays the dialogue UI
  */
 class UI extends Phaser.Scene {
     constructor() {
-        super({key: 'UI'});
+        super('UI');
         // Dialogue Factory and Displayer objects
         this.dialogueFactory = new DialogueFactory();
         this.dialogueDisplayer = new DialogueDisplayer();
@@ -17,7 +17,6 @@ class UI extends Phaser.Scene {
 
     preload() {
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-        this.load.json('chapters', 'assets/data/dialogues.json');
     }
 
     create() {
@@ -25,11 +24,9 @@ class UI extends Phaser.Scene {
         const chapters = this.cache.json.get('chapters');
         const introduction = 0;
         this.dialogueDisplayer.displayDialogue(introduction, "chapterOne", chapters, this.dialogueFactory, this);
-        // Launch the HUD
-        this.scene.launch('Hud');
     }
 
-    // Adds the built in text (as per the Phaser Text object) with config parameters
+    // From Rex Rainbow (MIT License) - Adds the built in text (as per the Phaser Text object) with config parameters
     getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
         return scene.add.text(0, 0, '', {
                 fontSize: '20px',
@@ -40,9 +37,9 @@ class UI extends Phaser.Scene {
             })
             .setFixedSize(fixedWidth, fixedHeight);
     }
-    // Adds the BBCode as per the Phaser BBCodeText object with config parameters
+    // From Rex Rainbow (MIT License) - Adds the BBCode as per the Phaser BBCodeText object with config parameters
     getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
-        return scene.rexUI.add.BBCodeText(0, 0, '', {
+        return this.rexUI.add.BBCodeText(0, 0, '', {
             fixedWidth: fixedWidth,
             fixedHeight: fixedHeight,
 

@@ -4,7 +4,7 @@
 // LinkManager
 class Controller extends Phaser.Scene {
   constructor() {
-    super({key: 'Controller'});
+    super('Controller');
     // The currently dragged scene by the user
     this.currentlyDraggedScene = null;
     // The currently dragged scene's closest neighbour
@@ -43,6 +43,8 @@ class Controller extends Phaser.Scene {
     this.playerCreatedSound = null;
     // Footstep sounds (Different per scene)
     this.footstepSound = null;
+    // Dialog box
+    this.dialog = undefined;
   }
 
   init() {
@@ -317,18 +319,19 @@ class Controller extends Phaser.Scene {
 
   handleDialogSpawn(pointer, readSceneData, scene) {
     const OFFSET = 350;
-    if (dialog === undefined) {
-      dialog = this.createDialog(this, pointer.x + OFFSET, pointer.y, readSceneData, scene);
+    const HUD = this.scene.manager.getScene('Hud');
+    if (this.dialog === undefined) {
+      this.dialog = HUD.createDialog(this, pointer.x + OFFSET, pointer.y, readSceneData, scene);
       // If the player is locked in a scene
       if(this.scenePlayerLock) {
         // WIP
         // console.debug(dialog.getElement('choices'));
         //dialog.getElement('choices')[dialog.getElement('choices').length] = this.createLabel(this, 'Leave Dimension');
       }
-    } else if (!dialog.isInTouching(pointer)) {
+    } else if (!this.dialog.isInTouching(pointer)) {
       try {
-        dialog.destroy();
-        dialog = undefined;
+        this.dialog.destroy();
+        this.dialog = undefined;
       } catch (err) {
         console.debug(err.message);
       } finally {
@@ -342,8 +345,8 @@ class Controller extends Phaser.Scene {
     if (button.text === "Text") {
       console.debug("changing representation of scene");
       // TODO make user select this / change this...
-      let newText = greeterContent;
-      scene.sceneTextRepresentation.setText(newText);
+      // let newText = greeterContent;
+      // scene.sceneTextRepresentation.setText(newText);
       // Trigger the text animation
       scene.playText(true);
     } else if(button.text === "Enter Dimension") {
@@ -355,7 +358,7 @@ class Controller extends Phaser.Scene {
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
           // Destroy dialog box
-          dialog.destroy();
+          this.dialog.destroy();
           // Scene effects
           this.triggerSceneEffects();          
           // Remove player from this scene
@@ -368,7 +371,7 @@ class Controller extends Phaser.Scene {
     } else if (button.text === "Leave Dimension (if entered)") {
       if(this.scenePlayerLock) {
         // Destroy dialog box
-        dialog.destroy();
+        this.dialog.destroy();
         // Remove player lock to allow new creation
         this.scenePlayerLock = false;
         scene.destroyPlayer();
@@ -388,9 +391,9 @@ class Controller extends Phaser.Scene {
     } else if (button.text === "Ephemeral") {
       this.handleEphemeral(scene);
     } else if (button.text === "Confirm") {
-      dialog.destroy();
+      this.dialog.destroy();
     } else if (button.text === "Exit") {
-      dialog.destroy();
+      this.dialog.destroy();
     }
   }
 
@@ -440,106 +443,6 @@ class Controller extends Phaser.Scene {
       }, [], this.scene);
     }, TIME_TILL_GONE);
     scene.sequencingData.representation.ephemeral = true;
-  }
-
-  // From Mr. Rex Rainbow (MIT license)
-  createDialog(sceneToSpawn, x, y, onClick, sceneClicked) {
-
-    let createLabel = this.createLabel;
-    let dialog = sceneToSpawn.rexUI.add.dialog({
-        x: x,
-        y: y,
-        width: 250,
-        background: this.rexUI.add.roundRectangle(0, 0, 100, 100, 20, COLOR_PRIMARY),
-        title: createLabel(this, 'Actions').setDraggable(),
-        //content: createLabel(this, ''),
-        //description: createLabel(this, sceneClicked.parent.name),
-        choices: [
-          createLabel(this, 'Text'),
-          createLabel(this, 'Enter Dimension'),
-          createLabel(this, 'Leave Dimension (if entered)'),
-          // createLabel(this, 'Image'),
-          // createLabel(this, 'Game'),
-          // createLabel(this, 'Ephemeral')
-        ],
-        actions: [
-          createLabel(this, 'Confirm'),
-          createLabel(this, 'Exit')
-        ],
-        space: {
-          left: 20,
-          right: 20,
-          top: -20,
-          bottom: -20,
-
-          title: 25,
-          titleLeft: 30,
-          content: 25,
-          description: 25,
-          descriptionLeft: 20,
-          descriptionRight: 20,
-          choices: 25,
-
-          toolbarItem: 5,
-          choice: 15,
-          action: 15,
-        },
-        expand: {
-          title: false,
-          // content: false,
-          // description: false,
-          // choices: false,
-          // actions: true,
-        },
-        align: {
-          title: 'center',
-          actions: 'right',
-        },
-        click: {
-          mode: 'release'
-        }
-      }).setDraggable('background')
-      .layout()
-      .popUp(1000);
-
-    // Tweening it
-    let tween = this.tweens.add({
-      targets: dialog,
-      scaleX: 1,
-      scaleY: 1,
-      ease: 'Bounce', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-      duration: 1000,
-      repeat: 0, // -1: infinity
-      yoyo: false
-    });
-    // Event handler for clicking items in the dialog
-    dialog.on('button.click', (button, groupName, index, pointer, event) => {
-      onClick(button);
-    }, this);
-    dialog.on('button.over', (button, groupName, index) => {
-      button.getElement('background').setStrokeStyle(1, 0xffffff);
-    }, this);
-    dialog.on('button.out', (button, groupName, index) => {
-      button.getElement('background').setStrokeStyle();
-    }, this);
-    return dialog;
-  }
-
-  createLabel(scene, text) {
-    return scene.rexUI.add.label({
-      width: 40,
-      height: 40,
-      background: scene.rexUI.add.roundRectangle(0, 0, 100, 40, 20, COLOR_DARK),
-      text: scene.add.text(0, 0, text, {
-        fontSize: '24px'
-      }),
-      space: {
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: 10
-      }
-    });
   }
 
   //handleDrag(draggableZoneParent, momentInstance)
@@ -865,7 +768,6 @@ let createLinkEmitter = new Phaser.Events.EventEmitter();
 let backgroundScenes;
 let shapes;
 let rect;
-let dialog;
 const COLOR_PRIMARY = 0x000000;
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x000000;
@@ -873,28 +775,12 @@ let soundOptions = {
   "rate": Math.random(),
   "pitch": Math.random()
 }
-
-// Fyodor Dostoevsky
-let greeterContent = 
-`I am a ridiculous person. Now they call me a madman. 
-That would be a promotion if it were not that I remain 
-as ridiculous in their eyes as before. But now I do not 
-resent it, they are all dear to me now, even when they 
-laugh at me -and, indeed, it is just then that they are 
-particularly dear to me. I could join in their laughter--not 
-exactly at myself, but through affection for them, if I did 
-not feel so sad as I look at them. Sad because they do not 
-know the truth and I do know it. Oh, how hard it is to be 
-the only one who knows the truth! But they won't understand 
-that. No, they won't understand it.`;
-
 let oldGreeterContent = `Tutorial: You are in the curating room.
 Tutorial: Her Grace, the Horizon Princess XIV--blessed be her sacred name, and long live her rule--wishes to impart some of her wise words to you.\nThe Horizon Princess: Gyaarg! Did you expect some weak frill in a dress? Hah! Sorry to disappoint. So you're the new recruit? Well, let's see how long you last.
 Listen up closely, rookie. By clicking on one of these circle-looking things, you can choose how to represent their meaning.
 Hey, don't ask me what it means, I'm just repeating what the Emperor told me. Drag one of these circles next to another one and link them by pressing the 'Create Link' button on the bottom right of the screen.
 All these cute little circles--along with what they've got inside--will go in the Sequencing Room. (That's the link at the top). There, you'll have to deal with your choices. 
 Got it? That's how you do it. Go ahead now and try linking up two circles.`;
-
 let questOneNarrationContent = `The Horizon Princess: I have a quest for you. Seriously, you didn't do too bad for a first timer.\nThe Horizon Princess: The dungeons
 leading to my personal library were raided. My guards have forgotten 
 what the brigands looked like and even locked themselves down there accidently!\n

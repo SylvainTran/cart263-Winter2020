@@ -17,6 +17,7 @@ class Preloader extends Phaser.Scene {
                                       'assets/sounds/FOOTSTEP_DIRT.wav']);       
     this.load.audio('footstepWater', ['assets/sounds/FOOTSTEP_WATER.mp3',
                                    'assets/sounds/FOOTSTEP_WATER.wav']);    
+    this.load.json('chapters', 'assets/data/dialogues.json');                           
   }
 
   create() {
@@ -62,6 +63,7 @@ class Preloader extends Phaser.Scene {
       frameRate: 5
     });    
     this.scene.start('UI');
+    this.scene.start('Hud');        
     this.scene.start('Controller');
   }
 }

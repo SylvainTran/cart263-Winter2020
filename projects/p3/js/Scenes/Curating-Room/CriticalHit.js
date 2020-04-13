@@ -1,6 +1,6 @@
 class CriticalHit extends Moment {
   constructor(key, parent) {
-    super({key: key});
+    super(key);
     this.parent = parent; // The draggable zone
     this.count = 0;
     this.momentConnectionManager = new MomentConnectionManager(this);
@@ -113,7 +113,6 @@ class CriticalHit extends Moment {
         closestNeighbour.createPlayer();
       }
     });
-    playerCreatedSound
     return this.globalPlayer;
   }
 

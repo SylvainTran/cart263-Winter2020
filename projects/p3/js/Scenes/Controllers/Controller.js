@@ -93,7 +93,7 @@ class Controller extends Phaser.Scene {
     // Setup background graphics
     this.setupBackgroundGraphics();
     // Setup camera
-    this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
+    this.cameras.main.startFollow(this.World.globalPlayer, true, 0.05, 0.05);
     // this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
     // this.cameras.main.setSize(320, 320);
 
@@ -136,8 +136,8 @@ class Controller extends Phaser.Scene {
 
     // Player input
     // Update the player's FSM
-    if(this.globalPlayer) {
-      this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
+    if(this.World.globalPlayer) {
+      this.World.globalPlayer.PlayerFSM.step([this, this.World.globalPlayer]);
     }
   }
 
@@ -219,7 +219,7 @@ class Controller extends Phaser.Scene {
       return new Phaser.Geom.Circle(Phaser.Math.Between(0, 800), Phaser.Math.Between(0, 600), Phaser.Math.Between(25, 75));
     });
     // Rect area corresponding to the main camera
-    rect = Phaser.Geom.Rectangle.Clone(this.cameras.main);
+    rect = Phaser.Geom.Rectangle.Clone(this.World.cameras.main);
   }
 
   createMainCanvas(addToActiveDisplay) {
@@ -268,7 +268,7 @@ class Controller extends Phaser.Scene {
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
     // Add collider with player
-    this.World.physics.add.collider(this.globalPlayer, draggableZoneParent, () => { console.log("collided with a scene"); }, () => { return true; }, this);
+    this.World.physics.add.collider(this.World.globalPlayer, draggableZoneParent, () => { console.log("collided with a scene"); }, () => { return true; }, this);
     // Add to current draggable zones
     this.setDraggableActiveZones(draggableZoneParent);
     // Add the scenes
@@ -364,7 +364,7 @@ class Controller extends Phaser.Scene {
           // Scene effects
           this.triggerSceneEffects();          
           // Remove player from this scene
-          let thisPlayer = this.globalPlayer;
+          let thisPlayer = this.World.globalPlayer;
           thisPlayer.destroy();
           // Create a new player in the entered scene
           scene.initPlayer();
@@ -378,7 +378,7 @@ class Controller extends Phaser.Scene {
         this.scenePlayerLock = false;
         scene.destroyPlayer();
         // Re-create player
-        this.globalPlayer = this.createPlayer();
+        this.World.globalPlayer = this.createPlayer();
       }
     } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {
@@ -402,7 +402,7 @@ class Controller extends Phaser.Scene {
   triggerSceneEffects() {
     this.sceneEnterSound.play();
     this.tweens.add({
-      targets: this.globalPlayer,
+      targets: this.World.globalPlayer,
       y: '+=50',
       ease: 'Bounce',
       duration: 500,
@@ -416,16 +416,16 @@ class Controller extends Phaser.Scene {
   createPlayer() {
     const spawnPoint = this.add.zone(this.scale.width / 2, this.scale.height / 2, 128, 128);
     const controllerScaleFactor = 2.5;
-    this.globalPlayer = new Player(this, spawnPoint.x, spawnPoint.y, "hero");
+    this.World.globalPlayer = new Player(this.World, spawnPoint.x, spawnPoint.y, "hero");
     // Physics bounds
-    this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
-    this.globalPlayer
+    this.World.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
+    this.World.globalPlayer
     .setCollideWorldBounds(true)
       .setSize(64, 64).setScale(controllerScaleFactor)      
         .setInteractive();
     console.debug(this.playerCreatedSound);
     this.playerCreatedSound.play();
-    return this.globalPlayer;
+    return this.World.globalPlayer;
   }
 
   handleResponsiveVoice(scene) {

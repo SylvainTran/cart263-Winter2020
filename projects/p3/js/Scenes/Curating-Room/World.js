@@ -1,7 +1,7 @@
 class World extends Moment {
-
-  constructor(key) {
+  constructor(key, controller) {
     super(key);
+    this.controller = controller;
   }
 
   init(data) {
@@ -13,7 +13,6 @@ class World extends Moment {
   }
 
   create() {
-    console.log("Creating World");
     // Physics bounds
     this.physics.world.setBounds(0, 0, window.innerWidth, window.innerHeight);
     this.cameras.main.setSize(window.innerWidth, window.innerHeight);

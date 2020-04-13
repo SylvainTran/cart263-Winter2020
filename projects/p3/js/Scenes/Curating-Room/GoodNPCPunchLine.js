@@ -1,7 +1,8 @@
 class GoodNPCPunchLine extends Moment {
-  constructor(key, parent) {
+  constructor(key, parent, controller) {
     super(key);
     this.parent = parent; // The draggable zone
+    this.controller = controller;
     this.count = 0;
     this.momentConnectionManager = new MomentConnectionManager(this);
     this.momentFSM = new StateMachine('IdleMomentState', {
@@ -178,7 +179,7 @@ class GoodNPCPunchLine extends Moment {
     if(this.globalPlayer) {
       this.globalPlayer.PlayerFSM.step([this, this.globalPlayer]);
     }
-    this.momentFSM.step([this.parent, this.parent.getData('moment'), this.parent.scene.getClosestNeighbour()]);  
+    this.momentFSM.step([this.parent, this.parent.getData('moment'), this.controller.getClosestNeighbour()]);  
   }
   
   // Set this moment as the owner of the linked list

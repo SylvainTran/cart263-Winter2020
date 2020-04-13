@@ -5,6 +5,8 @@
 class Controller extends Phaser.Scene {
   constructor() {
     super('Controller');
+    // The World scene containing the outer most world
+    this.World = null;
     // The currently dragged scene by the user
     this.currentlyDraggedScene = null;
     // The currently dragged scene's closest neighbour
@@ -71,6 +73,8 @@ class Controller extends Phaser.Scene {
   }
 
   create() {
+    // Create the main World, the outer most World scene
+    this.createMainCanvas(true);
     // Player sounds
     this.playerCreatedSound = this.sound.add('zap');
     // Controller for the player in the main world
@@ -79,8 +83,6 @@ class Controller extends Phaser.Scene {
     createLinkEmitter.on('createLink', this.handleLinking, this);
     // Level Management - Starting at level 0. Will be refactored into event-driven pattern later
     this.createLevel();
-    // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
-    this.createMainCanvas(true);
     // Spawn a contextual button for linking scenes only if there are snapped scenes
     // And if and only if at drag end to prevent multiple buttons
     this.input.on('dragend', this.spawnContextualButton);
@@ -91,7 +93,7 @@ class Controller extends Phaser.Scene {
     // Setup background graphics
     this.setupBackgroundGraphics();
     // Setup camera
-    // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
+    this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
     // this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
     // this.cameras.main.setSize(320, 320);
 
@@ -221,7 +223,7 @@ class Controller extends Phaser.Scene {
   }
 
   createMainCanvas(addToActiveDisplay) {
-    this.World = new World('World');
+    this.World = new World('World', this);
     this.scene.add('World', this.World, addToActiveDisplay);
   }
 
@@ -241,11 +243,11 @@ class Controller extends Phaser.Scene {
     let y = Phaser.Math.Between(offset, height - this.momentHeight * 2);
 
     // Create a parent zone for touch and dragging the scene
-    let draggableZoneParent = this.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({
+    let draggableZoneParent = this.World.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({
       draggable: true
     }).setOrigin(0);
     // Create the instance and setup the drag handling
-    let momentInstance = new moment(key, draggableZoneParent);
+    let momentInstance = new moment(key, draggableZoneParent, this);
     // Set some data for this parent zone, namely its moment scene, the number of connections it has and which connections these are
     draggableZoneParent.setData({
       vx: 0,
@@ -266,11 +268,11 @@ class Controller extends Phaser.Scene {
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
     // Add collider with player
-    this.physics.add.collider(this.globalPlayer, draggableZoneParent, () => { console.log("collided with a scene"); }, () => { return true; }, this);
+    this.World.physics.add.collider(this.globalPlayer, draggableZoneParent, () => { console.log("collided with a scene"); }, () => { return true; }, this);
     // Add to current draggable zones
     this.setDraggableActiveZones(draggableZoneParent);
     // Add the scenes
-    this.scene.add(key, momentInstance, true);
+    this.World.scene.add(key, momentInstance, true);
     // Return it to keep a reference for later scene destruction
     return momentInstance;
   }
@@ -456,11 +458,11 @@ class Controller extends Phaser.Scene {
         const DAMPING = 0.75;
         pointer.smoothFactor = DAMPING;
         // Cache the currentlyDraggedScene for events handling such as Create Link
-        this.scene.setCurrentlyDraggedScene(this);
+        this.scene.controller.setCurrentlyDraggedScene(this);
         // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
-        this.scene.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
+        this.scene.controller.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
         // 2. A separate object to query the connections object on this particular drag zone instance
-        this.scene.querySceneConnectionManager(this);
+        this.scene.controller.querySceneConnectionManager(this);
       }
     }));
   }

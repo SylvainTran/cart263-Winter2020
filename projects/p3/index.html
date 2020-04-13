@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
-
+  <title>Surrealistic Computer Game</title>
   <!-- CSS stylesheet(s) -->
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/main.css" />
@@ -25,12 +25,16 @@
   <script src="js/States/PlayerIdleState.js"></script>
   <script src="js/States/PlayerMovingState.js"></script>  
   <!-- My scene script(s) -->
+  <script src="js/Scenes/UI/UI.js"></script>
+  <script src="js/Scenes/UI/Hud.js"></script>
+  <script src="js/Scenes/Dialogue/DialogueFactory.js"></script>
+  <script src="js/Scenes/Dialogue/DialogueDisplayer.js"></script>    
   <script src="js/Scenes/Curating-Room/Moment.js"></script>
   <script src="js/Scenes/Curating-Room/CriticalHit.js"></script>
   <script src="js/Scenes/Curating-Room/GoodNPCPunchLine.js"></script>
   <script src="js/Scenes/Curating-Room/RareLoot.js"></script>
-  <script src="js/Scenes/World.js"></script>
-  <script src="js/Scenes/MomentConnectionManager.js"></script>
+  <script src="js/Scenes/Curating-Room/World.js"></script>
+  <script src="js/Scenes/Controllers/MomentConnectionManager.js"></script>
   <!-- My utility scripts -->
   <script src="js/Utilities/DoublyLinkedList.js"></script>
   <script src="js/Utilities/Algorithms/Strategy.js"></script>
@@ -40,14 +44,9 @@
   <script src="js/States/StateMachine.js"></script>
   <script src="js/Entities/MobileElement.js"></script>
   <script src="js/Entities/Player.js"></script>
-  <script src="js/Scenes/Controller.js"></script>
+  <script src="js/Scenes/Controllers/Controller.js"></script>
   <!-- App's main entry point -->
   <script src="js/Main.js"></script>
-
-  <head profile="http://www.w3.org/2005/10/profile">
-    <link rel="icon" type="image/png" href="./assets/images q/sprites/CashBag.png">
-  </head>
-
 <body>
   <div class="flex-container">
     <div class="side__left-menu">

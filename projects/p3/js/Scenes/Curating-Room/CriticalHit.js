@@ -1,6 +1,6 @@
 class CriticalHit extends Moment {
   constructor(key, parent) {
-    super(key);
+    super({key: key});
     this.parent = parent; // The draggable zone
     this.count = 0;
     this.momentConnectionManager = new MomentConnectionManager(this);

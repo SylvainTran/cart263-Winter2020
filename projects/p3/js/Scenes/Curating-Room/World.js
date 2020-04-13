@@ -1,9 +1,7 @@
 class World extends Moment {
 
   constructor() {
-    super({
-      key: 'World'
-    });
+    super({key: 'World'});
   }
 
   init(data) {

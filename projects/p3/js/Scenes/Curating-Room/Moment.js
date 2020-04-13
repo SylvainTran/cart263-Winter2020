@@ -1,6 +1,6 @@
 class Moment extends Phaser.Scene {
     constructor(key) {
-        super(key);
+        super({key: key});
     }
 
     init() {

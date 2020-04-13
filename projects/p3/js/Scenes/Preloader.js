@@ -1,8 +1,6 @@
 class Preloader extends Phaser.Scene {
   constructor() {
-    super({
-      key: 'preloader'
-    });
+    super({key: 'preloader'});
   }
 
   preload() {
@@ -63,6 +61,7 @@ class Preloader extends Phaser.Scene {
       }),
       frameRate: 5
     });    
+    this.scene.start('UI');
     this.scene.start('Controller');
   }
 }

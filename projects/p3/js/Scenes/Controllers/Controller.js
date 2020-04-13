@@ -4,9 +4,7 @@
 // LinkManager
 class Controller extends Phaser.Scene {
   constructor() {
-    super({
-      key: 'Controller'
-    });
+    super({key: 'Controller'});
     // The currently dragged scene by the user
     this.currentlyDraggedScene = null;
     // The currently dragged scene's closest neighbour
@@ -53,10 +51,6 @@ class Controller extends Phaser.Scene {
     this.momentHeight = 150;
   }
 
-  preload() {
-    this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-  }
-
   // Assigns the number of moments for each level
   levelManager(level) {
     let numberOfMoments = 0;
@@ -79,16 +73,8 @@ class Controller extends Phaser.Scene {
     this.playerCreatedSound = this.sound.add('zap');
     // Controller for the player in the main world
     this.createPlayer();
-
     // Set-up an event handler
     createLinkEmitter.on('createLink', this.handleLinking, this);
-    // Spawn the greeter dialog box to introduce the game
-    this.createTextBox(this, 100, 100, {
-      wrapWidth: 700,
-      fixedWidth: 750,
-      fixedHeight: 100,
-    }).start(greeterContent, 50);
-
     // Level Management - Starting at level 0. Will be refactored into event-driven pattern later
     this.createLevel();
     // Create the main canvas that will display optimizing behaviours of systems in the back or interactively display stats
@@ -218,85 +204,6 @@ class Controller extends Phaser.Scene {
       this.scenesInLevel.push(this.createMoment(moments[i].name + randomHash, moments[i]));
     }
     return this.scenesInLevel;
-  }
-
-  // Mr. Rex Rainbow
-  createTextBox(scene, x, y, config) {
-    const GetValue = Phaser.Utils.Objects.GetValue;
-    let wrapWidth = GetValue(config, 'wrapWidth', 0);
-    let fixedWidth = GetValue(config, 'fixedWidth', 0);
-    let fixedHeight = GetValue(config, 'fixedHeight', 0);
-    let textBox = scene.rexUI.add.textBox({
-        x: x,
-        y: y,
-        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
-          .setStrokeStyle(2, COLOR_LIGHT),
-        text: scene.getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
-        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
-        space: {
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 20,
-          icon: 10,
-          text: 10,
-        }
-      })
-      .setOrigin(0)
-      .layout();
-    textBox
-      .setInteractive()
-      .on('pointerdown', function () {
-        let icon = this.getElement('action').setVisible(false);
-        this.resetChildVisibleState(icon);
-        if (this.isTyping) {
-          this.stop(true);
-        } else {
-          this.typeNextPage();
-        }
-      }, textBox)
-      .on('pageend', function () {
-        if (this.isLastPage) {
-          return;
-        }
-        let icon = this.getElement('action').setVisible(true);
-        this.resetChildVisibleState(icon);
-        icon.y -= 30;
-        let tween = scene.tweens.add({
-          targets: icon,
-          y: '+=30',
-          ease: 'Bounce',
-          duration: 500,
-          repeat: 0,
-          yoyo: false
-        });
-      }, textBox);
-    return textBox;
-  }
-  // Mr. Rex Rainbow
-  getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.add.text(0, 0, '', {
-        fontSize: '20px',
-        wordWrap: {
-          width: wrapWidth
-        },
-        maxLines: 3
-      })
-      .setFixedSize(fixedWidth, fixedHeight);
-  }
-  // Mr. Rex Rainbow
-  getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.rexUI.add.BBCodeText(0, 0, '', {
-      fixedWidth: fixedWidth,
-      fixedHeight: fixedHeight,
-
-      fontSize: '20px',
-      wrap: {
-        mode: 'word',
-        width: wrapWidth
-      },
-      maxLines: 3
-    })
   }
 
   // Raining/Snowing passive moments in the background -- may be cybernetics-like system optimizing factors in polish phase of project
@@ -515,7 +422,6 @@ class Controller extends Phaser.Scene {
     this.playerCreatedSound.play();
     return this.globalPlayer;
   }
-
 
   handleResponsiveVoice(scene) {
     let textToSound = scene.sceneTextRepresentation.text;

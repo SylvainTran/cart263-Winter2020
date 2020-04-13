@@ -11,12 +11,12 @@ class Controller extends Phaser.Scene {
     this.currentlyDraggedScene = null;
     // The currently dragged scene's closest neighbour
     this.currentlyDraggedSceneNeighbour = null;
+    // If there are available scenes to connect based on range to link with a closest neighbour
+    this.availableConnections = null; 
     // The reference to the created link button at the bottom right
     this.createdLinkButton = null;
     // If a create link button was already created
     this.createdLinkButtonAlready = false;
-    // The available connections to a currently dragged scene (criteria: in range and not linked already)
-    this.availableConnections = false;
     // The linked list array updated from each scene that is in a linked state. Used for the sequencer
     this.linkedScenesList = [];
     // Whether to exit the scene parameter dialog or not (temporary)
@@ -45,11 +45,13 @@ class Controller extends Phaser.Scene {
     this.playerCreatedSound = null;
     // Footstep sounds (Different per scene)
     this.footstepSound = null;
-    // Dialog box
+    // Dialog box currently used by the UI
     this.dialog = undefined;
   }
 
   init() {
+    // Get the World (global scene) instance
+    this.World = this.scene.manager.getScene('World');
     // Scenes' determined width and height
     this.momentWidth = 150;
     this.momentHeight = 150;
@@ -74,7 +76,7 @@ class Controller extends Phaser.Scene {
 
   create() {
     // Create the main World, the outer most World scene
-    this.createMainCanvas(true);
+    // this.createMainCanvas(true);
     // Player sounds
     this.playerCreatedSound = this.sound.add('zap');
     // Controller for the player in the main world
@@ -85,7 +87,7 @@ class Controller extends Phaser.Scene {
     this.createLevel();
     // Spawn a contextual button for linking scenes only if there are snapped scenes
     // And if and only if at drag end to prevent multiple buttons
-    this.input.on('dragend', this.spawnContextualButton);
+    this.World.input.on('dragend', this.spawnContextualButton);
     // Create the line used for linking scenes
     this.linkLine = this.createLinkLine(this.momentWidth, this.momentHeight, 0, 0, 100, 100, 0x000000, 5, true);
     // Make it invisible until connections start being made between scenes
@@ -94,9 +96,8 @@ class Controller extends Phaser.Scene {
     this.setupBackgroundGraphics();
     // Setup camera
     this.cameras.main.startFollow(this.World.globalPlayer, true, 0.05, 0.05);
-    // this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
-    // this.cameras.main.setSize(320, 320);
-
+    this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
+    this.cameras.main.setSize(320, 320);
     // Sounds
     this.uiPoingSound = this.sound.add('ui-poing');
     this.linkButtonSound = this.sound.add('linkButton');
@@ -352,13 +353,14 @@ class Controller extends Phaser.Scene {
       // Trigger the text animation
       scene.playText(true);
     } else if(button.text === "Enter Dimension") {
+      console.log("Really entering dimension");
       // Global player enters the selected scene
       // Then activate a method in the scene to activate the scene's player and focus camera
       // If the scene is in snapped state and if that is the currently dragged/active scene, the player has the ability to enter it 
       if(scene.parent === this.getCurrentlyDraggedScene() && scene.momentFSM.state === "SnappedState") {
-        console.debug("Entering Dimension: " + scene.parent.name);
         // If the player has not been locked to a scene, allow creating a new one inside that scene
         if(!this.scenePlayerLock) {
+          console.debug("Entering Dimension: " + scene.parent.name);
           // Destroy dialog box
           this.dialog.destroy();
           // Scene effects
@@ -452,19 +454,17 @@ class Controller extends Phaser.Scene {
   //handle dragging behaviour event on each momentInstance created, by using the draggableZoneParent gameObject
   handleDrag(draggableZoneParent, momentInstance) {
     //this.input.enableDebug(draggableZoneParent);
-    draggableZoneParent.on('drag', (function (pointer, dragX, dragY) {
-      if (!this.sceneParameterOpen) {
-        // Smoothen the pointer
-        const DAMPING = 0.75;
-        pointer.smoothFactor = DAMPING;
-        // Cache the currentlyDraggedScene for events handling such as Create Link
-        this.scene.controller.setCurrentlyDraggedScene(this);
-        // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
-        this.scene.controller.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
-        // 2. A separate object to query the connections object on this particular drag zone instance
-        this.scene.controller.querySceneConnectionManager(this);
-      }
-    }));
+    draggableZoneParent.on('drag', (pointer, dragX, dragY) => {
+      // Smoothen the pointer
+      const DAMPING = 0.75;
+      pointer.smoothFactor = DAMPING;
+      // Cache the currentlyDraggedScene for events handling such as Create Link
+      this.setCurrentlyDraggedScene(draggableZoneParent);
+      // 1. Work on Single Responsibility principle: Update display and underlying connection behaviour only
+      this.updateDragZone(draggableZoneParent, dragX, dragY, momentInstance);
+      // 2. A separate object to query the connections object on this particular drag zone instance
+      this.querySceneConnectionManager(draggableZoneParent);
+    });
   }
 
   querySceneConnectionManager(dragHandler) {
@@ -479,7 +479,6 @@ class Controller extends Phaser.Scene {
     // Cache the closest neighbour and available connections found for event handling
     this.setCurrentlyDraggedSceneNeighbour(dragHandler, closestNeighbour);
     this.setAvailableConnections(dragHandler.getData('moment').momentConnectionManager.checkForAvailableConnections(dragHandler, closestNeighbour));
-
     // At this point, neighbour scenes in range can be snapped (and then) become locked together -- in this state, a link can be created (listened to) by the user or de-snapped when out of range
     this.handleSnapping(dragHandler, closestNeighbour);
     // Handle text bifurcation between the dragged scene and its closest neighbour
@@ -535,7 +534,7 @@ class Controller extends Phaser.Scene {
     const width = this.scale.width;
     const height = this.scale.height;
     const offset = 150;
-    this.createdLinkButton = this.add.circle(width - offset, height - offset, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
+    this.createdLinkButton = this.World.add.circle(width - offset, height - offset, 150, '#F5F5DC').setInteractive().on('pointerdown', () => {
       this.linkButtonSound.play();
       createLinkEmitter.emit('createLink');
     });
@@ -565,7 +564,7 @@ class Controller extends Phaser.Scene {
     selfScene.isSnappedOwner = true;
     this.displaySnappedState(self, selfScene, neighbour);
     // disable dragging on both to lock them away
-    this.input.setDraggable([self, neighbour], false);    
+    this.World.input.setDraggable([self, neighbour], false);    
     // Disable link visual
     this.displayLink(self, neighbour, false);
     // Transition the dragged scene
@@ -580,9 +579,9 @@ class Controller extends Phaser.Scene {
     this.numberOfPairedScenes += 2;
     // Update player instances and player lock
     this.scenePlayerLock = false;
-    // Re-create player
-    if(!this.globalPlayer) {
-      this.globalPlayer = this.createPlayer();
+    // Re-create player in the world
+    if(!this.World.globalPlayer) {
+      this.World.globalPlayer = this.createPlayer();
     }
   }
 
@@ -676,11 +675,11 @@ class Controller extends Phaser.Scene {
         this.refresh();
         this.restartLevelSettings();
         this.createLevel(this.currentLevel);
-        if(this.globalPlayer) {
-          let thisPlayer = this.globalPlayer;
+        if(this.World.globalPlayer) {
+          let thisPlayer = this.World.globalPlayer;
           thisPlayer.destroy();
         }
-        this.globalPlayer = this.createPlayer();
+        this.World.globalPlayer = this.createPlayer();
       } catch(err) {
         console.error(err.message);
       } finally {
@@ -745,14 +744,16 @@ class Controller extends Phaser.Scene {
   }
 
   spawnContextualButton() {
-    if (this.scene.getAvailableConnections() === true) {
+    // The context for (this) function is World.js
+    const controller = this.scene.controller;
+    if (controller.availableConnections === true) {
       // Don't recreate a button if there's already one
-      if (this.scene.createdLinkButtonAlready) {
+      if (controller.createdLinkButtonAlready) {
         return;
       }
-      let linkButton = this.scene.createLinkButton();
+      let linkButton = controller.createLinkButton();
       // Reset
-      this.scene.setAvailableConnections(false);
+      controller.setAvailableConnections(false);
     }
   }
 

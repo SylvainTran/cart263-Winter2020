@@ -62,8 +62,9 @@ class Preloader extends Phaser.Scene {
       }),
       frameRate: 5
     });    
+    this.scene.start('Controller');
+    this.scene.start('World');
     this.scene.start('UI');
     this.scene.start('Hud');        
-    this.scene.start('Controller');
   }
 }

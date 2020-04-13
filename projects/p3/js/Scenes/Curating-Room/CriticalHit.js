@@ -90,7 +90,7 @@ class CriticalHit extends Moment {
       thisPlayer.destroy(true);
     }
     // Lock the player as unique in the Controller
-    this.parent.scene.scenePlayerLock = true;
+    this.controller.scenePlayerLock = true;
     // Spawn the player in the resized scene
     const sceneScaleFactor = 1;
     this.globalPlayer = new Player(this, this.spawnPoint.x + this.circle.geom.radius, this.spawnPoint.y + this.circle.geom.radius, "hero");

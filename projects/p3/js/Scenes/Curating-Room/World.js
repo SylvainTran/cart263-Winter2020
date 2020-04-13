@@ -1,12 +1,12 @@
 class World extends Moment {
   constructor(key, controller) {
-    super(key);
-    this.controller = controller;
+    super('World');
+    this.controller = null;
     this.globalPlayer = null; // The player residing in the World (global scene)
   }
 
-  init(data) {
-
+  init() {
+    this.controller = this.scene.manager.getScene('Controller');
   }
 
   preload() {

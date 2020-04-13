@@ -41,7 +41,7 @@ let config = {
     }
   },
   scene: [
-    Preloader, UI, Hud, Controller
+    Preloader, Controller, World, UI, Hud
   ]
 };
 let game = new Phaser.Game(config);

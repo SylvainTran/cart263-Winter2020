@@ -17,18 +17,26 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
   </script>
+  <!-- Jasmine -->
+  <link rel="shortcut icon" type="image/png" href="jasmine/dist/lib/jasmine-3.5.0/jasmine_favicon.png">
+  <link rel="stylesheet" type="text/css" href="jasmine/dist/lib/jasmine-3.5.0/jasmine.css">
+  <script type="text/javascript" src="jasmine/dist/lib/jasmine-3.5.0/jasmine.js"></script>
+  <script type="text/javascript" src="jasmine/dist/lib/jasmine-3.5.0/jasmine-html.js"></script>
+  <script type="text/javascript" src="jasmine/dist/lib/jasmine-3.5.0/boot.js"></script>
+  <!-- Jasmine Specs (Unit tests) -->
+  <script src="js/Specs/SceneLink.js"></script>
   <!-- Finite state machines -->
   <script src="js/States/State.js"></script>
   <script src="js/States/IdleMomentState.js"></script>
   <script src="js/States/SnappedState.js"></script>
   <script src="js/States/LinkedState.js"></script>
   <script src="js/States/PlayerIdleState.js"></script>
-  <script src="js/States/PlayerMovingState.js"></script>  
+  <script src="js/States/PlayerMovingState.js"></script>
   <!-- My scene script(s) -->
   <script src="js/Scenes/UI/UI.js"></script>
   <script src="js/Scenes/UI/Hud.js"></script>
   <script src="js/Scenes/Dialogue/DialogueFactory.js"></script>
-  <script src="js/Scenes/Dialogue/DialogueDisplayer.js"></script>    
+  <script src="js/Scenes/Dialogue/DialogueDisplayer.js"></script>
   <script src="js/Scenes/Curating-Room/Moment.js"></script>
   <script src="js/Scenes/Curating-Room/CriticalHit.js"></script>
   <script src="js/Scenes/Curating-Room/GoodNPCPunchLine.js"></script>
@@ -47,6 +55,7 @@
   <script src="js/Scenes/Controllers/Controller.js"></script>
   <!-- App's main entry point -->
   <script src="js/Main.js"></script>
+
 <body>
   <div class="flex-container">
     <div class="side__left-menu">

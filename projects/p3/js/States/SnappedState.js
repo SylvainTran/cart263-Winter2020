@@ -19,6 +19,7 @@ class SnappedState extends State {
                 button.destroy();
                 // Reset the created link button already flag
                 dragHandler.scene.controller.createdLinkButtonAlready = false;
+                dragHandler.scene.controller.resetPlayer(moment, dragHandler.scene.controller);
             }
             const context = [dragHandler, dragHandler.getData('moment'), closestNeighbour];
             // Transition to Idle state

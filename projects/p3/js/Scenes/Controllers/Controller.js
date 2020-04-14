@@ -1,7 +1,6 @@
-// This scene would be reduced to handling systems around each individual scene
-// in the Curating-Room, also handling the MomentFactory
-// I.e., Each scene in the curating-room would have their own MomentConnectionManager
-// LinkManager
+// Controller
+//
+// Handles object relationships
 class Controller extends Phaser.Scene {
   constructor() {
     super('Controller');
@@ -374,13 +373,7 @@ class Controller extends Phaser.Scene {
       }
     } else if (button.text === "Leave Dimension (if entered)") {
       if(this.scenePlayerLock) {
-        // Destroy dialog box
-        this.dialog.destroy();
-        // Remove player lock to allow new creation
-        this.scenePlayerLock = false;
-        scene.destroyPlayer();
-        // Re-create player
-        this.World.globalPlayer = this.createPlayer();
+        this.resetPlayer(scene, this);
       }
     } else if (button.text === "Sound") {
       if (scene.sceneTextRepresentation) {
@@ -398,6 +391,28 @@ class Controller extends Phaser.Scene {
       this.dialog.destroy();
     } else if (button.text === "Exit") {
       this.dialog.destroy();
+    }
+  }
+
+  // resetPlayer(scene, controller)
+  //
+  // Resets the player from inside scenes to the World scene. Is also called in the SnappedState when scenes are out of range with each other
+  resetPlayer(scene, controller) {
+    // Destroy dialog box if it exists
+    if(controller.dialog) {
+      controller.dialog.destroy();
+    }
+    // Remove player lock to allow new creation, if it exists
+    controller.scenePlayerLock = false;
+    // Destroy the player from the stepped in scene
+    if(scene.globalPlayer) {
+      scene.destroyPlayer();
+      // Make player undefined from World to reset its instance properly
+      controller.World.globalPlayer = undefined;
+    }
+    // Re-create player if it is undefined
+    if(!controller.World.globalPlayer) {
+      controller.World.globalPlayer = controller.createPlayer();
     }
   }
 

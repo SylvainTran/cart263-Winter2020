@@ -14,12 +14,16 @@ class SnappedState extends State {
         //If the user moves the dragHandler out of range of the link snap range, then transition back to idle
         if ((Math.abs(dragHandler.getCenter().distance(closestNeighbour.getCenter())) >= 500)) {
             // Destroy the create link button
+            let controller = dragHandler.scene.controller;
             let button = dragHandler.scene.controller.createdLinkButton;
             if(button) {
                 button.destroy();
                 // Reset the created link button already flag
                 dragHandler.scene.controller.createdLinkButtonAlready = false;
-                dragHandler.scene.controller.resetPlayer(moment, dragHandler.scene.controller);
+                // Create a new player if there isn't one already
+                if(!controller.World.globalPlayer) {
+                    controller.resetPlayer(moment, dragHandler.scene.controller);
+                }
             }
             const context = [dragHandler, dragHandler.getData('moment'), closestNeighbour];
             // Transition to Idle state

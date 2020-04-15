@@ -58,7 +58,7 @@ class CriticalHit extends Moment {
   }
 
   create() {
-    this.circle = this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
+    this.circle = this.add.circle(this.parent.x, this.parent.y, 50, '#77bf5e').setOrigin(0);
     this.setLinkLineVisible(false);
     this.setupCamera();
     // Setup text initial position and content
@@ -89,6 +89,8 @@ class CriticalHit extends Moment {
       let thisPlayer = this.globalPlayer;
       thisPlayer.destroy(true);
     }
+    // Set global player to null
+    this.controller.World.globalPlayer = undefined;
     // Lock the player as unique in the Controller
     this.controller.scenePlayerLock = true;
     // Spawn the player in the resized scene
@@ -98,9 +100,14 @@ class CriticalHit extends Moment {
     this.globalPlayer.setCollideWorldBounds(true);
     // Camera follow
     // this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    // this.cameras.main.setZoom(2);
+    this.cameras.main.setZoom(2);
     // Reposition / Transfer player between this scene and its closest neighbour
     let closestNeighbour = this.parent.getData('closestNeighbour').getData('moment');
+    // Add a timer event that counts how much time left the player can be in there
+    let timer = this.time.delayedCall(5000, this.kickPlayer, [], this);
+    this.shrinkingEffect();
+    // Display timer
+    this.controller.displayQuestionnaire(timer);
     // Add a pointerdown event only once to prevent duplicates
     this.parent.getData('closestNeighbour').once("pointerdown", (pointer, gameObject) => {
       // Flash
@@ -115,6 +122,21 @@ class CriticalHit extends Moment {
       }
     });
     return this.globalPlayer;
+  }
+
+  kickPlayer() {
+    // If player still exists in this scene, destroy and reset in World - Todo change this a bit
+    if(this.globalPlayer) {
+      this.destroyPlayer();
+      this.controller.resetPlayer(this, this.controller);
+    }
+  }
+
+  // Shrinking effect
+  //
+  //
+  shrinkingEffect() {
+
   }
 
   destroyPlayer() {
@@ -193,5 +215,5 @@ class CriticalHit extends Moment {
   }
 }
 
-CriticalHit.WIDTH = 300;
-CriticalHit.HEIGHT = 300;
+CriticalHit.WIDTH = 50;
+CriticalHit.HEIGHT = 50;

@@ -14,6 +14,9 @@ Click on scene: p0ss
 Link button: NenadSimic
 Entering a Scene Dimension (Epic Amulet Item): CosmicD
 Footstep (Dirt, Water): Little Robot Sound Factory
+Animated book by gkhnsolak
+Creatures by Luis Zuno (@ansimuz)
+Through Pixelated Clouds by bart - https://opengameart.org/content/through-pixelated-clouds-8-bit-airship-remix
 */
 
 // Config file for phaser
@@ -28,8 +31,8 @@ let config = {
   scale: {
     parent: 'main__world-node-container',
     mode: Phaser.Scale.CENTER_BOTH,
-    width: window.innerWidth,
-    height: window.innerHeight
+    width: 640,
+    height: 640
   },
   physics: {
     default: 'arcade',
@@ -39,6 +42,9 @@ let config = {
         y: 0
       }
     }
+  },
+  dom: {
+    createContainer: true
   },
   scene: [
     Preloader, Controller, World, UI, Hud

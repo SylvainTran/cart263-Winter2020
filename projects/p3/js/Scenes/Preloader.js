@@ -4,24 +4,33 @@ class Preloader extends Phaser.Scene {
   }
 
   preload() {
+    // Player sprite
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
+    // UI
     this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
     this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
+    // Sound effects
     this.load.audio('zap', ['assets/sounds/PLAYER_CREATED.ogg']);
     this.load.audio('ui-poing', ['assets/sounds/ui/poing.ogg']);
     this.load.audio('linkButton', ['assets/sounds/ui/linkButton.wav']);
     this.load.audio('sceneEnter', ['assets/sounds/SCENE_ENTER.wav']);
-    this.load.audio('pianoTheme', ['assets/sounds/PIANO_THEME.mp3',
-                                   'assets/sounds/PIANO_THEME.ogg']);
+    // Themes
+    this.load.audio('mainTheme', ['assets/sounds/MAIN_THEME.mp3']);
+    this.load.audio('pianoTheme', ['assets/sounds/PIANO_THEME.mp3',                                   'assets/sounds/PIANO_THEME.ogg']);
+    // Footstep sounds                                  
     this.load.audio('footstepDirt', ['assets/sounds/FOOTSTEP_DIRT.mp3',
                                       'assets/sounds/FOOTSTEP_DIRT.wav']);       
     this.load.audio('footstepWater', ['assets/sounds/FOOTSTEP_WATER.mp3',
                                    'assets/sounds/FOOTSTEP_WATER.wav']);    
-    this.load.json('chapters', 'assets/data/dialogues.json');                           
+    this.load.json('chapters', 'assets/data/dialogues.json');  
+    // Tileset (game world in black and white)
+    this.load.image("worldTiles_A_BW", "assets/tilesets/worldTiles_A_BW.png");    
+    // Tilemap json (game world)
+    this.load.tilemapTiledJSON("world", "assets/tilemaps/world.json");                         
   }
 
   create() {
-    //Animations
+    // Animations
     this.anims.create({ 
       key: 'everything',
       frames: this.anims.generateFrameNames('hero'), repeat: -1

@@ -52,8 +52,8 @@ class Controller extends Phaser.Scene {
     // Get the World (global scene) instance
     this.World = this.scene.manager.getScene('World');
     // Scenes' determined width and height
-    this.momentWidth = 150;
-    this.momentHeight = 150;
+    this.momentWidth = 50;
+    this.momentHeight = 50;
   }
 
   // Assigns the number of moments for each level
@@ -74,12 +74,8 @@ class Controller extends Phaser.Scene {
   }
 
   create() {
-    // Create the main World, the outer most World scene
-    // this.createMainCanvas(true);
     // Player sounds
     this.playerCreatedSound = this.sound.add('zap');
-    // Controller for the player in the main world
-    this.createPlayer();
     // Set-up an event handler
     createLinkEmitter.on('createLink', this.handleLinking, this);
     // Level Management - Starting at level 0. Will be refactored into event-driven pattern later
@@ -93,16 +89,14 @@ class Controller extends Phaser.Scene {
     this.setLinkLineVisible(false);
     // Setup background graphics
     this.setupBackgroundGraphics();
-    // Setup camera
-    this.cameras.main.startFollow(this.World.globalPlayer, true, 0.05, 0.05);
-    this.cameras.main.setBounds(this.scale.width/2, this.scale.height/2, 320, 320, true);
-    this.cameras.main.setSize(320, 320);
     // Sounds
     this.uiPoingSound = this.sound.add('ui-poing');
     this.linkButtonSound = this.sound.add('linkButton');
     this.sceneEnterSound = this.sound.add('sceneEnter');
     this.pianoTheme = this.sound.add('pianoTheme');
-    this.pianoTheme.play();
+    this.mainTheme = this.sound.add('mainTheme');
+    this.mainTheme.play();    
+    this.mainTheme.setLoop(true);
     // Footstep sounds
     this.footstepSound = this.sound.add('footstepDirt');
   }
@@ -124,18 +118,9 @@ class Controller extends Phaser.Scene {
   update(time, delta) {
     // Handle scene transition
     this.handleSceneTransition();
-
-    // Oscillate scenes
     // for each scene that exists in the level, perlin noise movement
-    this.perlinMovement();
-    
-    // Generate datasets
-
-    // Update shapes' position and display
-    // this.handleBgShapes();
-
-    // Player input
-    // Update the player's FSM
+    // this.perlinMovement();    
+    // Update the player's input FSM
     if(this.World.globalPlayer) {
       this.World.globalPlayer.PlayerFSM.step([this, this.World.globalPlayer]);
     }
@@ -147,20 +132,6 @@ class Controller extends Phaser.Scene {
       if(scene.parent === this.getCurrentlyDraggedScene() || scene.momentFSM.state !== 'IdleMomentState') {
         return;
       }
-      // else if (scene.parent === this.getCurrentlyDraggedScene()) {
-        // Reset currently dragged scene after 3 seconds to give some time for the player to decide if they want to link the scene or not
-        // setTimeout( () => { 
-        //   this.setCurrentlyDraggedScene(null);
-        // }, 3000);
-        // // Destroy the create link button
-        // if (this.getCreateLinkButton()) {
-        //   this.getCreateLinkButton().destroy();
-        //   this.createdLinkButtonAlready = false;
-        // }    
-        // return;
-      // }
-      // Adjust dragged scene objects' rotation
-
       let tx = scene.parent.getData('tx');
       let ty = scene.parent.getData('ty');
       let speed = scene.parent.getData('speed');
@@ -222,11 +193,6 @@ class Controller extends Phaser.Scene {
     rect = Phaser.Geom.Rectangle.Clone(this.World.cameras.main);
   }
 
-  createMainCanvas(addToActiveDisplay) {
-    this.World = new World('World', this);
-    this.scene.add('World', this.World, addToActiveDisplay);
-  }
-
   //createMoment(key, moment)
   //@args: key {string}, moment {Phaser.Scene}
   //creates scenes using the key and moment parameters
@@ -238,7 +204,7 @@ class Controller extends Phaser.Scene {
     }
     const width = this.scale.width;
     const height = this.scale.height;
-    const offset = 150;
+    const offset = 25;
     let x = Phaser.Math.Between(offset, width - this.momentWidth * 2);
     let y = Phaser.Math.Between(offset, height - this.momentHeight * 2);
 
@@ -267,12 +233,10 @@ class Controller extends Phaser.Scene {
     this.handleClick(draggableZoneParent, momentInstance);
     // Set a name for the zone (used for handling it later)
     draggableZoneParent.setName(key);
-    // Add collider with player
-    this.World.physics.add.collider(this.World.globalPlayer, draggableZoneParent, () => { console.log("collided with a scene"); }, () => { return true; }, this);
     // Add to current draggable zones
     this.setDraggableActiveZones(draggableZoneParent);
     // Add the scenes
-    this.World.scene.add(key, momentInstance, true);
+    this.scene.add(key, momentInstance, true);
     // Return it to keep a reference for later scene destruction
     return momentInstance;
   }
@@ -394,6 +358,15 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  displayQuestionnaire(timer) {
+    let elapsed = timer.getProgress();
+    let delay = timer.delay;
+    console.log(elapsed);
+    console.log(delay);    
+    // while(elapsed < timer.delay) { // 5000 ms
+    // show questionnaire while time is up
+    // }
+  }
   // resetPlayer(scene, controller)
   //
   // Resets the player from inside scenes to the World scene. Is also called in the SnappedState when scenes are out of range with each other
@@ -407,12 +380,12 @@ class Controller extends Phaser.Scene {
     // Destroy the player from the stepped in scene
     if(scene.globalPlayer) {
       scene.destroyPlayer();
-      // Make player undefined from World to reset its instance properly
-      controller.World.globalPlayer = undefined;
-    }
+    } 
+    // Make player undefined from World to reset its instance properly
+    controller.World.globalPlayer = undefined;
     // Re-create player if it is undefined
-    if(!controller.World.globalPlayer) {
-      controller.World.globalPlayer = controller.createPlayer();
+    if(!controller.World.globalPlayer || controller.World.globalPlayer === undefined) {
+      controller.World.globalPlayer = controller.World.createPlayer();
     }
   }
 
@@ -428,21 +401,6 @@ class Controller extends Phaser.Scene {
     });
     // Flash
     this.cameras.main.flash(1000);
-  }
-
-  createPlayer() {
-    const spawnPoint = this.add.zone(this.scale.width / 2, this.scale.height / 2, 128, 128);
-    const controllerScaleFactor = 2.5;
-    this.World.globalPlayer = new Player(this.World, spawnPoint.x, spawnPoint.y, "hero");
-    // Physics bounds
-    this.World.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
-    this.World.globalPlayer
-    .setCollideWorldBounds(true)
-      .setSize(64, 64).setScale(controllerScaleFactor)      
-        .setInteractive();
-    console.debug(this.playerCreatedSound);
-    this.playerCreatedSound.play();
-    return this.World.globalPlayer;
   }
 
   handleResponsiveVoice(scene) {
@@ -596,7 +554,7 @@ class Controller extends Phaser.Scene {
     this.scenePlayerLock = false;
     // Re-create player in the world
     if(!this.World.globalPlayer) {
-      this.World.globalPlayer = this.createPlayer();
+      this.World.globalPlayer = this.World.createPlayer();
     }
   }
 
@@ -694,7 +652,7 @@ class Controller extends Phaser.Scene {
           let thisPlayer = this.World.globalPlayer;
           thisPlayer.destroy();
         }
-        this.World.globalPlayer = this.createPlayer();
+        this.World.globalPlayer = this.World.createPlayer();
       } catch(err) {
         console.error(err.message);
       } finally {

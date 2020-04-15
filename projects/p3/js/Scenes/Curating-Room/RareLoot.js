@@ -86,7 +86,7 @@ class RareLoot extends Moment {
   }
 
   create() {
-    this.circle = this.add.circle(this.parent.x, this.parent.y, 150, '#77bf5e').setOrigin(0);
+    this.circle = this.add.circle(this.parent.x, this.parent.y, 50, '#77bf5e').setOrigin(0);
     this.setupCamera();
     // Setup text initial position and content
     this.sceneTextPosX = this.cameras.main.centerX;

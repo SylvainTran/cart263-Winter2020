@@ -1,0 +1,23 @@
+function findLongestWordLength(str) {
+  // First, split the words between whitespaces
+  let arrayOfWords = str.split(" ");
+  // Put those in an array
+  // Compare the length of each word by iterating through
+  let max = arrayOfWords[0].length;
+  for(let i = 0; i < arrayOfWords.length; i++)
+  {
+    if(arrayOfWords[i].length > max)
+    {
+      max = arrayOfWords[i].length;
+    }
+  }
+  // Return the longest word's length
+  console.log(max);
+  return max;
+}
+
+findLongestWordLength("The quick brown fox jumped over the lazy dog");
+findLongestWordLength("May the force be with you");
+findLongestWordLength("Google do a barrel roll")
+findLongestWordLength("What is the average airspeed velocity of an unladen swallow")
+findLongestWordLength("What if we try a super-long word such as otorhinolaryngology")

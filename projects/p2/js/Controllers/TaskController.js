@@ -81,6 +81,7 @@ function spawnDirt(scene) {
     // Creating the div and giving the attribute to the iframe that will contain the src of the url of the dirty video
     let newDiv = document.createElement("DIV");
     let videoDiv = document.createElement("iframe");
+    $(videoDiv).addClass("flex-row-divs");
     $(videoDiv).attr("width", 420);
     $(videoDiv).attr("height", 315);
     $(videoDiv).attr("src", dirtyVideoElected.replace("watch?v=", "embed/"));
@@ -109,6 +110,7 @@ function spawnGoodVideo(scene) {
         let goodVideoElected = goodVideoUrls[randomVideoIndex];
         let newDiv = document.createElement("DIV");
         let videoDiv = document.createElement("iframe");
+        $(videoDiv).addClass("flex-row-divs");
         $(videoDiv).attr("width",420);
         $(videoDiv).attr("height", 315);
         $(videoDiv).attr("src", goodVideoElected.replace("watch?v=", "embed/"));
@@ -119,7 +121,6 @@ function spawnGoodVideo(scene) {
 
 // Videos that fit James Bridle's disturbed video content category. May give a gray box instead for server problem reasons
 let dirtyVideosUrls = [
-  "https://www.youtube.com/watch?time_continue=8&v=BHcFQ9gaMF4&feature=emb_logo",
   "https://www.youtube.com/watch?v=Or8iYWRg2w8",
   "https://www.youtube.com/watch?v=DTSWQGKUg_c",
   "https://www.youtube.com/watch?v=2hizjTNsOCo", // This one is extremely disturbing and should not be watched under any circumstances

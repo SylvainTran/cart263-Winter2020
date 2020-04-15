@@ -41,20 +41,21 @@ class State {
 //Automata states only
 class IdleState extends State {
   enter(scene, automata) {
-    console.log("I'm Idle Like Stale Bread");
+
   }
 
   execute(scene, automata) {
     //if the player has issued a vocal command, decide if has enough money to act on it and create a youtube video based out of
     // financial incentives. If not, has a probability to create art or something else instead
     // This is hopefully going to be majorly redone later using better structuring and AI
-    scene.workCommandIssued ? this.checkIfEnoughMoney(scene) : this.randomDecisionTree();
+    scene.workCommandIssued ? this.checkIfEnoughMoney(scene, automata) : this.randomDecisionTree();
   }
   //Checks if enough money in the automata's inventory depending on the financial tolerance threshold (fearing poverty)
   checkIfEnoughMoney(automata) {
     console.log("Checking if enough money was offered");
     //console.log(automata.cashInventory);
-    if (automata.getCashInventory() >= getFinancialToleranceThreshold()) {
+    // Will use getters eventually, some issue currently?
+    if (automata.cashInventory >= automata.financialToleranceThreshold) {
       return true;
     } else {
       return false;
@@ -63,7 +64,12 @@ class IdleState extends State {
   //Random decision tree
   randomDecisionTree() {
     //console.log("making random decisions");
-    setTimeout(() => this.stateMachine.transition("moving"), 5000);
+    let randomDesireToMove = Math.random();
+    const moveThreshold = 0.35;
+    if(randomDesireToMove <= moveThreshold) { // This is basic yet satisfying
+      this.stateMachine.transition("moving");
+    }
+    setTimeout(() => this.stateMachine.transition("idle"), 100);
   }
 }
 // These states are artefacts of the first ideation of the project, may be repicked later
@@ -97,15 +103,19 @@ class AutomataMovingState extends State {
     switch (randomDirection) {
       case 1:
         automata.setVelocityX(-80);
+        automata.play("ley-left-walk", true);
         break;
       case 2:
         automata.setVelocityX(80);
+        automata.play("ley-right-walk", true);
         break;
       case 3:
         automata.setVelocityY(-80);
+        automata.play("ley-up-walk", true);
         break;
       case 4:
         automata.setVelocityY(80);
+        automata.play("ley-front-walk", true);
         break;
     }
   }
@@ -144,25 +154,23 @@ class MovingState extends State {
     // Horizontal
     if (player.cursors.left.isDown) {
       player.setVelocityX(-80);
-      //player.myAnims.play("ley-left-walk");
+      player.play("ley-left-walk", true);
     } else if (player.cursors.right.isDown) {
       player.setVelocityX(80);
-      //player.play("ley-right-walk");
+      player.play("ley-right-walk", true);
+    } else if (player.cursors.up.isDown) {
+      // Remove excess X velocity horizontally (awkward horizontal diagonal movement -- vertical diagonal still allowed)
+      player.setVelocityX(0);
+      player.setVelocityY(-80);
+      player.play("ley-up-walk", true);
+    } else if (player.cursors.down.isDown) {
+      // Remove excess X velocity horizontally (awkward horizontal diagonal movement -- vertical diagonal still allowed)
+      player.setVelocityX(0);
+      player.setVelocityY(80);
+      player.play("ley-front-walk", true);
     } else {
       player.setVelocityX(0);
-      //player.play("ley-front-walk");
-    }
-
-    // Vertical
-    if (player.cursors.up.isDown) {
-      player.setVelocityY(-80);
-      //player.play("ley-up-walk");
-    } else if (player.cursors.down.isDown) {
-      player.setVelocityY(80);
-      //player.play("ley-front-walk");;
-    } else {
       player.setVelocityY(0);
-      //player.play("ley-front-walk");
     }
 
     //If the player didn't move at all, then he is idle

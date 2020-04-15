@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
+
+  <!-- CSS stylesheet(s) -->
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <!-- Library script(s) -->
+  <script src="./js/Libraries/phaser.js"></script>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
+  </script>
+  <!-- Finite state machines -->
+  <script src="js/States/State.js"></script>
+  <script src="js/States/IdleMomentState.js"></script>
+  <script src="js/States/SnappedState.js"></script>
+  <script src="js/States/LinkedState.js"></script>
+  <!-- My scene script(s) -->
+  <script src="js/Scenes/Curating-Room/Moment.js"></script>
+  <script src="js/Scenes/Curating-Room/CriticalHit.js"></script>
+  <script src="js/Scenes/Curating-Room/GoodNPCPunchLine.js"></script>
+  <script src="js/Scenes/Curating-Room/RareLoot.js"></script>
+  <script src="js/Scenes/World.js"></script>
+  <script src="js/Scenes/MomentConnectionManager.js"></script>
+  <!-- My utility scripts -->
+  <script src="js/Utilities/DoublyLinkedList.js"></script>
+  <script src="js/Utilities/Algorithms/Strategy.js"></script>
+  <script src="js/Utilities/Algorithms/Context.js"></script>
+  <script src="js/Utilities/Algorithms/FindClosestNeighbour.js"></script>
+  <script src="js/States/StateMachine.js"></script>
+  <script src="js/Entities/Person.js"></script>
+  <script src="js/Scenes/Controller.js"></script>
+  <script src="js/Scenes/BootScene.js"></script>
+  <!-- App's main entry point -->
+  <script src="js/Main.js"></script>
+
+  <head profile="http://www.w3.org/2005/10/profile">
+    <link rel="icon" type="image/png" href="./assets/images q/sprites/CashBag.png">
+  </head>
+
+<body>
+  <div class="flex-container">
+    <div class="side__left-menu">
+      <div class="side__left-menu__top">Observatory</div>
+    </div>
+    <div class="nav-flex-container">
+      <div id="navBar">
+        <a href="index.html" style="text-decoration: none;"><div><span style="color: skyblue;">Curating Room</span><br><br></div></a>
+        <div><span style="color: skyblue;">Progress Room</span><br><br></div>
+        <div><span style="color: skyblue;">Sequencing Room</span><br><br></div>
+        <img class="nav__hamburger-menu" src="assets/images/icons/hamburger-menu.png" alt="hamburger menu icon" />
+      </div>
+    </div>
+    <div class="main__game">
+      <div>
+
+      </div>
+    </div>
+    <div class="main__log">
+    </div>
+  </div>
+  <footer style="text-align: center; font-size: 1vw;">
+    
+  </footer>
+  <div style="font-family: 'Press Start 2P', cursive; position: absolute; left: -1000px; visibility: hidden;"></div>
+</body>
+
+</html>

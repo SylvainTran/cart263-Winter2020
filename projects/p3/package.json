@@ -1,0 +1,28 @@
+{
+  "name": "The Dream of a Ridiculous Man - Caviar Kubernetes Remix",
+  "version": "0.0.1",
+  "description": "Computational experiment on a Fyodor Dostoevsky novel using Phaser, p5.js, RiTa, ml.js, unsplash API. Project for cart 263 (winter 2020)",
+  "main": "Main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peelingSun/cart263-Winter2020.git"
+  },
+  "keywords": [
+    "kubernetes",
+    "game",
+    "cart",
+    "moments"
+  ],
+  "author": "Sylvain serey Tran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peelingSun/cart263-Winter2020/issues"
+  },
+  "homepage": "https://github.com/peelingSun/cart263-Winter2020#readme",
+  "dependencies": {
+    "phaser3-rex-plugins": "^1.1.11"
+  }
+}

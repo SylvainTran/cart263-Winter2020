@@ -1,0 +1,70 @@
+function confirmEnding(str, target) {
+  // if str has more than one word, consider the str as a phrase
+  console.log("Length of str: " + str.split(" ").length);
+  if(str.split(" ").length > 1)
+  {
+    // Split the str
+    let wordArr = str.split(" ");
+    console.log(wordArr);
+    // Get the last word
+    let lastWord = wordArr[wordArr.length - 1];
+    console.log(lastWord);
+    // Get the target match in the str for that edge case
+    let partialMatch = str.substring(str.length - target.length,  str.length);
+    console.log(partialMatch);
+    // Compare with target
+    if(lastWord === target)
+    {
+      return true;
+    }
+    else if(partialMatch === target) // If the last word contains the target
+    {
+      return true;
+    } 
+    else
+    {
+      return false;
+    }
+  }
+  else if(target.length === 1)// Only check the last char
+  {
+    // if the str === the target return true
+    let lastChar = str.substring(str.length - 1, str.length);
+    //console.log(lastChar);
+    if(lastChar === target)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else if(target.length > 1) // Check all the chars in the target against str
+  {
+    // Get the number of chars to check
+    let numbersOfChar = target.length;
+    // Search for the last number of chars in str corresponding
+    let lastSlots = str.length;
+    let indexToStartSearch = lastSlots - numbersOfChar;
+    if(str.substring(indexToStartSearch, str.length) === target)
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+}
+
+console.log(confirmEnding("Bastian", "n"));
+console.log(confirmEnding("Congratulation", "on"));
+console.log(confirmEnding("Connor", "n"));
+console.log(confirmEnding("Walking on water and developing software from a specification are easy if both are frozen", "specification"));
+console.log(confirmEnding("He has to give me a new name", "name"));
+console.log(confirmEnding("Open sesame", "same"));
+console.log(confirmEnding("Open sesame", "pen"));
+console.log(confirmEnding("Open sesame", "game"));
+console.log(confirmEnding("If you want to save our world, you must hurry. We dont know how much longer we can withstand the nothing", "mountain"));
+console.log(confirmEnding("Abstraction", "action"));

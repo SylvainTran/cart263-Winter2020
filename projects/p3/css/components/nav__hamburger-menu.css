@@ -1,0 +1,10 @@
+.nav__hamburger-menu {
+    position: fixed;
+    top: 5vw;
+    right: 2vw;
+    cursor: pointer;
+}
+
+.nav__hamburger-menu:hover {
+    width: 6vw;
+}

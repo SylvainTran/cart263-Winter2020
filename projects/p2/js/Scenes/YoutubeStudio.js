@@ -16,9 +16,7 @@ class YoutubeStudio extends Phaser.Scene {
     this.youtubePimpPlayer;
     // Our annyang commands for use inside the YoutubeStudio map
     this.rpgCommands = {
-      // The player can ask for infinite amounts of money to come out of the sky
-      // as per my fantastic game design. This is to make the player reflect on the titanic budget that the industry
-      // generates in order to get people to do what they desire, including posting disturbing videos to aggrandize their monopoly of the market
+      // The player can ask for infinite amounts of money to come out of the sky -- this is for the player to reflect upon
       'Give me :lootValue': (lootValue) => {
         responsiveVoice.speak("Loot generated.", "UK English Female", options);
         givePlayerLoot(this.youtubePimpPlayer, lootValue);
@@ -34,13 +32,12 @@ class YoutubeStudio extends Phaser.Scene {
         this.workCommandIssued = true;
         // The agent's alignment is whether or not you are happy with your bank account, driving your
         // decision to make kinds of content on youtube
-        // This is obviously a stupid model, but then who said youtubers had to be intelligent?
+        this.youtubeCreatorKeenerA.randomizeBankAccount(); // This is to vary getting good or bad videos
         let alignment = this.youtubeCreatorKeenerA.checkBankAccount();
-        // For now this is called externally, will probably change in the future. The youtube content generation
-        // function for now just puts divs with embedded youtube links pre-selected in advance according
-        // to their sanitary category
         createNewYoutubeContent(this, alignment);
         responsiveVoice.speak("New Content Uploaded.", "UK English Female", options);
+        // play 360 animation
+        this.youtubePimpPlayer.play("everything");
         setTimeout(() => {
           this.workCommandIssued = false;
         }, 1000); // Reset the state after 1 sec -- does not do anything yet
@@ -74,7 +71,7 @@ class YoutubeStudio extends Phaser.Scene {
       collides: true
     });
 
-    // Collision debug -- leaving it for debug purposes
+    //Collision debug -- leaving it for debug purposes
     // const debugGraphics = this.add.graphics().setAlpha(0.75);
     // aboveLayer.renderDebug(debugGraphics, {
     //   tileColor: null, // Color of non-colliding tiles
@@ -95,7 +92,13 @@ class YoutubeStudio extends Phaser.Scene {
 
     // TODO make player persistent in data object passed down.. For now a player is generated again because there is no progression
     // in the game yet. Spawns at the spawnpoint set inside the Tiled editor
-    this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "ley").setScale(0.3);
+    this.youtubePimpPlayer = new YoutubePimpPlayer(this, spawnPoint.x, spawnPoint.y, "ley").setScale(this.scaleFactor);
+    const newBoundBoxX = 43;
+    const newBoundBoxY = 46;
+    const boundBoxOffsetX = 9.5;
+    const boundBoxOffsetY = 8;
+    this.youtubePimpPlayer.setSize(newBoundBoxX, newBoundBoxY);
+    this.youtubePimpPlayer.setOffset(boundBoxOffsetX, boundBoxOffsetY);
     this.youtubePimpPlayer.setCollideWorldBounds(true);
     // Player collision with tiles with collide true
     this.physics.add.collider(this.youtubePimpPlayer, aboveLayer);
@@ -111,7 +114,10 @@ class YoutubeStudio extends Phaser.Scene {
     this.youtubeCreatorKeenerA = new Automata(this, this.keenerAPosX, this.keenerAPosY, "ley").setScale(this.scaleFactor);
     this.youtubeCreatorKeenerA.speak();
     // Collision with the one NPC
-    this.physics.add.collider(this.youtubePimpPlayer, this.youtubeCreatorKeenerA);
+    this.youtubeCreatorKeenerA.setCollideWorldBounds(true); 
+    this.physics.add.collider(this.youtubeCreatorKeenerA, aboveLayer);
+    this.physics.add.collider(this.youtubeCreatorKeenerA, worldLayer);
+    this.physics.add.collider(this.youtubeCreatorKeenerA, this.youtubePimpPlayer);
 
     // Management of the UI outside the game canvas
     // Update the main__log div to reflect the commands that we have
@@ -119,11 +125,11 @@ class YoutubeStudio extends Phaser.Scene {
 
     let newDivInstructions = document.createElement("DIV");
     let instructions = "<br>" + "<br>" + "Magic Spells: " + "<br>" + "<br>";
-    let spellA = "<span style=\"color: yellow\">" + " [Give me (desired amount) of loot]" + "</span>" + "<br>" + "<br>";
-    let spellB = "<span style=\"color: green\">" + "[Create videos that make money]" + "</span>";
+    let spellA = "<span style=\"color: yellow\">" + " [Give me (*cash value)]" + "</span>";
+    let spellB = "<span style=\"color: green\">" + "[Create videos that make money]" + "</span>" + "<br>" + "<br>";
     $(newDivInstructions).append(instructions);
-    $(newDivInstructions).append(spellA);
     $(newDivInstructions).append(spellB);
+    $(newDivInstructions).append(spellA);
     $('.main__log').append(newDivInstructions);
 
     // TODO Launch Youtube channels if player activates the youtube channels in the studio
@@ -131,6 +137,7 @@ class YoutubeStudio extends Phaser.Scene {
   }
 
   update(time, delta) {
+    this.youtubeCreatorKeenerA.AutomataFSM.step();
     this.youtubePimpPlayer.PlayerFSM.step();
   }
 }

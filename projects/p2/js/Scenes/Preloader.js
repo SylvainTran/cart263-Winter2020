@@ -18,54 +18,46 @@ class Preloader extends Phaser.Scene {
   }
 
   create() {
-    //Animations (atlas version -- some bug currently not working)
-    this.anims.create({
+    //Animations
+    this.anims.create({ // This works
+      key: 'everything',
+      frames: this.anims.generateFrameNames('ley'), repeat: -1
+    });
+    this.anims.create({ 
       key: 'ley-left-walk',
       frames: this.anims.generateFrameNames('ley', {
-        prefix: 'ley-left-walk.',
-        start: 0,
-        end: 8,
-        zeroPad: 2,
-        suffix: '.png'
+        prefix: "walk000",
+        suffix: ".png",
+        frames: [3,4]
       }),
-      frameRate: 10,
-      repeat: -1
+      frameRate: 5
     });
-    this.anims.create({
-      key: 'ley-front-walk',
-      frames: this.anims.generateFrameNames('ley', {
-        prefix: 'ley-front-walk.',
-        start: 0,
-        end: 2,
-        zeroPad: 2,
-        suffix: '.png'
-      }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
+    this.anims.create({ 
       key: 'ley-right-walk',
       frames: this.anims.generateFrameNames('ley', {
-        prefix: 'ley-right-walk.',
-        start: 0,
-        end: 2,
-        zeroPad: 2,
-        suffix: '.png'
+        prefix: "walk000",
+        suffix: ".png",
+        frames: [5,6]
       }),
-      frameRate: 10,
-      repeat: -1
+      frameRate: 5
     });
-    this.anims.create({
+    this.anims.create({ 
       key: 'ley-up-walk',
       frames: this.anims.generateFrameNames('ley', {
-        prefix: 'ley-up-walk.',
-        start: 0,
-        end: 2,
-        zeroPad: 2,
-        suffix: '.png'
+        prefix: "walk000",
+        suffix: ".png",
+        frames: [7,8]
       }),
-      frameRate: 10,
-      repeat: -1
+      frameRate: 5
+    });
+    this.anims.create({ 
+      key: 'ley-front-walk',
+      frames: this.anims.generateFrameNames('ley', {
+        prefix: "walk000",
+        suffix: ".png",
+        frames: [1,2]
+      }),
+      frameRate: 5
     });
     this.scene.start('YoutubeLounge');
   }

@@ -6,6 +6,11 @@ class Preloader extends Phaser.Scene {
   preload() {
     // Player sprite
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
+    // Actors sprites
+    this.load.image('p_001', 'assets/images/sprites/actors/persons/actors_person_fishman_A_single.png');
+    this.load.image('i_001', 'assets/images/sprites/actors/inanimate/actors_inanimate_rock_A_single.png');
+    // Mind space form sprite
+    this.load.image('mindSpaceForm', 'assets/images/sprites/mindSpaceForm.png');
     // UI
     this.valueBarTrack = this.load.image("valueBarTrack", "./assets/images/ui/valueBarTrack.psd");
     this.valueBarImg = this.load.image("valueBarImg", "./assets/images/ui/valueBar.psd");
@@ -21,8 +26,12 @@ class Preloader extends Phaser.Scene {
     this.load.audio('footstepDirt', ['assets/sounds/FOOTSTEP_DIRT.mp3',
                                       'assets/sounds/FOOTSTEP_DIRT.wav']);       
     this.load.audio('footstepWater', ['assets/sounds/FOOTSTEP_WATER.mp3',
-                                   'assets/sounds/FOOTSTEP_WATER.wav']);    
+          'assets/sounds/FOOTSTEP_WATER.wav']);    
+    // Data JSON files
+    // Narrative
     this.load.json('chapters', 'assets/data/dialogues.json');  
+    // Mind spaces
+    this.load.json('scenes', 'assets/data/mindSpaces.json');
     // Tileset (game world in black and white)
     this.load.image("worldTiles_A_BW", "assets/tilesets/worldTiles_A_BW.png");    
     // Tilemap json (game world)

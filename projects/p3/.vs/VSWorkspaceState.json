@@ -1,10 +1,17 @@
 {
   "ExpandedNodes": [
     "",
+    "\\assets",
+    "\\assets\\data",
+    "\\assets\\images",
+    "\\assets\\images\\sprites",
     "\\js",
+    "\\js\\Entities",
     "\\js\\Scenes",
-    "\\js\\Scenes\\Controllers"
+    "\\js\\Scenes\\Curating-Room",
+    "\\js\\Scenes\\Dialogue",
+    "\\js\\Scenes\\UI"
   ],
-  "SelectedNode": "\\js\\Scenes\\Controllers\\Controller.js",
+  "SelectedNode": "\\js\\Scenes\\Curating-Room\\TownA.js",
   "PreviewInSolutionExplorer": false
 }

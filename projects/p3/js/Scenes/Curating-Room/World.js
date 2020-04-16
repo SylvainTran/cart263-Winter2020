@@ -74,6 +74,6 @@ class World extends Moment {
   }
 
   update(time, delta) {
-
-  }
+    // If player collides with transition to TownA
+    // If player collides with transition to TownB
 }

@@ -21,12 +21,12 @@ class Controller extends Phaser.Scene {
     // Whether to exit the scene parameter dialog or not (temporary)
     this.sceneParameterOpen = false;
     // Current level of the game at and its previous one for checking if it changed
-    this.previousLevel = 0;
-    this.currentLevel = 0;
+    this.previousArea = 0;
+    this.currentArea = 0;
     // level config
-    this.levelConfig = null;
+    this.areaConfig = null;
     // Level's moment references (for later scene destruction)
-    this.scenesInLevel = [];
+    this.actorsInLevel = [];
     // Draggable zones in use in this level
     this.draggableZonesActive = [];
     // Number of paired scenes
@@ -57,20 +57,21 @@ class Controller extends Phaser.Scene {
   }
 
   // Assigns the number of moments for each level
-  levelManager(level) {
-    let numberOfMoments = 0;
-    let moments = [];
-    switch (level) {
-      case 0: numberOfMoments = 2; moments = [CriticalHit, RareLoot]; break;
-      case 1: numberOfMoments = 3; moments = [GoodNPCPunchLine, RareLoot, CriticalHit]; break;
-      case 2: numberOfMoments = 4; moments = [RareLoot, CriticalHit, GoodNPCPunchLine, RareLoot]; break;
-      default: numberOfMoments = 2; break;
+  areaManager(area) {
+    let nbActors = 0;
+    let actors = [];
+
+    switch (area) {
+        case 0: nbActors = 2; actors = [FishMan, Rock]; break;
+        default: nbActors = 2; break;
     }
-    const levelConfig = {
-      numberOfMoments: numberOfMoments,
-      moments: moments
-    };
-    return levelConfig;
+
+    const areaConfig = {
+        nbActors: nbActors,
+        actors: actors
+    };    
+
+    return areaConfig;
   }
 
   create() {
@@ -78,8 +79,6 @@ class Controller extends Phaser.Scene {
     this.playerCreatedSound = this.sound.add('zap');
     // Set-up an event handler
     createLinkEmitter.on('createLink', this.handleLinking, this);
-    // Level Management - Starting at level 0. Will be refactored into event-driven pattern later
-    this.createLevel();
     // Spawn a contextual button for linking scenes only if there are snapped scenes
     // And if and only if at drag end to prevent multiple buttons
     this.World.input.on('dragend', this.spawnContextualButton);
@@ -127,7 +126,7 @@ class Controller extends Phaser.Scene {
   }
 
   perlinMovement() {
-    this.scenesInLevel.forEach((scene) => {
+    this.actorsInLevel.forEach((scene) => {
       // If not already linked or being currently dragged, update position
       if(scene.parent === this.getCurrentlyDraggedScene() || scene.momentFSM.state !== 'IdleMomentState') {
         return;
@@ -160,27 +159,6 @@ class Controller extends Phaser.Scene {
     }
   }
 
-  createLevel() {
-    // TODO store local storage
-    if(this.linkedScenesList) {
-      //localStorage.setItem("Level", this.linkedScenesList);
-      //JSON.parse(localStorage.getItem("Level"));  
-    }
-
-    // Get the current level's config by querying the level manager with the current level
-    const levelConfig = this.levelManager(this.currentLevel);
-    const numberOfMoments = levelConfig.numberOfMoments;
-    const moments = levelConfig.moments;
-    
-    for (let i = 0; i < numberOfMoments; i++) {
-      // Add a random hash at the end for now to prevent duplicate keys
-      let randomHash =  i + Math.random() + Math.random();
-      // Create the moment and also cache it for later destruction
-      this.scenesInLevel.push(this.createMoment(moments[i].name + randomHash, moments[i]));
-    }
-    return this.scenesInLevel;
-  }
-
   // Raining/Snowing passive moments in the background -- may be cybernetics-like system optimizing factors in polish phase of project
   setupBackgroundGraphics() {
     backgroundScenes = this.add.graphics();
@@ -193,10 +171,10 @@ class Controller extends Phaser.Scene {
     rect = Phaser.Geom.Rectangle.Clone(this.World.cameras.main);
   }
 
-  //createMoment(key, moment)
-  //@args: key {string}, moment {Phaser.Scene}
-  //creates scenes using the key and moment parameters
-  createMoment(key, moment) {
+  //createMindSpaceForm(key, moment)
+  //@args: type {string}, moment {Phaser.Scene}
+  //creates game objects using the type (mindSpaces.json) and moment parameters
+    createMindSpaceForm(type, moment) {
     // Do something if scene manager is processing to prevent conflict
     if(this.scene.manager.isProcessing) {
       // WIP
@@ -212,7 +190,10 @@ class Controller extends Phaser.Scene {
     let draggableZoneParent = this.World.add.zone(x, y, moment.WIDTH, moment.HEIGHT).setInteractive({
       draggable: true
     }).setOrigin(0);
-    // Create the instance and setup the drag handling
+    // Create the mind space instance and setup the drag handling
+    const mindSpaces = this.cache.json.get('mindSpaces');
+    const randomMindSpace = 0;
+    let mindSpaceForm = new MindSpaceForm(this, x, y, draggableZoneParent, );
     let momentInstance = new moment(key, draggableZoneParent, this);
     // Set some data for this parent zone, namely its moment scene, the number of connections it has and which connections these are
     draggableZoneParent.setData({
@@ -620,19 +601,19 @@ class Controller extends Phaser.Scene {
   }
 
   // Only check if the level changed
-  levelChanged() {
-    let levelChanged = this.currentLevel > this.previousLevel ? true : false;
-    if (levelChanged) {
-      // Update the last level's index if the current one changed
-      this.previousLevel = this.currentLevel;
+  areaChanged() {
+    let areaChanged = this.currentArea > this.previousArea ? true : false;
+    if (areaChanged) {
+      // Update the last area's index if the current one changed
+      this.previousArea = this.currentArea;
     }
-    return levelChanged;
+    return areaChanged;
   }
 
   handleSceneTransition() {
-    // Check if all the scenes for a level are linked to trigger end of level screen
-    if (this.numberOfPairedScenes >= this.levelManager(this.currentLevel).numberOfMoments - 1) {
-      ++this.currentLevel;
+    // Check if the player changed areas
+    if (this.numberOfPairedScenes >= this.areaManager(this.currentArea).nbActors - 1) {
+      ++this.currentArea;
       // Reset counter of paired scenes
       this.numberOfPairedScenes = 0;
       // Fade effect
@@ -640,14 +621,14 @@ class Controller extends Phaser.Scene {
       this.cameras.main.fadeIn(1000);
     }
     // Change level if it has changed from the previous one
-    if (this.levelChanged() && !this.scenePlayerLock) {
+    if (this.areaChanged() && !this.scenePlayerLock) {
       // Pause all the scenes running in parallel to prevent conflicts with deletion
       try {
         this.pauseAllScenes();
-        this.removeScenes(this.scenesInLevel);
+        this.removeScenes(this.actorsInLevel);
         this.refresh();
         this.restartLevelSettings();
-        this.createLevel(this.currentLevel);
+        this.createArea(this.currentArea);
         if(this.World.globalPlayer) {
           let thisPlayer = this.World.globalPlayer;
           thisPlayer.destroy();
@@ -662,19 +643,19 @@ class Controller extends Phaser.Scene {
   }
 
   pauseAllScenes() {
-    this.scenesInLevel.forEach( (scene) => {
+    this.actorsInLevel.forEach( (scene) => {
       scene.scene.manager.pause(scene.scene.key);
     });
   }
 
-  removeScenes(scenesInLevel) {
+  removeScenes(actorsInLevel) {
     // Destroy old zones
     for (let i = 0; i < this.draggableZonesActive.length; i++) {
       this.draggableZonesActive[i].destroy(true);
     } 
-    // for(let i = 0; i < scenesInLevel.length; i++) {
-    //   console.debug(scenesInLevel[i].scene.key);
-    //   this.scene.remove(scenesInLevel[i].scene.key);
+    // for(let i = 0; i < actorsInLevel.length; i++) {
+    //   console.debug(actorsInLevel[i].scene.key);
+    //   this.scene.remove(actorsInLevel[i].scene.key);
     // }  
     this.draggableZonesActive = [];
   }
@@ -688,7 +669,7 @@ class Controller extends Phaser.Scene {
     this.availableConnections = false;
     this.linkedScenesList = [];
     this.sceneParameterOpen = false;
-    this.scenesInLevel = [];
+    this.actorsInLevel = [];
   }
 
   handleBgShapes() {

@@ -48,7 +48,7 @@ class World extends Moment {
 
   setupCameras() {
     this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    this.cameras.main.setZoom(1);
+    this.cameras.main.setZoom(2);
   }
 
   setupWorldTiles() {
@@ -56,18 +56,18 @@ class World extends Moment {
     // Create the tileset from the map, using our preloaded assets
     this.worldTileset = this.worldTilemap.addTilesetImage("world-bw", "worldTiles_A_BW");
     // Assign the layers using definitions inside the Tiled editor
-    this.aboveLayer = this.worldTilemap.createStaticLayer("Above", this.worldTileset, 0, 0);
-    this.worldLayer = this.worldTilemap.createStaticLayer("World", this.worldTileset, 0, 0);
     this.belowLayer = this.worldTilemap.createStaticLayer("Below", this.worldTileset, 0, 0);
+    this.worldLayer = this.worldTilemap.createStaticLayer("World", this.worldTileset, 0, 0);
+    this.aboveLayer = this.worldTilemap.createStaticLayer("Above", this.worldTileset, 0, 0);
     // Collide with the above player as defined in the Tiled editor
     this.aboveLayer.setCollisionByProperty({ collides: true });
     // Collision debug
-    const debugGraphics = this.add.graphics().setAlpha(0.75);
-    this.aboveLayer.renderDebug(debugGraphics, {
-      tileColor: null, // Color of non-colliding tiles
-      collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-      faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-    });
+    // const debugGraphics = this.add.graphics().setAlpha(0.75);
+    // this.aboveLayer.renderDebug(debugGraphics, {
+    //   tileColor: null, // Color of non-colliding tiles
+    //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+    //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+    // });
   }
 
   // createPlayer

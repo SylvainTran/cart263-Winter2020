@@ -27,6 +27,7 @@ class World extends Moment {
     this.aboveLayer.setCollisionByProperty({collides: true});
     // Spawn at the spawn point setup in Tiled
     this.spawnPointA = this.worldTilemap.findObject("GameObjects", obj => obj.name === "spawnPoint");
+    console.log(this.spawnPointA);
     // Controller for the player in the main world
     this.createPlayer();
     // Collision debug
@@ -40,7 +41,7 @@ class World extends Moment {
     this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
     // Physics bounds
     this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
-    this.cameras.main.setZoom(2);
+    this.cameras.main.setZoom(1);
     // Link line linking each moment/scenes
     let thisText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, '1877.').setOrigin(0);
     // Deal with resizing event
@@ -51,10 +52,8 @@ class World extends Moment {
     if(this.controller.scenePlayerLock) {
       return;
     }
-    const spawnPointX = 250;
-    const spawnPointY = 250;
     const controllerScaleFactor = 0.25;
-    this.globalPlayer = new Player(this, spawnPointX, spawnPointY, "hero");
+    this.globalPlayer = new Player(this, this.spawnPointA.x, this.spawnPointA.y, "hero");
     // Physics bounds
     this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
     this.globalPlayer
@@ -74,6 +73,6 @@ class World extends Moment {
   }
 
   update(time, delta) {
-    // If player collides with transition to TownA
-    // If player collides with transition to TownB
+
+  }
 }

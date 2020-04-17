@@ -38,6 +38,8 @@ class World extends Moment {
     spawnPool(this.areaConfig, this);
     // Setup physics bounds
     this.setupPhysics();
+    // Setup drag mechanics
+    this.setupDrag();
     // Setup cameras
     this.setupCameras();
     // Setup text decor in the background
@@ -118,8 +120,28 @@ class World extends Moment {
   startDialogue(player, actor) {
     // Talk if facing each other
     if(player.body.touching.up && actor.body.touching.down) {
-      actor.talk();
+      actor.talk(this);
     }
+  }
+
+  // setupDrag
+  //
+  // Setups the drags on draggable bodies in the game world
+  setupDrag() {
+    this.input.on('dragstart', (pointer, obj) =>
+    {
+        obj.body.moves = false;
+    });
+
+    this.input.on('drag', (pointer, obj, dragX, dragY) =>
+    {
+        obj.setPosition(dragX, dragY);
+    });
+
+    this.input.on('dragend', (pointer, obj) =>
+    {
+        obj.body.moves = true;
+    });
   }
 
   addTextDecor() {

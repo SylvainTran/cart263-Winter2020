@@ -56,7 +56,8 @@ class Controller extends Phaser.Scene {
     this.momentHeight = 50;
   }
 
-  // Assigns the number of moments for each level
+  // Creates the actors in the game world depending on the area parameter
+  // An area corresponds to a state of interactions in the game world
   areaManager(area) {
     let nbActors = 0;
     let actors = [];
@@ -68,9 +69,9 @@ class Controller extends Phaser.Scene {
 
     const areaConfig = {
         nbActors: nbActors,
-        actors: actors
+        actors: actors,
+        actorSpawningPoints: undefined,
     };    
-
     return areaConfig;
   }
 
@@ -116,7 +117,7 @@ class Controller extends Phaser.Scene {
 
   update(time, delta) {
     // Handle scene transition
-    this.handleSceneTransition();
+    // this.handleSceneTransition();
     // for each scene that exists in the level, perlin noise movement
     // this.perlinMovement();    
     // Update the player's input FSM
@@ -628,7 +629,7 @@ class Controller extends Phaser.Scene {
         this.removeScenes(this.actorsInLevel);
         this.refresh();
         this.restartLevelSettings();
-        this.createArea(this.currentArea);
+        // this.createArea(this.currentArea);
         if(this.World.globalPlayer) {
           let thisPlayer = this.World.globalPlayer;
           thisPlayer.destroy();

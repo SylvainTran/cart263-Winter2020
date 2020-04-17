@@ -1,12 +1,10 @@
 // FishMan
 //
 // FishMan NPCs
-class FishMan extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, dragZone, data) {
-        super(scene, x, y, data);
+class FishMan extends NPC {
+    constructor(scene, x, y, name) {
+        super(scene, x, y, name);
         this.setTexture('p_001');
-        this.setPosition(x, y);
-        this.dragZone = dragZone;
-        this.setInteractive();
+        this.type = "Fish Man";
     }
 }

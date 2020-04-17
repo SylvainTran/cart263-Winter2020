@@ -1,12 +1,10 @@
 // Rock
 //
 // Rock NPCs
-class Rock extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, dragZone, data) {
-        super(scene, x, y, data);
+class Rock extends NPC {
+    constructor(scene, x, y, name) {
+        super(scene, x, y, name);
         this.setTexture('i_001');
-        this.setPosition(x, y);
-        this.dragZone = dragZone;
-        this.setInteractive();
+        this.type = "Rock";
     }
 }

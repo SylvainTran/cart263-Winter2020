@@ -1,3 +1,6 @@
+// World
+//
+// The class that is responsible for rendering the game world's view only (excepted the player's physics)
 class World extends Moment {
   constructor(key, controller) {
     super('World');
@@ -6,6 +9,7 @@ class World extends Moment {
     this.aboveLayer = null; // The layer which has collision objects in it
     this.worldLayer = null; // The layer in which the player and characters can walk
     this.belowLayer = null; // The layer containing decors 
+    this.areaConfig = null; // The config object for the state of actors in the game world
   }
 
   init() {
@@ -20,9 +24,17 @@ class World extends Moment {
     // Create the game world's tilemap
     this.setupWorldTiles();
     // Spawn at the spawn point setup in Tiled
-    this.setupSpawningPoints();
+    this.setupPlayerSpawningPoints();
     // Controller for the player in the main world
     this.createPlayer();
+    // Setup actors at spawn points after getting the area config
+    const startingArea = 0; // The first "instance" of the world state, because the whole game takes places in a single map
+    this.areaConfig = this.controller.areaManager(startingArea);
+    // Get the spawn points from the tilemap, by filtering through the Tiled layers
+    this.areaConfig.actorSpawningPoints = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("actorSpawnPoint"));
+    // Use the spawn pool with World as context
+    let spawnPool = this.spawnPool();
+    spawnPool(this.areaConfig, this);
     // Setup physics bounds
     this.setupPhysics();
     // Setup cameras
@@ -31,6 +43,61 @@ class World extends Moment {
     this.addTextDecor();
     // Handleresizing event
     this.scale.on('resize', this.resize, this);
+  }
+
+  // spawnPool
+  //
+  // Function dealing with actor spawning in the world
+  spawnPool = function() {
+    // The enclosed function to use the areaConfig data privately
+    function spawnPool(data, world) {
+      let spawnPoints = [];
+      let actors = [];
+      // Fill private actors from external data
+      for(let i = 0; i < data.nbActors; i++) {
+        let d = data.actors[i];
+        actors.push(d);
+      }      
+      // Get spawn points
+      function getSpawnPoints() {
+        let spawnPoints = data.actorSpawningPoints;
+        return spawnPoints;
+      }
+
+      let initSpawnPoints = getSpawnPoints();
+      // Fill private spawn points from external data
+      for(let i = 0; i < initSpawnPoints.length; i++) {
+        spawnPoints.push(initSpawnPoints[i]);
+      }
+      // Spawn actors if there are actors and spawn points
+      if(actors.length && spawnPoints.length){
+        spawnActors(actors);
+      }
+
+      // spawnActors
+      //
+      // Spawn all actors in the game world
+      function spawnActors(actors) {
+        for(let i = 0; i < actors.length; i++) {
+          // Consume new spawn points randomly for each actor to spawn in the world
+          let newSpawnPoint = consumeSpawnPoint();
+          let actor = actors[i];
+          // The actor is a custom sprite that we created, the world is the context passed down in the function call
+          world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y));                    
+        }
+      }  
+      // consumeSpawnPoint
+      //
+      // Gets an available spawn point in the pool of spawn points in the game world. Remove it when an actor is added at that spawn point
+      function consumeSpawnPoint() {
+        let randomSpawnPoint = Math.floor(Math.random() * spawnPoints.length);
+        let consumedSpawnPoint = spawnPoints.splice(randomSpawnPoint, 1);
+        // consumedSpawnPoint is an array of a single object containing the random spawn point
+        return consumedSpawnPoint;
+      }      
+    }
+    // Return the function for flexible calls
+    return spawnPool;
   }
 
   addTextDecor() {
@@ -42,7 +109,7 @@ class World extends Moment {
     this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
   }
 
-  setupSpawningPoints() {
+  setupPlayerSpawningPoints() {
     this.spawnPointA = this.worldTilemap.findObject("GameObjects", obj => obj.name === "spawnPoint");
   }
 

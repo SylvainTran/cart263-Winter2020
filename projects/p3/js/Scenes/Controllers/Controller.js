@@ -70,7 +70,7 @@ class Controller extends Phaser.Scene {
     const areaConfig = {
         nbActors: nbActors,
         actors: actors,
-        actorSpawningPoints: undefined
+        actorSpawningPoints: undefined,
     };    
     return areaConfig;
   }

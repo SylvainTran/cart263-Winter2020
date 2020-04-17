@@ -10,6 +10,7 @@ class World extends Moment {
     this.worldLayer = null; // The layer in which the player and characters can walk
     this.belowLayer = null; // The layer containing decors 
     this.areaConfig = null; // The config object for the state of actors in the game world
+    this.currentAreaActors = null; // The current game area's actors
   }
 
   init() {
@@ -53,6 +54,8 @@ class World extends Moment {
     function spawnPool(data, world) {
       let spawnPoints = [];
       let actors = [];
+      let currentAreaActors = [];
+
       // Fill private actors from external data
       for(let i = 0; i < data.nbActors; i++) {
         let d = data.actors[i];
@@ -83,7 +86,16 @@ class World extends Moment {
           let newSpawnPoint = consumeSpawnPoint();
           let actor = actors[i];
           // The actor is a custom sprite that we created, the world is the context passed down in the function call
-          world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y));                    
+          let newActor = world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y, "NPC")); 
+          newActor.setName(newActor.type).setScale(0.5).setSize(newActor.width/2,newActor.height/3,true);            
+          // Setup collision physics with the tilemap for the new actor
+          world.physics.world.enable([newActor]);
+          newActor.body.setCollideWorldBounds(true);
+          world.physics.add.collider(newActor, world.aboveLayer);   
+          newActor.body.setBounce(0);
+          newActor.body.setImmovable();
+          // Update current area's actors array
+          currentAreaActors.push(newActor);
         }
       }  
       // consumeSpawnPoint
@@ -95,9 +107,19 @@ class World extends Moment {
         // consumedSpawnPoint is an array of a single object containing the random spawn point
         return consumedSpawnPoint;
       }      
+      // Cache the current area's actors
+      world.currentAreaActors = null;
+      world.currentAreaActors = currentAreaActors;
     }
     // Return the function for flexible calls
     return spawnPool;
+  }
+
+  startDialogue(player, actor) {
+    // Talk if facing each other
+    if(player.body.touching.up && actor.body.touching.down) {
+      actor.talk();
+    }
   }
 
   addTextDecor() {
@@ -153,9 +175,10 @@ class World extends Moment {
     this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
     // Setup the player's size, scale, interactivity
     this.globalPlayer
-    .setCollideWorldBounds(true)
-      .setSize(64, 64).setScale(controllerScaleFactor)      
+      .setScale(controllerScaleFactor)      
         .setInteractive();
+    this.globalPlayer.body
+    .setCollideWorldBounds(true);
     // Player collision with tiles with collide true
     this.physics.add.collider(this.globalPlayer, this.aboveLayer);
     // Play player created sound
@@ -173,6 +196,9 @@ class World extends Moment {
   }
 
   update(time, delta) {
-
+    // Check for collision events between the player and any actor
+    if(this.currentAreaActors) {
+      this.physics.world.collide(this.globalPlayer, this.currentAreaActors, this.startDialogue, null, this);                      
+    }
   }
 }

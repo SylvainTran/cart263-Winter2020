@@ -161,7 +161,7 @@ class World extends Phaser.Scene  {
 
   setupCameras() {
     this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    this.cameras.main.setZoom(2);
+    this.cameras.main.setZoom(1.5);
   }
 
   setupWorldTiles() {

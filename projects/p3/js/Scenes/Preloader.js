@@ -35,7 +35,9 @@ class Preloader extends Phaser.Scene {
     // Tileset (game world in black and white)
     this.load.image("worldTiles_A_BW", "assets/tilesets/worldTiles_A_BW.png");    
     // Tilemap json (game world)
-    this.load.tilemapTiledJSON("world", "assets/tilemaps/world.json");                         
+    this.load.tilemapTiledJSON("world", "assets/tilemaps/world.json"); 
+    // Questionnaire forms
+    this.load.html('agreeForm', 'assets/forms/agreeForm.html');                        
   }
 
   create() {

@@ -1,0 +1,10 @@
+.game__agreeForm{
+    width: 10vw; 
+    height: 13vw; 
+    background-color: black; 
+    color: white;
+    text-align: center;
+    line-height: 25px;
+    padding-top: 1vw;
+    border-radius: 5%;
+}

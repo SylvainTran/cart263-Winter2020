@@ -29,6 +29,7 @@ class Preloader extends Phaser.Scene {
     this.load.audio('linkButton', ['assets/sounds/ui/linkButton.wav']);
     this.load.audio('sceneEnter', ['assets/sounds/SCENE_ENTER.wav']);
     // Themes
+    this.load.audio('startMenuTheme', ['assets/sounds/ADVENTURE_BEGINS-8-BIT.ogg']);
     this.load.audio('mainTheme', ['assets/sounds/MAIN_THEME.mp3']);
     this.load.audio('pianoTheme', ['assets/sounds/PIANO_THEME.mp3',                                   'assets/sounds/PIANO_THEME.ogg']);
     // Footstep sounds                                  
@@ -49,6 +50,12 @@ class Preloader extends Phaser.Scene {
     this.load.html('agreeForm', 'assets/forms/agreeForm.html');   
     // Progress tab menu
     this.load.html('progressTabMenu', 'assets/menus/progressTabMenu.html');    
+    // Start menu
+    this.load.html('startMenu', 'assets/menus/startMenu.html');    
+    // Tutorial menu
+    this.load.html('tutorialMenu', 'assets/menus/tutorialMenu.html');    
+    // About menu
+    this.load.html('aboutMenu', 'assets/menus/aboutMenu.html');    
     // The action icon for dialogue boxes
     this.load.image('nextPage', 'assets/images/icons/mousePointer.png');                 
     // Fonts
@@ -102,9 +109,6 @@ class Preloader extends Phaser.Scene {
       }),
       frameRate: 5
     });    
-    this.scene.start('Controller');
-    this.scene.start('World');
-    this.scene.start('UI');
-    this.scene.start('Hud');        
+    this.scene.start('StartMenu');
   }
 }

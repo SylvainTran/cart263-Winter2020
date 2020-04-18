@@ -16,7 +16,7 @@
                  y: y,
                  background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
                      .setStrokeStyle(2, COLOR_LIGHT),
-                 text: this.getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
+                 text: this.getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
                  action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
                  space: {
                      left: 20,
@@ -43,9 +43,9 @@
                  }
              }, this.textBoxCache)
              .on('pageend', function () {
-                 if (this.isLastPage) {
+                 if (this.isLastPage) {            
                     scene.scene.manager.getScene('UI').dialogueLock = false;
-                    setTimeout( () => { this.destroy() }, 3000);
+                    setTimeout( () => { this.destroy() }, 5000);
                     return;
                  }
                  let icon = this.getElement('action').setVisible(true);

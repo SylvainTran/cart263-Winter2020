@@ -29,9 +29,9 @@ class UI extends Phaser.Scene {
         // First level of the JSON array: the index is for which dialogue object in the JSON file
         const chapters = this.cache.json.get('chapters')[0];
         // Second level: the key is for the dialogue chapters' object selected in the first level
-        const key = "chapterOne";
+        const key = "introduction";
         // Third level: the index for the chapter array is the dialogue node for the array selected in the second level
-        const node = 0;
+        let node = 0;
         // Display the dialogue; the introduction is the first node (index) of the JSON object
         this.dialogueDisplayer.displayDialogue(node, key, chapters, this.dialogueFactory, this);
         // Creates the DOM progression tab menu game object

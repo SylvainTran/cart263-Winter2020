@@ -18,8 +18,8 @@ class DialogueDisplayer extends Phaser.Scene {
         context.dialogueLock = true;
         let d = dialogueArray[dialogueKey][threadNode];
         dialogueFactory.createTextBox(context, 50, 50, {
-            wrapWidth: 320,
-            fixedWidth: 320,
+            wrapWidth: 400,
+            fixedWidth: 400,
             fixedHeight: 75,
         }).start(d, 50);
         return d;  

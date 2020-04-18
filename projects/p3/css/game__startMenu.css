@@ -1,0 +1,17 @@
+.game__startMenu {
+    background-color:black;
+    color: white;
+    padding: 1vw 1vw 1vw 1vw;
+    border: 1px solid black;
+    font-family: 'Press Start 2P';    
+    font-size: 1vw;
+    width: 640px;
+    height: 640px;
+    text-align: center;
+    line-height: 3vw;
+}
+
+.game__startMenu div:hover {
+    color: slateblue;
+    cursor: pointer;
+}

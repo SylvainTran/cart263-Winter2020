@@ -47,7 +47,7 @@ let config = {
     createContainer: true
   },
   scene: [
-    Preloader, Controller, World, UI, Hud
+    Preloader, StartMenu, Controller, World, UI, Hud
   ]
 };
 let game = new Phaser.Game(config);

@@ -46,6 +46,9 @@ class World extends Phaser.Scene  {
     this.addTextDecor();
     // Handleresizing event
     this.scale.on('resize', this.resize, this);
+    // Fade effect
+    this.cameras.main.fadeOut(1000);
+    this.cameras.main.fadeIn(1000);    
   }
 
   // spawnPool

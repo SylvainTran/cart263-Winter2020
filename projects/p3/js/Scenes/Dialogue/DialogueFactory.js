@@ -3,7 +3,7 @@
  // Creates Phaser UI such as dialogue using the rex rainbow ui library
  class DialogueFactory {
      constructor() {
-        
+        this.textBoxCache = null;        
      }
      // Mr. Rex Rainbow
      createTextBox(scene, x, y, config) {
@@ -11,7 +11,7 @@
          let wrapWidth = GetValue(config, 'wrapWidth', 0);
          let fixedWidth = GetValue(config, 'fixedWidth', 0);
          let fixedHeight = GetValue(config, 'fixedHeight', 0);
-         let textBox = scene.rexUI.add.textBox({
+         this.textBoxCache = scene.rexUI.add.textBox({
                  x: x,
                  y: y,
                  background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
@@ -29,7 +29,7 @@
              })
              .setOrigin(0)
              .layout();
-         textBox
+        this.textBoxCache
              .setInteractive()
              .on('pointerdown', function () {
                  let icon = this.getElement('action').setVisible(false);
@@ -39,10 +39,12 @@
                  } else {
                      this.typeNextPage();
                  }
-             }, textBox)
+             }, this.textBoxCache)
              .on('pageend', function () {
                  if (this.isLastPage) {
-                     return;
+                    scene.scene.manager.getScene('UI').dialogueLock = false;
+                    setTimeout( () => { this.destroy() }, 3000);
+                    return;
                  }
                  let icon = this.getElement('action').setVisible(true);
                  this.resetChildVisibleState(icon);
@@ -54,9 +56,9 @@
                      duration: 500,
                      repeat: 0,
                      yoyo: false
-                 });
-             }, textBox);
-         return textBox;
+                 });1
+             }, this.textBoxCache);
+         return this.textBoxCache;
      }
      // Mr. Rex Rainbow
      getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {

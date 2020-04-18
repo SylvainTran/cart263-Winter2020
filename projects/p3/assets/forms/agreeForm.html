@@ -1,14 +1,18 @@
 <!-- Type A: Agreement -->
-<form id="agreeForm">
-    <label for="likert-1">Strongly agree</label>
-    <input type="radio" id="likert-1" name="likert-1-a">
-    <label for="likert-2">Agree</label>
-    <input type="radio" id="likert-2" name="likert-2-a">
-    <label for="likert-3">Neutral</label>
-    <input type="radio" id="likert-3" name="likert-3-a">
-    <label for="likert-4">Disagree</label>
-    <input type="radio" id="likert-4" name="likert-4-a">
-    <label for="likert-5">Strongly disagree</label>
-    <input type="radio" id="likert-5" name="likert-5-a">
-    <input type="submit" value="submit">
-</form>
+<div class="game__agreeForm">
+    <label for="questionTimeLeft">Time left to answer</label>
+    <progress id="questionTimeLeft" value="100" max="100"> 0% </progress>
+    <form id="agreeForm" onsubmit="return false;">
+        <label for="likert-1">Strongly agree</label><br>
+        <input type="radio" id="likert-1" name="likert-a" value="likert-1-a" required><br>
+        <label for="likert-2">Agree</label><br>
+        <input type="radio" id="likert-2" name="likert-a" value="likert-2-a" required><br>
+        <label for="likert-3">Neutral</label><br>
+        <input type="radio" id="likert-3" name="likert-a" value="likert-3-a" checked required><br>
+        <label for="likert-4">Disagree</label><br>
+        <input type="radio" id="likert-4" name="likert-a" value="likert-4-a" required><br>
+        <label for="likert-5">Strongly disagree</label><br>
+        <input type="radio" id="likert-5" name="likert-a" value="likert-5-a" required><br>
+        <input type="submit" style="background-color: cyan; color: black; border-radius: 25%;" value="submit">
+    </form>
+</div>

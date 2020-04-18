@@ -33,6 +33,23 @@ class NPC extends Phaser.GameObjects.Sprite {
     // Talk to this NPC 
     talk(scene, threadNode) {
         console.log("Talking to: " + this.getName());
+        // Take a random question node for actor type to display
+        this.displayDialogue(scene, threadNode);      
+        // Also create a mind space form above the NPC's head if there isn't one yet
+        if(!this.mindSpaceForm) {
+            this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));
+            this.mindSpaceForm.setScale(0.5);
+            // Setup drag mechanics and physics
+            scene.input.setDraggable(this.mindSpaceForm);
+            scene.physics.world.enable([this.mindSpaceForm]);
+            this.mindSpaceForm.body.setCollideWorldBounds(true);
+        }
+    }
+    
+    // displayDialogue
+    //
+    // Displays the dialogue (requesting the UI scene to draw the dialogue boxes with the dialogue data)
+    displayDialogue(scene, threadNode) {
         const mindSpaceData = scene.cache.json.get('mindSpaces');
         // The different dialogues available for this type of actor
         let dialogueThreads = [];
@@ -43,20 +60,10 @@ class NPC extends Phaser.GameObjects.Sprite {
                 dialogueThreads.push(obj);
             }
         }
-        // Take a random question node for actor type to display
         let randomIndex = Math.floor(Math.random() * dialogueThreads.length);
         let thread = dialogueThreads[randomIndex]["data"][0];
         const df = scene.scene.manager.getScene('UI').dialogueFactory;
         const UI = scene.scene.manager.getScene('UI');
-        UI.dialogueDisplayer.displayDialogue(threadNode, "question", thread, df, UI);      
-        // Also create a mind space form above the NPC's head if there isn't one yet
-        if(!this.mindSpaceForm) {
-            this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));
-            this.mindSpaceForm.setScale(0.5);
-            // Setup drag mechanics and physics
-            scene.input.setDraggable(this.mindSpaceForm);
-            scene.physics.world.enable([this.mindSpaceForm]);
-            this.mindSpaceForm.body.setCollideWorldBounds(true);
-        }
+        UI.dialogueDisplayer.displayDialogue(threadNode, "question", thread, df, UI);
     }
 }

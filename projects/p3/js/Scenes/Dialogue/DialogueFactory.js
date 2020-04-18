@@ -42,7 +42,9 @@
              }, textBox)
              .on('pageend', function () {
                  if (this.isLastPage) {
-                     return;
+                    scene.scene.manager.getScene('UI').dialogueLock = false;
+                    setTimeout( () => { this.destroy() }, 3000);
+                    return;
                  }
                  let icon = this.getElement('action').setVisible(true);
                  this.resetChildVisibleState(icon);

@@ -9,6 +9,7 @@ class UI extends Phaser.Scene {
         // Dialogue Factory and Displayer objects
         this.dialogueFactory = new DialogueFactory();
         this.dialogueDisplayer = new DialogueDisplayer();
+        this.dialogueLock = false; // Whether the player is currently locked in a conversation thread to prevent mixing dialogue calls
     }
 
     init() {

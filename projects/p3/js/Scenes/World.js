@@ -46,12 +46,6 @@ class World extends Phaser.Scene  {
     this.addTextDecor();
     // Handleresizing event
     this.scale.on('resize', this.resize, this);
-    // Set or get the progression game object in localStorage
-    if(!localStorage.getItem("gameProgression")) {
-      localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
-    } else {
-      JSON.parse(localStorage.getItem("gameProgression"));
-    }
   }
 
   // spawnPool

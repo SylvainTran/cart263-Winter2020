@@ -16,7 +16,7 @@
                  y: y,
                  background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
                      .setStrokeStyle(2, COLOR_LIGHT),
-                 text: scene.getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
+                 text: this.getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
                  action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
                  space: {
                      left: 20,
@@ -32,6 +32,8 @@
         this.textBoxCache
              .setInteractive()
              .on('pointerdown', function () {
+                 // Play poing sound
+                 scene.uiClickSound.play();
                  let icon = this.getElement('action').setVisible(false);
                  this.resetChildVisibleState(icon);
                  if (this.isTyping) {
@@ -63,11 +65,12 @@
      // Mr. Rex Rainbow
      getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
          return scene.add.text(0, 0, '', {
-                 fontSize: '20px',
-                 wordWrap: {
-                     width: wrapWidth
-                 },
-                 maxLines: 3
+                fontFamily: 'Press Start 2P',
+                fontSize: '40px',
+                wordWrap: {
+                    width: wrapWidth
+                },
+                maxLines: 3
              })
              .setFixedSize(fixedWidth, fixedHeight);
      }
@@ -76,7 +79,6 @@
          return scene.rexUI.add.BBCodeText(0, 0, '', {
              fixedWidth: fixedWidth,
              fixedHeight: fixedHeight,
-
              fontSize: '20px',
              wrap: {
                  mode: 'word',

@@ -7,7 +7,7 @@ class DialogueDisplayer extends Phaser.Scene {
     constructor() {
         super({key:'DialogueDisplayer'});
     }
-
+    
     // Calls the dialogueFactory for a certain dialogue to return and display
     displayDialogue(threadNode, dialogueKey, dialogueArray, dialogueFactory, context) {
         // Return if already in a dialogue
@@ -18,7 +18,7 @@ class DialogueDisplayer extends Phaser.Scene {
         context.dialogueLock = true;
         let d = dialogueArray[dialogueKey][threadNode];
         dialogueFactory.createTextBox(context, 50, 50, {
-            wrapWidth: 300,
+            wrapWidth: 320,
             fixedWidth: 320,
             fixedHeight: 75,
         }).start(d, 50);

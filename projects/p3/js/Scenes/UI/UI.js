@@ -11,6 +11,7 @@ class UI extends Phaser.Scene {
         this.dialogueDisplayer = new DialogueDisplayer();
         this.dialogueLock = false; // Whether the player is currently locked in a conversation thread to prevent mixing dialogue calls
         this.openProgressTabKey = null; // The keyboard input to open the progress tab DOM object (Enter for now)
+        this.uiClickSound = null; // UI click sound on dialogue boxes
     }
 
     init() {
@@ -38,7 +39,17 @@ class UI extends Phaser.Scene {
         this.progressTabMenu.setVisible(false);
         // this.progressTabMenu.setScale(0.25);
         this.progressTabMenu.setPosition(this.scale.width/2, this.scale.height/2);
+        // Update the current progression from local storage
+        // Set or get the progression game object in localStorage
+        let currentGameProgression = JSON.parse(localStorage.getItem("gameProgression"));
+        if(!currentGameProgression) {
+        localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
+        } else {
+        // Update the current progression from local storage
+        updateProgressUI(currentGameProgression);
+        }
         $(".game__progressTabMenu").draggable();
+        this.uiClickSound = this.sound.add('ui-poing');
     }
 
     update() {
@@ -57,35 +68,5 @@ class UI extends Phaser.Scene {
         } else {
             this.progressTabMenu.setVisible(true);
         }
-    }
-
-    updateGameProgression() {
-
-    }
-    
-    // From Rex Rainbow (MIT License) - Adds the built in text (as per the Phaser Text object) with config parameters
-    getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
-        return scene.add.text(0, 0, '', {
-                fontSize: '20px',
-                wordWrap: {
-                    width: wrapWidth
-                },
-                maxLines: 3
-            })
-            .setFixedSize(fixedWidth, fixedHeight);
-    }
-    // From Rex Rainbow (MIT License) - Adds the BBCode as per the Phaser BBCodeText object with config parameters
-    getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
-        return this.rexUI.add.BBCodeText(0, 0, '', {
-            fixedWidth: fixedWidth,
-            fixedHeight: fixedHeight,
-
-            fontSize: '20px',
-            wrap: {
-                mode: 'word',
-                width: wrapWidth
-            },
-            maxLines: 3
-        })
     }
 }

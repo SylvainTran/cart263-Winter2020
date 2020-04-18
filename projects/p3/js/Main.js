@@ -85,7 +85,6 @@ function handleNav() {
 //
 // handles the form submission from questionnaires
 function handleFormSubmit(form) {
-  alert("Test");
   let userAnswer;
   // Save the user's answer to local storage
   let answeredForm = form.elements["likert-a"];
@@ -94,14 +93,26 @@ function handleFormSubmit(form) {
   for(let i = 0; i < answeredForm.length; i++) {
     if(answeredForm[i].checked) {
       userAnswer = answeredForm[i].value;
-      currentProgression.questionsAnswered++;
-      // Todo push question as well
       currentProgression.peopleQuestionsLikertA.push(userAnswer);
-      localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
+      updateStatsQuestionsAnswered(currentProgression);
+      // Todo push question as well
     }
   }
   $(".game__agreeForm").remove();
   return false;
+}
+
+function updateStatsQuestionsAnswered(currentProgression) {
+  // If player answered a questionnaire update stats for it
+  ++currentProgression.questionsAnswered;
+  localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
+  updateProgressUI(currentProgression);
+}
+
+function updateProgressUI(currentProgression) {
+  let stats_questionsAnsweredText = "Questions Answered (/10): ";
+  //Update the progression tab menu
+  $('#stats--questionsAnswered').text(`${stats_questionsAnsweredText} ${currentProgression.questionsAnswered}`);
 }
 
 // Game progression data

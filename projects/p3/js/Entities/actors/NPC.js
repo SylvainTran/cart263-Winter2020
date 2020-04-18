@@ -69,7 +69,6 @@ class NPC extends Phaser.GameObjects.Sprite {
         }
         // Take a random question node for actor type to display
         this.displayDialogue(scene, threadNode);      
-        // Also create a mind space form above the NPC's head if there isn't one yet and not currently in a dialogue
     }
     
     // displayDialogue

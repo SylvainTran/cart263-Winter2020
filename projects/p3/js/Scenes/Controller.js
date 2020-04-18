@@ -708,7 +708,7 @@ let backgroundScenes;
 let shapes;
 let rect;
 const COLOR_PRIMARY = 0x000000;
-const COLOR_LIGHT = 0x7b5e57;
+const COLOR_LIGHT = 0Xffffff;
 const COLOR_DARK = 0x000000;
 let soundOptions = {
   "rate": Math.random(),

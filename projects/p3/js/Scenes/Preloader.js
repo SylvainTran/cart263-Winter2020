@@ -3,6 +3,15 @@ class Preloader extends Phaser.Scene {
     super({key: 'preloader'});
   }
 
+  init() {
+    // From Phaser WebFont example
+    let element = document.createElement('style');
+    document.head.appendChild(element);
+    let sheet = element.sheet;
+    let styles = '@font-face { font-family: "Press Start 2P"; }';
+    sheet.insertRule(styles, 0);
+  }
+
   preload() {
     // Player sprite
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
@@ -39,10 +48,19 @@ class Preloader extends Phaser.Scene {
     // Questionnaire forms
     this.load.html('agreeForm', 'assets/forms/agreeForm.html');   
     // Progress tab menu
-    this.load.html('progressTabMenu', 'assets/menus/progressTabMenu.html');                     
+    this.load.html('progressTabMenu', 'assets/menus/progressTabMenu.html');    
+    // The action icon for dialogue boxes
+    this.load.image('nextPage', 'assets/images/icons/mousePointer.png');                 
+    // Fonts
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
   create() {
+    WebFont.load({
+      custom: {
+        families: ['Press Start 2P']
+      }
+    });
     // Animations
     this.anims.create({ 
       key: 'everything',

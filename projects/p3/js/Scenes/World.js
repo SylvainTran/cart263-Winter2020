@@ -92,7 +92,7 @@ class World extends Phaser.Scene  {
           let actor = actors[i];
           // The actor is a custom sprite that we created, the world is the context passed down in the function call
           let newActor = world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y, "NPC")); 
-          newActor.setName(newActor.type).setScale(0.5).setSize(newActor.width/2,newActor.height/3,true);            
+          newActor.setName(newActor.type).setScale(0.25).setSize(32,32);            
           // Setup collision physics with the tilemap for the new actor
           world.physics.world.enable([newActor]);
           newActor.body.setCollideWorldBounds(true);

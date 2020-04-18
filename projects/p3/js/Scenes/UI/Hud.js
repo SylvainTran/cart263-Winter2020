@@ -6,6 +6,8 @@
 class Hud extends Phaser.Scene {
     constructor() {
         super('Hud');
+        // Number of questionnaires to answer left in this round        
+        this.roundTally = null;
     }
 
     init() {
@@ -17,7 +19,10 @@ class Hud extends Phaser.Scene {
     }
     
     create() {
-
+        this.roundTally = this.add.dom().createFromCache('hudRoundTally');
+        this.roundTally.setVisible(true);
+        // this.roundTally.setScale(0.25);
+        this.roundTally.setPosition(this.scale.width/2, 10);
     }
 
     update(time, delta) {

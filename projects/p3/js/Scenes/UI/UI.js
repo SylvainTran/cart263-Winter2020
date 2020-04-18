@@ -20,10 +20,15 @@ class UI extends Phaser.Scene {
     }
 
     create() {
+        // The chapters is for specifying which JSON file to get
+        // First level of the JSON array: the index is for which dialogue object in the JSON file
+        const chapters = this.cache.json.get('chapters')[0];
+        // Second level: the key is for the dialogue chapters' object selected in the first level
+        const key = "chapterOne";
+        // Third level: the index for the chapter array is the dialogue node for the array selected in the second level
+        const node = 0;
         // Display the dialogue; the introduction is the first node (index) of the JSON object
-        const chapters = this.cache.json.get('chapters');
-        const introduction = 0;
-        this.dialogueDisplayer.displayDialogue(introduction, "chapterOne", chapters, this.dialogueFactory, this);
+        this.dialogueDisplayer.displayDialogue(node, key, chapters, this.dialogueFactory, this);
     }
 
     // From Rex Rainbow (MIT License) - Adds the built in text (as per the Phaser Text object) with config parameters

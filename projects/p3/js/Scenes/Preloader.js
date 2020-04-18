@@ -31,7 +31,7 @@ class Preloader extends Phaser.Scene {
     // Narrative
     this.load.json('chapters', 'assets/data/dialogues.json');  
     // Mind spaces
-    this.load.json('scenes', 'assets/data/mindSpaces.json');
+    this.load.json('mindSpaces', 'assets/data/mindSpaces.json');
     // Tileset (game world in black and white)
     this.load.image("worldTiles_A_BW", "assets/tilesets/worldTiles_A_BW.png");    
     // Tilemap json (game world)

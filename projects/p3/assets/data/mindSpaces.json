@@ -1,38 +1,46 @@
 [
     {
         "type": "person",
-        "data": {
-            "secretGrief": "solitude",
-            "griefResolve": "george",
-            "question": "Do you think solitude is about being alone?",
-            "footstep": "void"    
-        }
+        "data": [
+            {
+                "secretGrief": "solitude",
+                "griefResolve": "george",
+                "question": ["Do you think solitude is about being alone?", "Where do you think lonely people end up?"],
+                "footstep": "void"    
+            }
+        ]
     },
     {
         "type": "animal",
-        "data": {
-            "secretGrief": "feedChildren",
-            "griefResolve": "acorn",
-            "question": "Even if food is available, some people have no hands. Do you agree?",
-            "footstep": "earth"     
-        }
+        "data": [
+            {
+                "secretGrief": "feedChildren",
+                "griefResolve": "acorn",
+                "question": ["Even if food is available, some people have no hands. Do you agree?"],
+                "footstep": "earth"     
+            }
+        ]
     },
     {
         "type": "inanimate",
-        "data": {
-            "secretGrief": "invisible",
-            "griefResolve": "take",
-            "question": "If you were a stone, would you be happier?",
-            "footstep": "stone"     
-        }
+        "data": [
+            {
+                "secretGrief": "invisible",
+                "griefResolve": "take",
+                "question": ["If you were a stone, would you be happier?"],
+                "footstep": "stone"     
+            }
+        ]
     },
     {
         "type": "person",
-        "data": {
-            "secretGrief": "anger",
-            "griefResolve": "brother",
-            "question": "If you were a person that was looked up by someone, how would you act right now?",
-            "footstep": "water"    
-        }
+        "data": [
+            {
+                "secretGrief": "anger",
+                "griefResolve": "brother",
+                "question": ["If you were a person that was looked up by someone, how would you act right now?"],
+                "footstep": "water"    
+            }
+        ]
     }
 ]

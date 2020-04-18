@@ -31,8 +31,24 @@ class NPC extends Phaser.GameObjects.Sprite {
     // talk
     //
     // Talk to this NPC 
-    talk(scene) {
+    talk(scene, threadNode) {
         console.log("Talking to: " + this.getName());
+        const mindSpaceData = scene.cache.json.get('mindSpaces');
+        // The different dialogues available for this type of actor
+        let dialogueThreads = [];
+        for(let i = 0; i < mindSpaceData.length; i++) {
+            let type = mindSpaceData[i]["type"];
+            if(type === this.type) {
+                let obj = mindSpaceData[i];
+                dialogueThreads.push(obj);
+            }
+        }
+        // Take a random question node for actor type to display
+        let randomIndex = Math.floor(Math.random() * dialogueThreads.length);
+        let thread = dialogueThreads[randomIndex]["data"][0];
+        const df = scene.scene.manager.getScene('UI').dialogueFactory;
+        const UI = scene.scene.manager.getScene('UI');
+        UI.dialogueDisplayer.displayDialogue(threadNode, "question", thread, df, UI);      
         // Also create a mind space form above the NPC's head if there isn't one yet
         if(!this.mindSpaceForm) {
             this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));

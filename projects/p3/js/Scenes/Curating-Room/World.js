@@ -120,7 +120,9 @@ class World extends Moment {
   startDialogue(player, actor) {
     // Talk if facing each other
     if(player.body.touching.up && actor.body.touching.down) {
-      actor.talk(this);
+      // The dialogue node to get for a given conversation
+      let dialogueNode = 0;
+      actor.talk(this, dialogueNode);
     }
   }
 

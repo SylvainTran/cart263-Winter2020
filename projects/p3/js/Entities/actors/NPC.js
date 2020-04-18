@@ -40,17 +40,31 @@ class NPC extends Phaser.GameObjects.Sprite {
             this.questionnaire = scene.add.dom().createFromCache('agreeForm');
             this.questionnaire.setScale(0.25);
             this.questionnaire.setPosition(scene.globalPlayer.x, scene.globalPlayer.y + 25);
-            $( ".game__agreeForm" ).draggable();
-            console.log(this.questionnaire)
+            $(".game__agreeForm").draggable();
+            // Adds an onsubmit handler on the form
+            let textBox = scene.scene.manager.getScene('UI').dialogueFactory.textBoxCache;
+            $('#agreeForm').attr("onsubmit", "return handleFormSubmit(this)")
             // this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));
             // this.mindSpaceForm.setScale(0.5);
             // // Setup drag mechanics and physics
             // scene.input.setDraggable(this.mindSpaceForm);
             // scene.physics.world.enable([this.mindSpaceForm]);
             // this.mindSpaceForm.body.setCollideWorldBounds(true);
+            // Show time left (s)
+            setInterval(()=> { 
+                var p = document.getElementById('questionTimeLeft'); 
+                if(!p) {
+                    return;
+                }
+                p.value-=10
+            }, 1000);
+            // Destroy questionnaire after 10s
             setTimeout(()=> { 
-                this.questionnaire.destroy(); 
-                this.questionnaire = null; 
+                if(this.questionnaire) {
+                    this.questionnaire.destroy(); 
+                    this.questionnaire = null;     
+                    textBox.destroy();
+                }
             }, 10000);
         }
         // Take a random question node for actor type to display

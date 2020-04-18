@@ -1,0 +1,12 @@
+.game__progressTabMenu {
+    background-color: black;
+    color: white;
+    padding: 1vw 1vw 1vw 1vw;
+    border: 1px dashed cyan;
+    font-family: 'Press Start 2P';    
+    font-size: 0.33vw;
+    width: 5vw;
+    height: 17vw;
+    text-align: center;
+    line-height: 0.65vw;
+}

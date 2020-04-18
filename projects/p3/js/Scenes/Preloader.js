@@ -37,7 +37,9 @@ class Preloader extends Phaser.Scene {
     // Tilemap json (game world)
     this.load.tilemapTiledJSON("world", "assets/tilemaps/world.json"); 
     // Questionnaire forms
-    this.load.html('agreeForm', 'assets/forms/agreeForm.html');                        
+    this.load.html('agreeForm', 'assets/forms/agreeForm.html');   
+    // Progress tab menu
+    this.load.html('progressTabMenu', 'assets/menus/progressTabMenu.html');                     
   }
 
   create() {

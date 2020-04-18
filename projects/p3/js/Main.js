@@ -80,3 +80,42 @@ function handleNav() {
     $hamburgerMenu.removeClass('sticky');
   }
 }
+
+// handleFormSubmit
+//
+// handles the form submission from questionnaires
+function handleFormSubmit(form) {
+  alert("Test");
+  let userAnswer;
+  // Save the user's answer to local storage
+  let answeredForm = form.elements["likert-a"];
+  let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
+  console.log(currentProgression);
+  for(let i = 0; i < answeredForm.length; i++) {
+    if(answeredForm[i].checked) {
+      userAnswer = answeredForm[i].value;
+      currentProgression.questionsAnswered++;
+      // Todo push question as well
+      currentProgression.peopleQuestionsLikertA.push(userAnswer);
+      localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
+    }
+  }
+  $(".game__agreeForm").remove();
+  return false;
+}
+
+// Game progression data
+let gameProgression = {
+  peopleQuestionsLikertA: [],
+  animalQuestionsLikertA: [],
+  inanimateQuestionsLikertA: [],
+  secretGriefsSolved: 0,
+  meaningfulConversationsHad: 0,
+  questionsAnswered: 0,
+  questionsAvoided: 0,
+  peopleDiscovered: 0,
+  animalsDiscovered: 0,
+  inanimateDiscovered: 0,
+  chaptersUncovered: 0,
+  bookCompletion: 0
+}

@@ -46,6 +46,12 @@ class World extends Phaser.Scene  {
     this.addTextDecor();
     // Handleresizing event
     this.scale.on('resize', this.resize, this);
+    // Set or get the progression game object in localStorage
+    if(!localStorage.getItem("gameProgression")) {
+      localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
+    } else {
+      JSON.parse(localStorage.getItem("gameProgression"));
+    }
   }
 
   // spawnPool
@@ -162,6 +168,7 @@ class World extends Phaser.Scene  {
   setupCameras() {
     this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
     this.cameras.main.setZoom(1.5);
+    this.cameras.main.setBounds(0, 0, this.scale.width, this.scale.height);
   }
 
   setupWorldTiles() {

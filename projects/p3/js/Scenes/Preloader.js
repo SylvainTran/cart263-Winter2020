@@ -18,6 +18,7 @@ class Preloader extends Phaser.Scene {
     // Actors sprites
     this.load.image('p_001', 'assets/images/sprites/actors/persons/actors_person_fishman_A_single.png');
     this.load.image('i_001', 'assets/images/sprites/actors/inanimate/actors_inanimate_rock_A_single.png');
+    this.load.image('questionnaireBoss', 'assets/images/sprites/actors/persons/QuestionnaireBoss.png');
     // Mind space form sprite
     this.load.image('mindSpaceForm', 'assets/images/sprites/mindSpaceForm.png');
     // UI
@@ -43,7 +44,7 @@ class Preloader extends Phaser.Scene {
     // Mind spaces
     this.load.json('mindSpaces', 'assets/data/mindSpaces.json');
     // Tileset (game world in black and white)
-    this.load.image("worldTiles_A_BW", "assets/tilesets/worldTiles_A_BW.png");    
+    this.load.image("16x16-1bit", "assets/tilesets/16x16-1bit.png");    
     // Tilemap json (game world)
     this.load.tilemapTiledJSON("world", "assets/tilemaps/world.json"); 
     // Questionnaire forms
@@ -60,6 +61,10 @@ class Preloader extends Phaser.Scene {
     this.load.image('nextPage', 'assets/images/icons/mousePointer.png');                 
     // Fonts
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+    // HUD
+    this.load.html('hud', 'assets/hud.html');
+    // Court seance screen
+    this.load.html('courtSeance', 'assets/courtSeance.html');
   }
 
   create() {
@@ -108,7 +113,15 @@ class Preloader extends Phaser.Scene {
         frames: [1,2]
       }),
       frameRate: 5
-    });    
-    this.scene.start('StartMenu');
+    });   
+    this.debugMode = false; 
+    if(!this.debugMode) {     
+      this.scene.start('StartMenu');    
+    } else {
+      this.scene.start('Controller');
+      this.scene.start('World'); 
+      this.scene.start('UI');
+      this.scene.start('Hud');          
+    }
   }
 }

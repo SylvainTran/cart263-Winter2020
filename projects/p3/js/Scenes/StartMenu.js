@@ -11,7 +11,7 @@ class StartMenu extends Phaser.Scene {
 
     }
   
-    create() {
+    create() { 
       this.startMenuTheme = this.sound.add('startMenuTheme');      
       this.startMenuTheme.play();
       this.startMenuTheme.setLoop(true);
@@ -28,10 +28,7 @@ class StartMenu extends Phaser.Scene {
       // Add click event listeners to handle the menu
       $('#menu--start').click(() => {
         this.startMenuTheme.stop();
-        this.scene.start('Controller');
-        this.scene.start('World');
-        this.scene.start('UI');
-        this.scene.start('Hud');                  
+        this.scene.start('Controller');         
       });
       $('#menu--tutorial').click(() => {
         // Set it visible

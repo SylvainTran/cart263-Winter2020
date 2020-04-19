@@ -54,25 +54,10 @@ class Controller extends Phaser.Scene {
     // Scenes' determined width and height
     this.momentWidth = 50;
     this.momentHeight = 50;
-  }
-
-  // Creates the actors in the game world depending on the area parameter
-  // An area corresponds to a state of interactions in the game world
-  areaManager(area) {
-    let nbActors = 0;
-    let actors = [];
-
-    switch (area) {
-        case 0: nbActors = 2; actors = [FishMan, Rock]; break;
-        default: nbActors = 2; break;
-    }
-
-    const areaConfig = {
-        nbActors: nbActors,
-        actors: actors,
-        actorSpawningPoints: undefined,
-    };    
-    return areaConfig;
+    // Launch these scenes in parallel to this one  
+    this.scene.launch('UI');        
+    this.scene.launch('Hud');      
+    this.scene.launch('World');    
   }
 
   create() {
@@ -95,8 +80,8 @@ class Controller extends Phaser.Scene {
     this.sceneEnterSound = this.sound.add('sceneEnter');
     this.pianoTheme = this.sound.add('pianoTheme');
     this.mainTheme = this.sound.add('mainTheme');
-    this.mainTheme.play();    
-    this.mainTheme.setLoop(true);
+    // this.mainTheme.play();    
+    // this.mainTheme.setLoop(true);
     // Footstep sounds
     this.footstepSound = this.sound.add('footstepDirt');
   }
@@ -564,34 +549,7 @@ class Controller extends Phaser.Scene {
   setAvailableConnections(value) {
     this.availableConnections = value;
   }
-
-  sequenceLinkedScenes() {
-    // TODO
-    // Pair consequences with actions -> Moments of reflection, anti-linear narrative?
-
-  }
-
-  parametrizeLinkedScenes() {
-    // TODO
-    // 
-    // Parameters:
-    // 
-  }
-
-  shuffleNewScenes() {
-    // TODO
-  }
-
-  // Only check if the level changed
-  areaChanged() {
-    let areaChanged = this.currentArea > this.previousArea ? true : false;
-    if (areaChanged) {
-      // Update the last area's index if the current one changed
-      this.previousArea = this.currentArea;
-    }
-    return areaChanged;
-  }
-
+  
   handleSceneTransition() {
     // Check if the player changed areas
     if (this.numberOfPairedScenes >= this.areaManager(this.currentArea).nbActors - 1) {
@@ -714,4 +672,3 @@ let soundOptions = {
   "rate": Math.random(),
   "pitch": Math.random()
 }
-let progressNotification = `You earned your loot! The horizon princess's library is expanding.`;

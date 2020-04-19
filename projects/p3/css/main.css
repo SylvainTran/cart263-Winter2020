@@ -24,3 +24,5 @@
 @import "menu--start-banner.css";
 @import "game__tutorialMenu.css";
 @import "game__aboutMenu.css";
+@import "game__hud.css";
+@import "seance--main.css";

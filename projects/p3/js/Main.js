@@ -21,7 +21,7 @@ Through Pixelated Clouds by bart - https://opengameart.org/content/through-pixel
 
 // Config file for phaser
 //
-// Physics to arcade
+//
 let config = {
   type: Phaser.AUTO,
   width: window.innerWidth,
@@ -37,7 +37,7 @@ let config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false,
+      debug: true,
       gravity: {
         y: 0
       }
@@ -51,82 +51,3 @@ let config = {
   ]
 };
 let game = new Phaser.Game(config);
-
-$('document').ready(setup);
-
-let $hamburgerMenu;
-let $navBar;
-let sticky;
-// If two moments are currently linked
-let updateDataAndActiveConnections = false;
-let createLink = false;
-
-function setup() {
-  $hamburgerMenu = $('.nav__hamburger-menu');
-  $navBar = $('#navBar');
-  const STICKY_OFFSET = 10;
-  sticky = $hamburgerMenu.offset().top - STICKY_OFFSET;
-  window.onscroll = function () {
-    handleNav();
-  };
-}
-
-function handleNav() {
-  if (window.pageYOffset >= sticky) {
-    $navBar.addClass('sticky');
-    $hamburgerMenu.addClass('sticky');
-  } else {
-    $navBar.removeClass('sticky');
-    $hamburgerMenu.removeClass('sticky');
-  }
-}
-
-// handleFormSubmit
-//
-// handles the form submission from questionnaires
-function handleFormSubmit(form) {
-  let userAnswer;
-  // Save the user's answer to local storage
-  let answeredForm = form.elements["likert-a"];
-  let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-  console.log(currentProgression);
-  for(let i = 0; i < answeredForm.length; i++) {
-    if(answeredForm[i].checked) {
-      userAnswer = answeredForm[i].value;
-      currentProgression.peopleQuestionsLikertA.push(userAnswer);
-      updateStatsQuestionsAnswered(currentProgression);
-      // Todo push question as well
-    }
-  }
-  $(".game__agreeForm").remove();
-  return false;
-}
-
-function updateStatsQuestionsAnswered(currentProgression) {
-  // If player answered a questionnaire update stats for it
-  ++currentProgression.questionsAnswered;
-  localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
-  updateProgressUI(currentProgression);
-}
-
-function updateProgressUI(currentProgression) {
-  let stats_questionsAnsweredText = "Questions Answered (/10): ";
-  //Update the progression tab menu
-  $('#stats--questionsAnswered').text(`${stats_questionsAnsweredText} ${currentProgression.questionsAnswered}`);
-}
-
-// Game progression data
-let gameProgression = {
-  peopleQuestionsLikertA: [],
-  animalQuestionsLikertA: [],
-  inanimateQuestionsLikertA: [],
-  secretGriefsSolved: 0,
-  meaningfulConversationsHad: 0,
-  questionsAnswered: 0,
-  questionsAvoided: 0,
-  peopleDiscovered: 0,
-  animalsDiscovered: 0,
-  inanimateDiscovered: 0,
-  chaptersUncovered: 0,
-  bookCompletion: 0
-}

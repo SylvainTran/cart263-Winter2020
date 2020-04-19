@@ -1,12 +1,15 @@
 .game__progressTabMenu {
     background-color: black;
     color: white;
-    padding: 1vw 1vw 1vw 1vw;
-    border: 1px dashed cyan;
+    border: 1px solid white;
+    padding: 15px 15px 15px 15px;
     font-family: 'Press Start 2P';    
-    font-size: 0.33vw;
-    width: 5vw;
-    height: 17vw;
+    font-size: 10px;
+    width: 100px;
+    height: 250px;
     text-align: center;
-    line-height: 0.65vw;
+}
+
+.game__progressTabMenu div {
+    margin-top: 8px;
 }

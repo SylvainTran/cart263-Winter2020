@@ -1,12 +1,13 @@
 .game__hud {
+    font-family: 'Press Start 2P';  
     color: white;
     background-color: black;
     border: 1px solid white;
-    width: 10vw;
-    font-size: 1vw;
-    margin-top: 5vw;
-    margin-left: 30vw;
-    padding: 1vw 0.5vw 1vw 0.5vw;
+    width: 150px;
+    font-size: 8px;
+    margin-top: 128px;
+    margin-left: 300px;
+    padding: 5px 2px 5px 2px;
     border-radius: 5%;
     border-color: white;
     text-align: center;

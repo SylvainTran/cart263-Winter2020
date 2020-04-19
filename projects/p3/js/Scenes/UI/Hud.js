@@ -11,7 +11,7 @@ class Hud extends Phaser.Scene {
     }
 
     create() {
-        this.roundTally = this.add.dom(300, 50).createFromCache('hud');
+        this.roundTally = this.add.dom().createFromCache('hud');
         this.roundTally.setVisible(true);
     }
 

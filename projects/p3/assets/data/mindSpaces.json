@@ -5,7 +5,7 @@
             {
                 "secretGrief": "solitude",
                 "griefResolve": "george",
-                "question": ["Do you think solitude is about being alone?", "Where do you think lonely people end up?"]
+                "question": ["Solitude is not about being alone.", "People who abandon their friends are not considerate of others feelings."]
             }
         ]
     },
@@ -15,7 +15,7 @@
             {
                 "secretGrief": "feedChildren",
                 "griefResolve": "acorn",
-                "question": ["Even if food is available, some people have no hands. Do you agree?"]
+                "question": ["Even if food is available, some people have no hands."]
             }
         ]
     },
@@ -35,7 +35,7 @@
             {
                 "secretGrief": "hard",
                 "griefResolve": "break",
-                "question": ["Ignoring some things is not necessarily wrong."]
+                "question": ["When life handcuffs you, start laughing hard."]
             }
         ]
     },   
@@ -46,6 +46,16 @@
                 "secretGrief": "anger",
                 "griefResolve": "brother",
                 "question": ["If you were a person that was looked up by someone, how would you act right now?"]
+            }
+        ]
+    },
+    {
+        "type": "Questionnaire Boss",
+        "data": [
+            {
+                "secretGrief": "sour",
+                "griefResolve": "candy",
+                "question": ["Consider yourself lucky. Questionnaires are rare these days."]
             }
         ]
     }

@@ -36,8 +36,8 @@ The most valuable thing out of this project for me was the learning experience. 
 
 # Features and Scope
 
-In Phase 1, the player explores the land, meets (static) surrealistic NPcs and completes questionnaires based on his only interaction with them.
+In Phase 1, the player explores the land, meets (static) surrealistic NPCs and completes questionnaires based on his only interaction with them.
 
 In Phase 2, the player gets a review of what he answered with regards to people, animals and inanimate things he got questioned against. He must report back to court to with the new information.
 
-# Stretch in my dreams: Results become more meaningful with regards to the game's story.
+*Stretch in my dreams: Attitudes become more meaningful with regards to the game's story, but while staying true to the idea of the questionnaire making. Could the thing or effect be reversed against the NPC, making the player question the NPC and learn something about himself? In the end, it's this is the story that I seek...

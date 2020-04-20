@@ -60,9 +60,13 @@ class World extends Phaser.Scene {
     // Fade effect
     this.cameraFadeEffect();
     // Get the local storage progression if there is one, or create it if not
-    this.getLocalStorageData();
+    this.updateCurrentRoundQuestionnaires();
     // Start the phase routines - This is the main game loop
     this.setupGamePhase();
+    // Event handler setup
+    // To handle change scene events without always checking for it in update()
+    changeToPhaseTwoEmmitter = new Phaser.Events.EventEmitter();
+    changeToPhaseTwoEmmitter.on('changePhase', this.setupPhaseTwoRoutine, this);
   }
   // Fade in and out to make it look cool
   cameraFadeEffect() {
@@ -71,14 +75,8 @@ class World extends Phaser.Scene {
   }
   // Update the game logic and rendering
   update(time, delta) {
-    // Check current round
-    if (this.checkPhaseOneEnded() && this.inPhase === 1) {
-      // Move to Phase 2 of the game
-      this.setupPhaseTwoRoutine();
-    }
     // Check for collision events between the player and any actor
     if (this.currentAreaActors) {
-      this.physics.world.collide(this.globalPlayer, this.questionnaireBoss, this.startDialogue, null, this);
       this.physics.world.collide(this.globalPlayer, this.currentAreaActors, this.startDialogue, null, this);
     }
   }
@@ -88,15 +86,26 @@ class World extends Phaser.Scene {
   recreateWorld() {
     this.cameraFadeEffect();
     this.resetGame();
+    this.setupGamePhase();
   }
-  // Get the current round's progression from localStorage
-  getLocalStorageData() {
+  // Set the current round's total needed questionnaires in localStorage
+  updateCurrentRoundQuestionnaires() {
     let currentProgression = this.getProgressionData();
-    console.log(currentProgression);
-    if (!currentProgression) { // Set it to the existing global one if was null
+    let areaConfig = this.areaManager(this.currentArea);
+    if (!currentProgression) {
+      // Set it to the existing global one if was null, and update it      
       localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
+      currentProgression = this.getProgressionData();
+      currentProgression.currentRoundQuestionnaires = areaConfig.nbQuestionnaires;
+      // Set it in local storage now that it's not null
+      localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
+      console.log(currentProgression.currentRoundQuestionnaires);
+      console.log(areaConfig.nbQuestionnaires);
       // We start in phase 1
       this.inPhase = 1;
+    } else {
+      currentProgression.currentRoundQuestionnaires = areaConfig.nbQuestionnaires;
+      localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
     }
   }
   // Get progression data saved in the localStorage
@@ -209,7 +218,8 @@ class World extends Phaser.Scene {
     let UI = this.scene.manager.getScene('UI');
     this.courtSeanceScreen = UI.add.dom().createFromCache('courtSeance');
     this.courtSeanceScreen.setVisible(true);
-    this.courtSeanceScreen.setPosition(320, 320);
+    this.courtSeanceScreen.setScale(0.5);
+    this.courtSeanceScreen.setPosition(500, 320);
     this.enactCourtSeance(seance);
     // Phase 2 is over after every questionnaire was reviewed (or TODO user clicks the screen)
     setTimeout(() => {
@@ -217,7 +227,7 @@ class World extends Phaser.Scene {
       this.courtSeanceScreen.destroy();
       this.recreateWorld();
       this.setupPhaseOneRoutine();
-    }, 5000);
+    }, 10000);
   }
   // Enact the court seance phase
   enactCourtSeance(seance) {
@@ -538,18 +548,21 @@ class World extends Phaser.Scene {
     let currentProgression = this.getProgressionData();
     currentProgression.questionnairesAssignedYet = false;
     currentProgression.questionnairesAnswered = 0;
-    //currentProgression.currentRoundQuestionnaires;
     currentProgression.peopleQuestionsLikertA = [];
     currentProgression.animalQuestionsLikertA = [];
     currentProgression.inanimateQuestionsLikertA = [];
-    localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
     // Reset player position
     this.globalPlayer.setPosition(this.spawnPointA.x, this.spawnPointA.y);
     // Reset the area config after increasing the current area of the game
     ++this.currentArea;
     this.areaConfig = this.areaManager(this.currentArea);
+    // Update number of questionnaires needed in next area / level 
+    currentProgression.currentRoundQuestionnaires = this.areaConfig.nbQuestionnaires;
+    localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
     // Get the spawn points from the tilemap, by filtering through the Tiled layers
     this.areaConfig.actorSpawningPoints = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("actorSpawnPoint"));
+    // Re-update the progress UI
+    updateProgressUI(currentProgression);
   }
   // Creates a textbox. From Mr. Rex Rainbow
   createTextBox(scene, x, y, config) {
@@ -638,6 +651,22 @@ class World extends Phaser.Scene {
     })
   }
 }
+// Game progression data (localStorage)
+// Whether the player got his questionnaires from phase 1 yet
+// For each round, questionnaires answered and the total number of quests
+let gameProgression = {
+  questionnairesAssignedYet: false,
+  questionnairesAnswered: 0,
+  currentRoundQuestionnaires: 0,
+  peopleQuestionsLikertA: [],
+  animalQuestionsLikertA: [],
+  inanimateQuestionsLikertA: [],
+  questionsAnswered: 0,
+  peopleDiscovered: 0,
+  animalsDiscovered: 0,
+  inanimateDiscovered: 0,
+  bookCompletion: 0
+}
 $('document').ready(setup);
 let $hamburgerMenu;
 let $navBar;
@@ -669,14 +698,17 @@ function handleNav() {
     $hamburgerMenu.removeClass('sticky');
   }
 }
+let changeToPhaseTwoEmmitter = null; // Event emitter to avoid always checking for change in update()
 // handleFormSubmit
 //
 // handles the form submission from questionnaires
 function handleFormSubmit(form) {
+  let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
+  console.log(currentProgression.questionnairesAnswered);
+  console.log(currentProgression.currentRoundQuestionnaires);
   let userAnswer;
   // Save the user's answer to local storage
   let answeredForm = form.elements["likert-a"];
-  let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
   console.log(currentProgression);
   for (let i = 0; i < answeredForm.length; i++) {
     if (answeredForm[i].checked) {
@@ -686,6 +718,10 @@ function handleFormSubmit(form) {
       // Todo push question as well
     }
   }
+  // Emit a change phase (from phase one to phase two) event if finished this round
+  if(currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires) {
+    changeToPhaseTwoEmmitter.emit('changePhase');
+  }  
   $(".game__agreeForm").remove();
   return false;
 }
@@ -708,20 +744,4 @@ function updateProgressUI(currentProgression) {
   //Update the HUD
   let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);
-}
-// Game progression data
-// Whether the player got his questionnaires from phase 1 yet
-// For each round, questionnaires answered and the total number of quests
-let gameProgression = {
-  questionnairesAssignedYet: false,
-  questionnairesAnswered: 0,
-  currentRoundQuestionnaires: 0,
-  peopleQuestionsLikertA: [],
-  animalQuestionsLikertA: [],
-  inanimateQuestionsLikertA: [],
-  questionsAnswered: 0,
-  peopleDiscovered: 0,
-  animalsDiscovered: 0,
-  inanimateDiscovered: 0,
-  bookCompletion: 0
 }

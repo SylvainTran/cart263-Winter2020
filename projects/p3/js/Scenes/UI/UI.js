@@ -1,7 +1,8 @@
 /**
  * UI
  * 
- * Displays the UI - Dialogue, menus, etc.
+ * Displays the UI - Dialogue, menus, etc. 
+ * Used to render independently from World's camera settings that are tweaked.
  */
 class UI extends Phaser.Scene {
     constructor() {
@@ -33,7 +34,7 @@ class UI extends Phaser.Scene {
         // Set or get the progression game object in localStorage
         let currentGameProgression = JSON.parse(localStorage.getItem("gameProgression"));
         if(!currentGameProgression) {
-        localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
+            localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
         } else {
         // Update the current progression from local storage
         updateProgressUI(currentGameProgression);

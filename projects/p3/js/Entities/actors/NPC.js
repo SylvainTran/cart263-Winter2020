@@ -35,61 +35,67 @@ class NPC extends Phaser.GameObjects.Sprite {
     // Talk to this NPC 
     talk(scene, threadNode) {
         console.log("Talking to: " + this.getName());
+        let UI = scene.scene.manager.getScene('UI');
         // Show the questionnaire if none exists yet and if not in a dialogue yet
-        if(!this.mindSpaceForm && !this.questionnaire && !scene.scene.manager.getScene('UI').dialogueLock) {
+        if(!this.mindSpaceForm && !this.questionnaire && !UI.dialogueLock) {
+            // Create the questionnaire
             this.questionnaire = scene.add.dom().createFromCache('agreeForm');
             this.questionnaire.setScale(0.25);
-            this.questionnaire.setPosition(scene.globalPlayer.x, scene.globalPlayer.y + 25);
+            this.questionnaire.setPosition(scene.globalPlayer.x + 100, scene.globalPlayer.y + 75);
+            // #JQuery
             $(".game__agreeForm").draggable();
             // Adds an onsubmit handler on the form
-            let textBox = scene.scene.manager.getScene('UI').dialogueFactory.textBoxCache;
+            // #JQuery
             $('#agreeForm').attr("onsubmit", "return handleFormSubmit(this)")
-            // this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));
-            // this.mindSpaceForm.setScale(0.5);
-            // // Setup drag mechanics and physics
-            // scene.input.setDraggable(this.mindSpaceForm);
-            // scene.physics.world.enable([this.mindSpaceForm]);
-            // this.mindSpaceForm.body.setCollideWorldBounds(true);
-            // Show time left (s)
+            // Create the weird mindspaceform that cues the NPC's secret desire             
+            this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));
+            this.mindSpaceForm.setScale(0.5);
+            // Tweens
+            let tweens = scene.tweens.add({
+                targets: [this.questionnaire, this.mindSpaceForm],
+                x: '+=15',
+                y: '+=30',
+                ease: 'Bounce',
+                duration: 500,
+                repeat: 0,
+                yoyo: false
+            });
+            // Show time left in (s)
             setInterval(()=> { 
                 var p = document.getElementById('questionTimeLeft'); 
                 if(!p) {
                     return;
                 }
-                p.value-=10
+                p.value-=10;
             }, 1000);
-            // Destroy questionnaire after 10s
-            setTimeout(()=> { 
-                if(this.questionnaire) {
-                    this.questionnaire.destroy(); 
-                    this.questionnaire = null;     
-                    textBox.destroy();
-                }
-            }, 10000);
+            if(this.type === "Questionnaire Boss") {
+                // Then assign questionnaires to the player
+            }
         }
         // Take a random question node for actor type to display
-        this.displayDialogue(scene, threadNode);      
-        // Also create a mind space form above the NPC's head if there isn't one yet and not currently in a dialogue
+        this.displayDialogue(scene);      
     }
     
     // displayDialogue
     //
     // Displays the dialogue (requesting the UI scene to draw the dialogue boxes with the dialogue data)
-    displayDialogue(scene, threadNode) {
+    displayDialogue(scene) {
         const mindSpaceData = scene.cache.json.get('mindSpaces');
-        // The different dialogues available for this type of actor
+        // Get the different dialogues available for this type of actor
         let dialogueThreads = [];
         for(let i = 0; i < mindSpaceData.length; i++) {
             let type = mindSpaceData[i]["type"];
+            // Compare this actor's type with the JSON object
             if(type === this.type) {
                 let obj = mindSpaceData[i];
                 dialogueThreads.push(obj);
             }
         }
-        let randomIndex = Math.floor(Math.random() * dialogueThreads.length);
-        let thread = dialogueThreads[randomIndex]["data"][0];
-        const df = scene.scene.manager.getScene('UI').dialogueFactory;
+        // Get a random dialogue node for this type of actor
+        const randomIndex = Math.floor(Math.random() * dialogueThreads.length);
+        const thread = dialogueThreads[randomIndex]["data"][0]["question"];
+        console.log(thread);
         const UI = scene.scene.manager.getScene('UI');
-        UI.dialogueDisplayer.displayDialogue(threadNode, "question", thread, df, UI);
+        scene.displayDialogue(thread, UI);
     }
 }

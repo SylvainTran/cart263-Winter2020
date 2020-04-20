@@ -6,18 +6,13 @@
 class Hud extends Phaser.Scene {
     constructor() {
         super('Hud');
+        // Number of questionnaires to answer left in this round        
+        this.roundTally = null;
     }
 
-    init() {
-
-    }
-
-    preload() {
-        this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-    }
-    
     create() {
-
+        this.roundTally = this.add.dom().createFromCache('hud');
+        this.roundTally.setVisible(true);
     }
 
     update(time, delta) {

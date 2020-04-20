@@ -1,0 +1,31 @@
+.seance--main {
+    background-color:black;
+    color: white;
+    border: 5px solid white;
+    font-family: 'Press Start 2P';    
+    font-size: 1vw;
+    width: 320px;
+    height: 320px;
+    text-align: center;
+    line-height: 1vw;
+    padding-top: 2vw;
+}
+
+.seance--main div:hover {
+    color: slateblue;
+    cursor: pointer;
+}
+
+.seance--main div {
+    margin: 1vw;
+    padding: 1w 2vw 1vw 2vw;
+    line-height: 1.2vw;
+}
+
+.seance--start-banner {
+    font-family: 'Press Start 2P';   
+    margin-left: -2vw;
+    font-size: 1vw;
+    text-align: center;
+    color: yellow;
+}

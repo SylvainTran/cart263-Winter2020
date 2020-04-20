@@ -1,7 +1,10 @@
 [
     {
-        "chapterOne": ["I am a ridiculous person. Now they call me a madman.\nThat would be a promotion if it were not that I remain\nas ridiculous in their eyes as before. But now I do not resent it, they are all dear to me now, even when they\nlaugh at me -and, indeed, it is just then that they are\nparticularly dear to me. I could join in their laughter--not\nexactly at myself, but through affection for them, if I did\nnot feel so sad as I look at them. Sad because they do not\nknow the truth and I do know it. Oh, how hard it is to be\nthe only one who knows the truth! But they won't understand\nthat. No, they won't understand it.", "Fyodor Dostoevsky's The Dream of a Ridiculous Man. That is the title of the book you are holding."],  
-        "chapterTwo": ["(You've found out you can talk to animals.)"],
-        "chapterThree": ["(You've found out you can talk to inanimate objects.)"]
+        "introduction": ["The Questionnaire Boss: ...I swear his eyes were opening just now. Hey, are you're finally awake? Come over here. (TUTORIAL: Move using the keyboard arrow keys.)"], 
+        "prePhaseOne": ["The Questionnaire Boss: Oh, I see that you're idle again. Come find me for new things to study.", "Hey, come here and get back to work! Remember, you'll need to talk to me to get new questionnaires to fill."],
+        "chapterZero": ["(Get started.)"],
+        "chapterOne": ["(You've found out you can talk to animals.)"],
+        "chapterTwo": ["(You've found out you can talk to inanimate objects.)"],
+        "chapterThree": ["I am a ridiculous person. Now they call me a madman.\nThat would be a promotion if it were not that I remain\nas ridiculous in their eyes as before. But now I do not resent it, they are all dear to me now, even when they\nlaugh at me -and, indeed, it is just then that they are\nparticularly dear to me. I could join in their laughter--not\nexactly at myself, but through affection for them, if I did\nnot feel so sad as I look at them. Sad because they do not\nknow the truth and I do know it. Oh, how hard it is to be\nthe only one who knows the truth! But they won't understand\nthat. No, they won't understand it.", "Fyodor Dostoevsky's The Dream of a Ridiculous Man. That is the title of the book you are holding."]  
     }
 ]

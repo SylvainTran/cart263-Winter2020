@@ -19,3 +19,10 @@
 @import "components/flex-container-center__timeline-sequencer.css";
 @import "game__agreeForm.css";
 @import "game__progressTabMenu.css";
+@import "fonts.css";
+@import "game__startMenu.css";
+@import "menu--start-banner.css";
+@import "game__tutorialMenu.css";
+@import "game__aboutMenu.css";
+@import "game__hud.css";
+@import "seance--main.css";

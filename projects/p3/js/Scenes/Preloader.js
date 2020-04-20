@@ -3,12 +3,22 @@ class Preloader extends Phaser.Scene {
     super({key: 'preloader'});
   }
 
+  init() {
+    // From Phaser WebFont example
+    let element = document.createElement('style');
+    document.head.appendChild(element);
+    let sheet = element.sheet;
+    let styles = '@font-face { font-family: "Press Start 2P"; }';
+    sheet.insertRule(styles, 0);
+  }
+
   preload() {
     // Player sprite
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
     // Actors sprites
     this.load.image('p_001', 'assets/images/sprites/actors/persons/actors_person_fishman_A_single.png');
     this.load.image('i_001', 'assets/images/sprites/actors/inanimate/actors_inanimate_rock_A_single.png');
+    this.load.image('questionnaireBoss', 'assets/images/sprites/actors/persons/QuestionnaireBoss.png');
     // Mind space form sprite
     this.load.image('mindSpaceForm', 'assets/images/sprites/mindSpaceForm.png');
     // UI
@@ -20,6 +30,7 @@ class Preloader extends Phaser.Scene {
     this.load.audio('linkButton', ['assets/sounds/ui/linkButton.wav']);
     this.load.audio('sceneEnter', ['assets/sounds/SCENE_ENTER.wav']);
     // Themes
+    this.load.audio('startMenuTheme', ['assets/sounds/ADVENTURE_BEGINS-8-BIT.ogg']);
     this.load.audio('mainTheme', ['assets/sounds/MAIN_THEME.mp3']);
     this.load.audio('pianoTheme', ['assets/sounds/PIANO_THEME.mp3',                                   'assets/sounds/PIANO_THEME.ogg']);
     // Footstep sounds                                  
@@ -33,16 +44,35 @@ class Preloader extends Phaser.Scene {
     // Mind spaces
     this.load.json('mindSpaces', 'assets/data/mindSpaces.json');
     // Tileset (game world in black and white)
-    this.load.image("worldTiles_A_BW", "assets/tilesets/worldTiles_A_BW.png");    
+    this.load.image("16x16-1bit", "assets/tilesets/16x16-1bit.png");    
     // Tilemap json (game world)
     this.load.tilemapTiledJSON("world", "assets/tilemaps/world.json"); 
     // Questionnaire forms
     this.load.html('agreeForm', 'assets/forms/agreeForm.html');   
     // Progress tab menu
-    this.load.html('progressTabMenu', 'assets/menus/progressTabMenu.html');                     
+    this.load.html('progressTabMenu', 'assets/menus/progressTabMenu.html');    
+    // Start menu
+    this.load.html('startMenu', 'assets/menus/startMenu.html');    
+    // Tutorial menu
+    this.load.html('tutorialMenu', 'assets/menus/tutorialMenu.html');    
+    // About menu
+    this.load.html('aboutMenu', 'assets/menus/aboutMenu.html');    
+    // The action icon for dialogue boxes
+    this.load.image('nextPage', 'assets/images/icons/mousePointer.png');                 
+    // Fonts
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+    // HUD
+    this.load.html('hud', 'assets/hud.html');
+    // Court seance screen
+    this.load.html('courtSeance', 'assets/courtSeance.html');
   }
 
   create() {
+    WebFont.load({
+      custom: {
+        families: ['Press Start 2P']
+      }
+    });
     // Animations
     this.anims.create({ 
       key: 'everything',
@@ -83,10 +113,15 @@ class Preloader extends Phaser.Scene {
         frames: [1,2]
       }),
       frameRate: 5
-    });    
-    this.scene.start('Controller');
-    this.scene.start('World');
-    this.scene.start('UI');
-    this.scene.start('Hud');        
+    });   
+    this.debugMode = false; 
+    if(!this.debugMode) {     
+      this.scene.start('StartMenu');    
+    } else {
+      this.scene.start('Controller');
+      this.scene.start('World'); 
+      this.scene.start('UI');
+      this.scene.start('Hud');          
+    }
   }
 }

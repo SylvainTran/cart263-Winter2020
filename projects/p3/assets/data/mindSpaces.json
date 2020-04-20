@@ -5,8 +5,7 @@
             {
                 "secretGrief": "solitude",
                 "griefResolve": "george",
-                "question": ["Do you think solitude is about being alone?", "Where do you think lonely people end up?"],
-                "footstep": "void"    
+                "question": ["Do you think solitude is about being alone?", "Where do you think lonely people end up?"]
             }
         ]
     },
@@ -16,8 +15,7 @@
             {
                 "secretGrief": "feedChildren",
                 "griefResolve": "acorn",
-                "question": ["Even if food is available, some people have no hands. Do you agree?"],
-                "footstep": "earth"     
+                "question": ["Even if food is available, some people have no hands. Do you agree?"]
             }
         ]
     },
@@ -27,19 +25,27 @@
             {
                 "secretGrief": "invisible",
                 "griefResolve": "take",
-                "question": ["If you were a stone, would you be happier?"],
-                "footstep": "stone"     
+                "question": ["If you were a stone, would you be happier?"]
             }
         ]
     },
+    {
+        "type": "inanimate",
+        "data": [
+            {
+                "secretGrief": "hard",
+                "griefResolve": "break",
+                "question": ["Ignoring some things is not necessarily wrong."]
+            }
+        ]
+    },   
     {
         "type": "person",
         "data": [
             {
                 "secretGrief": "anger",
                 "griefResolve": "brother",
-                "question": ["If you were a person that was looked up by someone, how would you act right now?"],
-                "footstep": "water"    
+                "question": ["If you were a person that was looked up by someone, how would you act right now?"]
             }
         ]
     }

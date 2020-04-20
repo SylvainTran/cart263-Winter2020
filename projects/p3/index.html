@@ -16,14 +16,6 @@
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
     integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous">
   </script>
-  <!-- Jasmine -->
-  <link rel="shortcut icon" type="image/png" href="jasmine/dist/lib/jasmine-3.5.0/jasmine_favicon.png">
-  <link rel="stylesheet" type="text/css" href="jasmine/dist/lib/jasmine-3.5.0/jasmine.css">
-  <script type="text/javascript" src="jasmine/dist/lib/jasmine-3.5.0/jasmine.js"></script>
-  <script type="text/javascript" src="jasmine/dist/lib/jasmine-3.5.0/jasmine-html.js"></script>
-  <script type="text/javascript" src="jasmine/dist/lib/jasmine-3.5.0/boot.js"></script>
-  <!-- Jasmine Specs (Unit tests) -->
-  <script src="js/Specs/Tests.js"></script>
   <!-- Finite state machines -->
   <script src="js/States/State.js"></script>
   <script src="js/States/IdleMomentState.js"></script>
@@ -34,13 +26,13 @@
   <!-- Surrealistic Actors -->
   <script src="js/Entities/MindSpaceForm.js"></script>
   <script src="js/Entities/actors/NPC.js"></script>
+  <script src="js/Entities/actors/QuestionnaireBoss.js"></script>
   <script src="js/Entities/actors/FishMan.js"></script>
   <script src="js/Entities/actors/Rock.js"></script>
   <!-- My scene script(s) -->
+  <script src="js/Scenes/StartMenu.js"></script>
   <script src="js/Scenes/UI/UI.js"></script>
   <script src="js/Scenes/UI/Hud.js"></script>
-  <script src="js/Scenes/Dialogue/DialogueFactory.js"></script>
-  <script src="js/Scenes/Dialogue/DialogueDisplayer.js"></script>
   <script src="js/Scenes/World.js"></script>
   <script src="js/Scenes/MomentConnectionManager.js"></script>
   <!-- My utility scripts -->
@@ -57,15 +49,13 @@
   <script src="js/Main.js"></script>
 <body>
   <div class="flex-container">
-    <div class="side__left-menu">
-      <div class="side__left-menu__top">The Dream of a Ridiculous Man</div>
-    </div>
     <div class="nav-flex-container">
       <div id="navBar">
         <!-- <div><span style="color: skyblue;">St-Petersburg</span><br><br></div>
         <div><span style="color: skyblue;">Observatory</span><br><br></div>
         <a href="sequencing-room.html" style="text-decoration: none;"><div><span style="color: skyblue;">Lone Star</span><br><br></div></a> -->
         <img class="nav__hamburger-menu" src="assets/images/icons/hamburger-menu.png" alt="hamburger menu icon" />
+        <!-- <div style="margin-left: 38vw;">Scroll down to play?</div> -->
       </div>
     </div>
     <div class="main__game">
@@ -77,10 +67,6 @@
     <div class="main__log">
     </div>
   </div>
-  <footer style="text-align: center; font-size: 1vw;">
-    Where is Paradise?
-  </footer>
-  <div style="font-family: 'Press Start 2P', cursive; position: absolute; left: -1000px; visibility: hidden;"></div>
 </body>
 
 </html>

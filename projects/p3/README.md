@@ -18,7 +18,7 @@ Yes.
 
 And so, our hero goes on his quest to fill questionnaires. He is tasked with studying his own explicit (phase 1 of the game) and implicit (phaser 2 of the game) attitudes on subjects concerning the people and animals inhabiting the land.
 
-Except the hero is no hero at all. Instead of saving the world, or slaying demons, your job is to talk to NPCs and replying to their off-putting questions over a 4000 tiles wide land. You're paid nil for it too, receiving zero gratitude, but you get a sense of self-importance once you report back (somewhere) with what you learned. If it doesn't quite make sense, that's normal -- the game was about a figure trying to find sense desperately they needed to stay still. It's a playful subversion of social science.
+Except the hero is no hero at all. Instead of saving the world, or slaying demons, your job is to talk to NPCs and replying to their off-putting questions over a 4000 tiles wide land. You're paid nil for it too, receiving zero gratitude, but you get a sense of self-importance once you report back (somewhere) with what you learned. If it doesn't quite make sense, that's normal -- the game was about a figure trying to find sense desperately when they needed to stay still. That also sort of sounds just like what curiosity and playfulness is. Games. It attempts to be a playful subversion of social science through a *very casual* lense of my own making.
 
 # Reason behind the drastic change in direction
 

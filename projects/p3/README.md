@@ -12,7 +12,7 @@ By putting those in a game, maybe one could see the nonsense (or the sense) of t
 
 # But... the player answers his own questions when he travels to talk to NPCs
 
-Yes.
+Yes
 
 # Intentions
 
@@ -24,7 +24,7 @@ Except the hero is no hero at all. Instead of saving the world, or slaying demon
 
 There were essentially two versions to this project as one can read in the commits history. Basically from the start of the project to April 16th, the first iteration was about searching for an idea that I liked about "slice of life" haiku inspired, japanese moments.
 
-I started wanting to make something about ephemeral life moments, just like last year. The reason I transitioned towards a game-based experience was due to reflection about embodiment. In controlling an avatar more closely than by dragging scenes around, it seemed to be getting the feeling of interacting with stuff closer to what I wanted. Also, encountering scenes in the wild seemed cool, but it wasn't a technically feasible or intuitive thing to do with Phaser's scene system mapping multiple cameras against the viewport. At that point, I knew making the transition from interacting with scenes to interacting with game objects to get this "encounter in the wild" was what I needed to do. Also, Dostoevsky.
+I started wanting to make something about ephemeral life moments, just like last year. The reason I transitioned towards a game-based experience was due to reflection about embodiment. In controlling an avatar more closely than by dragging scenes around, it seemed to be getting the feeling of interacting with stuff closer to what I wanted. Also, encountering scenes in the wild seemed cool, but it wasn't a technically feasible or intuitive thing to do with Phaser's scene system mapping multiple cameras against the viewport. At that point, I knew making the transition from interacting with scenes to interacting with game objects to get this "encounter in the wild" was what I needed to do. Also, Dostoevsky. And Wolfgang Lettl's Playing with Dimensions (1987) inspired me greatly, something that I somehow forgot to mention: https://artsandculture.google.com/exhibit/playing-with-dimensions-the-lettl-collection/gQYvGhd4?hl=en The fishman is directly inspired by Lettl's fishes.
 
 # Pippin's ideas about micro games and about modifying existing games
 

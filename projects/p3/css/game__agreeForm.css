@@ -1,10 +1,13 @@
 .game__agreeForm{
-    width: 250px; 
-    height: 375px; 
+    font-family: 'Press Start 2P';
+    font-size: 15px;
+    width: 1100px; 
+    height: 200px; 
+    margin-left: -1000px;
+    margin-top: 100px;
     background-color: black; 
     color: white;
     text-align: center;
     line-height: 25px;
     padding-top: 1vw;
-    border-radius: 5%;
 }

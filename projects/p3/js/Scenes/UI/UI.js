@@ -16,6 +16,7 @@ class UI extends Phaser.Scene {
 
     preload() {
         // Dialogue plugin
+        this.load.script('rexuiplugin', 'js/Libraries/rexuiplugin.min.js');
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
     }
 

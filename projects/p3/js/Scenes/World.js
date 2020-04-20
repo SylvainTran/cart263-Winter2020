@@ -73,7 +73,6 @@ class World extends Phaser.Scene {
   update(time, delta) {
     // Check current round
     if (this.checkPhaseOneEnded() && this.inPhase === 1) {
-      alert("Phase one ended")
       // Move to Phase 2 of the game
       this.setupPhaseTwoRoutine();
     }
@@ -138,7 +137,11 @@ class World extends Phaser.Scene {
   // Check if Phase one has ended yet
   checkPhaseOneEnded() {
     let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-    return currentProgression.questionnairesAnswered >= this.areaConfig.nbQuestionnaires;
+    if(currentProgression) {
+      return currentProgression.questionnairesAnswered >= this.areaConfig.nbQuestionnaires;
+    } else {
+      return;
+    }
   }
   // Setup phase one 
   setupPhaseOneRoutine() {
@@ -214,7 +217,7 @@ class World extends Phaser.Scene {
       this.courtSeanceScreen.destroy();
       this.recreateWorld();
       this.setupPhaseOneRoutine();
-    }, 10000);
+    }, 5000);
   }
   // Enact the court seance phase
   enactCourtSeance(seance) {
@@ -515,12 +518,14 @@ class World extends Phaser.Scene {
     // Lock the player in the dialogue (reset on last page of pageEnd of textbox)
     context.dialogueLock = true;
     try {
-      this.createTextBox(context, 50, 500, {
-        wrapWidth: 300,
-        fixedWidth: 310,
-        fixedHeight: 75,
-      }).start(dialogueData, 50);
-      return dialogueData;
+      this.scene.manager.getScene('UI').load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI').once('complete', ()=>{
+        this.createTextBox(context, 50, 500, {
+          wrapWidth: 300,
+          fixedWidth: 310,
+          fixedHeight: 75,
+        }).start(dialogueData, 50);
+        return dialogueData;  
+      });
     } catch (e) {
       console.log(e.message);
     }

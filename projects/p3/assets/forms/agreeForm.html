@@ -1,18 +1,19 @@
 <!-- Type A: Agreement -->
 <div class="game__agreeForm">
+    <div id="question-container">Question: _____ ?</div>
     <label for="questionTimeLeft">Time left to answer</label>
-    <progress id="questionTimeLeft" value="100" max="100"> 0% </progress>
+    <progress id="questionTimeLeft" value="100" max="100"> 0% </progress><br><br>
     <form id="agreeForm" onsubmit="return false;">
-        <label for="likert-1">Strongly agree</label><br>
-        <input type="radio" id="likert-1" name="likert-a" value="likert-1-a" required><br>
-        <label for="likert-2">Agree</label><br>
-        <input type="radio" id="likert-2" name="likert-a" value="likert-2-a" required><br>
-        <label for="likert-3">Neutral</label><br>
-        <input type="radio" id="likert-3" name="likert-a" value="likert-3-a" checked required><br>
-        <label for="likert-4">Disagree</label><br>
-        <input type="radio" id="likert-4" name="likert-a" value="likert-4-a" required><br>
-        <label for="likert-5">Strongly disagree</label><br>
-        <input type="radio" id="likert-5" name="likert-a" value="likert-5-a" required><br>
-        <input type="submit" style="background-color: cyan; color: black; border-radius: 25%;" value="submit">
+        <label for="likert-1">Strongly agree</label>
+        <input type="radio" id="likert-1" name="likert-a" value="likert-1-a" required>
+        <label for="likert-2">Agree</label>
+        <input type="radio" id="likert-2" name="likert-a" value="likert-2-a" required>
+        <label for="likert-3">Neutral</label>
+        <input type="radio" id="likert-3" name="likert-a" value="likert-3-a" checked required>
+        <label for="likert-4">Disagree</label>
+        <input type="radio" id="likert-4" name="likert-a" value="likert-4-a" required>
+        <label for="likert-5">Strongly disagree</label>
+        <input type="radio" id="likert-5" name="likert-a" value="likert-5-a" required><br><br>
+        <input type="submit" style="font-family: 'Press Start 2P'; width: 200px; height: 100px; background-color:black; color: white; border-radius: 25%; font-size: 30px;" value="submit">
     </form>
 </div>

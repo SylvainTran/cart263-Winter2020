@@ -13,6 +13,8 @@ class Preloader extends Phaser.Scene {
   }
 
   preload() {
+    // Dialogue plugin
+    this.load.script('rexuiplugin', 'js/Libraries/rexuiplugin.min.js');
     // Player sprite
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
     // Actors sprites

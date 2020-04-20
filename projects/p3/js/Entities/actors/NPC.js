@@ -11,6 +11,10 @@ class NPC extends Phaser.GameObjects.Sprite {
         this.mindSpaceForm = null;
         // The questionnaire to study the interaction between player when quizzed in a game
         this.questionnaire = null;
+        // flag to check if already questioned player
+        this.questionedPlayerYet = false;
+        // flag to check if currently questioning player
+        this.isQuestioning = false;
     }
 
     // getName
@@ -24,7 +28,7 @@ class NPC extends Phaser.GameObjects.Sprite {
     //
     // sets this NPC's name if there is a name to set
     setName(value) {
-        if(value !== null) {
+        if (value !== null) {
             this.name = value;
         }
         return this;
@@ -34,10 +38,14 @@ class NPC extends Phaser.GameObjects.Sprite {
     //
     // Talk to this NPC 
     talk(scene, threadNode) {
+        // If already questioning player, return
+        if (this.isQuestioning) {
+            return;
+        }
         console.log("Talking to: " + this.getName());
         let UI = scene.scene.manager.getScene('UI');
         // Show the questionnaire if none exists yet and if not in a dialogue yet
-        if(!this.mindSpaceForm && !this.questionnaire && !UI.dialogueLock) {
+        if (!this.mindSpaceForm && !this.questionnaire && !UI.dialogueLock) {
             // Create the questionnaire
             this.questionnaire = scene.add.dom().createFromCache('agreeForm');
             this.questionnaire.setScale(0.25);
@@ -61,32 +69,40 @@ class NPC extends Phaser.GameObjects.Sprite {
                 yoyo: false
             });
             // Show time left in (s)
-            setInterval(()=> { 
-                var p = document.getElementById('questionTimeLeft'); 
-                if(!p) {
+            setInterval(() => {
+                var p = document.getElementById('questionTimeLeft');
+                if (!p) {
                     return;
                 }
-                p.value-=10;
+                p.value -= 10;
             }, 1000);
-            if(this.type === "Questionnaire Boss") {
+            if (this.type === "Questionnaire Boss") {
                 // Then assign questionnaires to the player
             }
         }
         // Take a random question node for actor type to display
-        this.displayDialogue(scene);      
+        this.displayDialogue(scene);
     }
-    
+
     // displayDialogue
     //
     // Displays the dialogue (requesting the UI scene to draw the dialogue boxes with the dialogue data)
     displayDialogue(scene) {
+        // Update the NPC's current dialogue flag
+        this.isQuestioning = true;
+        // return if already questioned. means could talk before this point
+        if(this.questionedPlayerYet) {
+            return;
+        }
+        // Now can't question player anymore
+        this.questionedPlayerYet = true;
         const mindSpaceData = scene.cache.json.get('mindSpaces');
         // Get the different dialogues available for this type of actor
         let dialogueThreads = [];
-        for(let i = 0; i < mindSpaceData.length; i++) {
+        for (let i = 0; i < mindSpaceData.length; i++) {
             let type = mindSpaceData[i]["type"];
             // Compare this actor's type with the JSON object
-            if(type === this.type) {
+            if (type === this.type) {
                 let obj = mindSpaceData[i];
                 dialogueThreads.push(obj);
             }
@@ -94,8 +110,12 @@ class NPC extends Phaser.GameObjects.Sprite {
         // Get a random dialogue node for this type of actor
         const randomIndex = Math.floor(Math.random() * dialogueThreads.length);
         const thread = dialogueThreads[randomIndex]["data"][0]["question"];
-        console.log(thread);
-        const UI = scene.scene.manager.getScene('UI');
-        scene.displayDialogue(thread, UI);
+        // PIPPIN, I GRADUATED FROM USING REX' DIALOGUE PLUGIN USING THE FOLLOWING ONE LINE OF CODE:
+        $('#question-container').text(thread);
+        // SADLY I ONLY HAVE 10 MORE MINUTES LEFT
+        // Can retalk after 5 seconds. $Stretch: other dialogue than questionnaire
+        setTimeout(() => {
+            this.isQuestioning = false;
+        }, 5000);
     }
 }

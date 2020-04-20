@@ -10,17 +10,19 @@ class UI extends Phaser.Scene {
         this.openProgressTabKey = null; // The keyboard input to open the progress tab DOM object (Enter for now)
         this.uiClickSound = null; // UI click sound on dialogue boxes
     }
-
-    init() {
-
-    }
-
+    
+    // preload
+    //
+    // Preloads stuff, mainly the dialogue stuff (DEPRECATED, WILL CHANGE TO JQUERY STUFF)
     preload() {
         // Dialogue plugin
         this.load.script('rexuiplugin', 'js/Libraries/rexuiplugin.min.js');
         this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
     }
 
+    // create
+    //
+    // setups the progress tab html page and key listener. Also updates its data from localStorage
     create() {
         // Register keyboard inputs
         this.openProgressTabKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -43,6 +45,9 @@ class UI extends Phaser.Scene {
         this.uiClickSound = this.sound.add('ui-poing');
     }
 
+    // update
+    //
+    // Updates keyboard input changes
     update() {
         // Listen for keyboard inputs (menu UI)
         if(Phaser.Input.Keyboard.JustDown(this.openProgressTabKey)) {

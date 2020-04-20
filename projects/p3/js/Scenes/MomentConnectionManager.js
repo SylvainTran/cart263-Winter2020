@@ -1,12 +1,17 @@
-// Each moment node/scene manages its connections through this object, allowing
-// the game to dynamically create many links reactively through the environment rather than
-// through a single object dragged
+// MomentConnectionManager
+//
+// An object that scenes can contain to manage their connections. Eventually game objects may get this for puzzles
 class MomentConnectionManager {
+    // Constructs connections 
+    // with a range to link between its parent scene and a closest neighbour
     constructor(parent) {
         this.parent = parent;
         this.rangeToLink = 500; // Range at which connections are possible
     }
 
+    // checkForAvailableConnections
+    //
+    // check for available connections between this scene and its closest neighbour
     checkForAvailableConnections(thisMoment, closestNeighbour) {
         if(closestNeighbour === null) {
             return;
@@ -14,6 +19,9 @@ class MomentConnectionManager {
         return Math.abs(thisMoment.getCenter().distance(closestNeighbour.getCenter())) <= this.rangeToLink;
     }
 
+    // snapAvailableNeighbours
+    //
+    // Snaps available neighbours
     snapAvailableNeighbours(dragHandler, closestNeighbour) {
         // If this scene or its closestNeighbour is already snapped, return
         if (dragHandler.getData('moment').momentFSM.state === 'SnappedState' || closestNeighbour.getData('moment').momentFSM.state === 'SnappedState') {
@@ -30,6 +38,9 @@ class MomentConnectionManager {
         closestNeighbour.getData('moment').momentFSM.transition('SnappedState', [closestNeighbour.getData('moment').parent, closestNeighbour.getData('moment'), closestNeighbour]);
     }
 
+    //checkNeighbourTextStatus
+    //
+    // Checks neighbour text status
     checkNeighbourTextStatus(self, neighbour) {
         // Check the status of the neighbour's text roll
         let selfScene = self.getData('moment');

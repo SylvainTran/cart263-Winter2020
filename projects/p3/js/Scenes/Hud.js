@@ -1,7 +1,9 @@
 /**
  * Hud
  * 
- * Creates a hud by taking in injected UI objects. Displays the context menus for scenes.
+ * Creates a hud by taking in injected UI objects.
+ * Displays the box that keeps track of the completed questionnaires out of total
+ * Displays the context menus for scenes.
  */
 class Hud extends Phaser.Scene {
     constructor() {
@@ -10,14 +12,12 @@ class Hud extends Phaser.Scene {
         this.roundTally = null;
     }
 
+    // Keep track of the player's completed questionnaires.
     create() {
         this.roundTally = this.add.dom().createFromCache('hud');
         this.roundTally.setVisible(true);
     }
 
-    update(time, delta) {
-
-    }
     // From Mr. Rex Rainbow (MIT license) - Creates dialogue
     createDialog(sceneToSpawn, x, y, onClick, sceneClicked) {
         let createLabel = this.createLabel;
@@ -100,6 +100,7 @@ class Hud extends Phaser.Scene {
         return dialog;
     }
 
+    // Create a label in the scene for the create text dialog (Rex UI)
     createLabel(scene, text) {
         return scene.rexUI.add.label({
             width: 40,

@@ -1,6 +1,11 @@
 // Controller
 //
-// Handles object relationships
+// Handles object relationships. This script was sort of abandoned
+// Around April 16th 2020 in favor of using a starting to use mostly a 
+// single script, World.js. It still contains game mechanics for dragging
+// and scene manipulation that was started to be deported into GAMEOBJECT
+// manipulation instead of scene, for logistical issues. 
+// Some top level comments may be missing due to this being put aside for the moment.
 class Controller extends Phaser.Scene {
   constructor() {
     super('Controller');
@@ -48,6 +53,10 @@ class Controller extends Phaser.Scene {
     this.dialog = undefined;
   }
 
+  // init
+  //
+  // Inits scenes in parallel (ui, hud, world)
+  // Also gets a reference to the world and setups w x l for scenes
   init() {
     // Get the World (global scene) instance
     this.World = this.scene.manager.getScene('World');
@@ -60,6 +69,10 @@ class Controller extends Phaser.Scene {
     this.scene.launch('World');    
   }
 
+  // create
+  //
+  // Also gets a reference to the world and setups w x l for scenes
+  // The themes are being played from here
   create() {
     // Player sounds
     this.playerCreatedSound = this.sound.add('zap');
@@ -86,12 +99,16 @@ class Controller extends Phaser.Scene {
     this.footstepSound = this.sound.add('footstepDirt');
   }
 
+  // adjustRotation
+  //
+  // Adjusts in-scene rotation to be aligned to the angle of the closestNeighbour's own scene text display
   adjustRotation(self, neighbour) {
     // If there is an available closest neighbour to snap with, adjust rotation in rad of game objects to align to each other
    if(this.availableConnections) {
       let deltaY = self.y - neighbour.y;
       let deltaX = self.x - neighbour.x;
       let dist = sqrt(sq(deltaX) + sq(deltaY));
+      // use inverse of sine to do stuff as per deltaX and Y
       let alpha = asin(deltaY/dist);
       let angle = 0;
       deltaX > 0  && deltaY > 0 ? angle = alpha: angle = -alpha;
@@ -100,6 +117,9 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // update
+  // 
+  // used to update actors' movement (perlin noise) and handle scene transitions, and player FSM
   update(time, delta) {
     // Handle scene transition
     // this.handleSceneTransition();
@@ -111,6 +131,9 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // perlinMovement
+  // 
+  // Pippin's lectures on perlin movement from last year. Does it for scenes even
   perlinMovement() {
     this.actorsInLevel.forEach((scene) => {
       // If not already linked or being currently dragged, update position
@@ -138,6 +161,9 @@ class Controller extends Phaser.Scene {
     });
   }
 
+  // setDraggableActiveZones
+  // 
+  // Caches actively used draggable zones in this scene
   setDraggableActiveZones(draggableZone) {
     // Cache only the Zones gameObjects that are active
     if(draggableZone.type === "Zone" && draggableZone.active) {
@@ -145,7 +171,9 @@ class Controller extends Phaser.Scene {
     }
   }
 
-  // Raining/Snowing passive moments in the background -- may be cybernetics-like system optimizing factors in polish phase of project
+  //setupBackgroundGraphics
+  //
+  // Raining/Snowing passive moments in the background -- may be cybernetics-like system optimizing factors in polish phase of project. Got from Phaser 3 examples
   setupBackgroundGraphics() {
     backgroundScenes = this.add.graphics();
     const backgroundSceneAmount = 15;
@@ -157,8 +185,8 @@ class Controller extends Phaser.Scene {
     rect = Phaser.Geom.Rectangle.Clone(this.World.cameras.main);
   }
 
-  //createMindSpaceForm(key, moment)
-  //@args: type {string}, moment {Phaser.Scene}
+  //createMindSpaceForm
+  //
   //creates game objects using the type (mindSpaces.json) and moment parameters
     createMindSpaceForm(type, moment) {
     // Do something if scene manager is processing to prevent conflict
@@ -208,6 +236,9 @@ class Controller extends Phaser.Scene {
     return momentInstance;
   }
 
+  // handleWrapping
+  //
+  // wraps for scenes exceeding game window
   handleWrapping(scene) {
     const width = this.scale.width;
     const height = this.scale.height;
@@ -227,6 +258,8 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // handleClick
+  //
   // Handle click on the zone that will pop up the sequencer data window
   handleClick(draggableZoneParent, scene) {
     draggableZoneParent.on('pointerdown', (pointer) => {
@@ -237,6 +270,7 @@ class Controller extends Phaser.Scene {
     }, this.scene);
   }
 
+  // popSequencerDataWindow
   // Pop up the sequencer data window, gets the scene's data and uses it to 
   // Display what sliders/options will be tweakble by the user
   popSequencerDataWindow(scene, pointer) {
@@ -250,6 +284,9 @@ class Controller extends Phaser.Scene {
     return this.handleDialogSpawn(pointer, readSceneData, scene);
   }
 
+  // handleDialogSpawn
+  //
+  // handles spawning windows on scenes
   handleDialogSpawn(pointer, readSceneData, scene) {
     const OFFSET = 350;
     const HUD = this.scene.manager.getScene('Hud');
@@ -274,6 +311,9 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // handleChoices
+  //
+  // handles user choices in the context menu after clicking on a scene
   handleChoices(button, scene) {
     if (button.text === "Text") {
       console.debug("changing representation of scene");
@@ -313,15 +353,6 @@ class Controller extends Phaser.Scene {
     }
   }
 
-  displayQuestionnaire(timer) {
-    let elapsed = timer.getProgress();
-    let delay = timer.delay;
-    console.log(elapsed);
-    console.log(delay);    
-    // while(elapsed < timer.delay) { // 5000 ms
-    // show questionnaire while time is up
-    // }
-  }
   // resetPlayer(scene, controller)
   //
   // Resets the player from inside scenes to the World scene. Is also called in the SnappedState when scenes are out of range with each other
@@ -344,6 +375,9 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // triggerSceneEffects
+  //
+  // trigger scene effects when stepping in a scene
   triggerSceneEffects() {
     this.sceneEnterSound.play();
     this.tweens.add({
@@ -358,6 +392,9 @@ class Controller extends Phaser.Scene {
     this.cameras.main.flash(1000);
   }
 
+  // Ephemeral effect on scenes
+  //
+  // Makes it blink
   handleEphemeral(scene) {
     const TIME_TILL_GONE = 3;
     let visibility = false;
@@ -388,6 +425,9 @@ class Controller extends Phaser.Scene {
     });
   }
 
+  // querySceneConnectionManager
+  //
+  // queries the connection manager to do interesting things between a scene and its closest neighbour
   querySceneConnectionManager(dragHandler) {
     // Find nearest moment scene from this gameObject being dragged along, using a Strategy pattern for flexibility
     const seekNeighbourMoment = new Context(new FindClosestNeighbour(dragHandler, this.draggableZonesActive));
@@ -408,6 +448,9 @@ class Controller extends Phaser.Scene {
     this.adjustRotation(dragHandler, closestNeighbour);
   }
 
+  // handleSnapping
+  //
+  // handles snapping a scene and its closest neighbour (for now displays links too). Goes through moment connection manager 
   handleSnapping(dragHandler, closestNeighbour) {
     if (this.availableConnections) {
       dragHandler.getData('moment').momentConnectionManager.snapAvailableNeighbours(dragHandler, closestNeighbour);
@@ -417,6 +460,9 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // handleTextBifurcation
+  //
+  // Handles text intermixing between scenes' neighbours.
   handleTextBifurcation(dragHandler, closestNeighbour) {
     if (this.availableConnections) {
 
@@ -425,11 +471,17 @@ class Controller extends Phaser.Scene {
     }
   }
 
+  // updateDragZone
+  //
+  // Refreshes zones' position and its scene also
   updateDragZone(draggableZoneParent, dragX, dragY, momentInstance) {
     draggableZoneParent.setPosition(dragX, dragY);
     momentInstance.refresh();
   }
 
+  // createLinkLine
+  //
+  // Creates link line
   createLinkLine(x, y, x1, y1, x2, y2, color, width, visible) {
     this.scene.linkLine = this.add.line(x, y, x1, y1, x2, y2, color, visible).setOrigin(0)
       .setLineWidth(width);
@@ -448,6 +500,9 @@ class Controller extends Phaser.Scene {
     this.scene.linkLine.setTo(x1, y1, x2, y2);
   }
 
+  // createLinkButton
+  //
+  // Creates link button. Will be used for Gameobjects version of project
   createLinkButton() {
     this.createdLinkButtonAlready = true;
     // 1. Adding a listener to the leaveSnapState method in the SnappedState.js 
@@ -461,6 +516,9 @@ class Controller extends Phaser.Scene {
     });
   }
 
+  // handleLinking
+  //
+  // handles scene linking
   handleLinking() {
     let self = this.getCurrentlyDraggedScene();
     let selfScene = self.getData('moment');

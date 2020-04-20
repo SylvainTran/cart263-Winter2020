@@ -1,8 +1,14 @@
+// Preloader
+//
+// The preloader for preloading
 class Preloader extends Phaser.Scene {
   constructor() {
     super({key: 'preloader'});
   }
 
+  //init
+  //
+  // Init div for styling custom font mainly
   init() {
     // From Phaser WebFont example
     let element = document.createElement('style');
@@ -12,6 +18,9 @@ class Preloader extends Phaser.Scene {
     sheet.insertRule(styles, 0);
   }
 
+  // preload
+  //
+  // preloads all the game assets in the game
   preload() {
     // Dialogue plugin
     this.load.script('rexuiplugin', 'js/Libraries/rexuiplugin.min.js');
@@ -67,15 +76,18 @@ class Preloader extends Phaser.Scene {
     this.load.html('hud', 'assets/hud.html');
     // Court seance screen
     this.load.html('courtSeance', 'assets/courtSeance.html');
+    // Current phase screen
+    this.load.html('currentPhaseScreen', 'assets/menus/currentPhase.html');
   }
 
+  // load webfont google api
   create() {
     WebFont.load({
-      custom: {
+      google: {
         families: ['Press Start 2P']
       }
     });
-    // Animations
+    // Animations for the hero
     this.anims.create({ 
       key: 'everything',
       frames: this.anims.generateFrameNames('hero'), repeat: -1
@@ -116,6 +128,7 @@ class Preloader extends Phaser.Scene {
       }),
       frameRate: 5
     });   
+    // Start other scenes, with debug mode option
     this.debugMode = false; 
     if(!this.debugMode) {     
       this.scene.start('StartMenu');    

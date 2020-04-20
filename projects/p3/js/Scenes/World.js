@@ -1,6 +1,6 @@
 /* World
 //
-// Single script World handling both view and game logic
+// Single script World handling both view and game logic. Has mostly overriden the Controller.js script for now.
 // What follows is the high level documentation for understanding this game's concepts:
 //
 // Description:
@@ -99,13 +99,12 @@ class World extends Phaser.Scene {
       currentProgression.currentRoundQuestionnaires = areaConfig.nbQuestionnaires;
       // Set it in local storage now that it's not null
       localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
-      console.log(currentProgression.currentRoundQuestionnaires);
-      console.log(areaConfig.nbQuestionnaires);
       // We start in phase 1
       this.inPhase = 1;
     } else {
       currentProgression.currentRoundQuestionnaires = areaConfig.nbQuestionnaires;
       localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
+      this.inPhase = 1;
     }
   }
   // Get progression data saved in the localStorage
@@ -114,7 +113,6 @@ class World extends Phaser.Scene {
   }
   // Setup the two game phases (After deciding which one is the current phase)
   setupGamePhase() {
-    console.log(this.inPhase);
     // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
     if (!this.inPhase && !this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded()) {
       console.log("Picking up from Phase 1");
@@ -136,11 +134,15 @@ class World extends Phaser.Scene {
       this.inPhase = 2;
       this.setupPhaseTwoRoutine();
     } else if (this.inPhase === 1 && !this.checkPhaseOneEnded()) {
-      // We're at phase 1
+      // We're in phase 1
       this.setupPhaseOneRoutine();
     } else if(this.inPhase === 2 && this.checkPhaseOneEnded()) {
-      // We're at phase 2
+      // We're in phase 2
       this.setupPhaseTwoRoutine();
+    } else if(!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
+      // We're in phase 1
+      console.log("Phase 1");
+      this.setupPhaseOneRoutine();
     }
   }
   // Check if Phase one has ended yet
@@ -155,26 +157,25 @@ class World extends Phaser.Scene {
   // Setup phase one 
   setupPhaseOneRoutine() {
     // Player gets assigned actors and areas to explore for data
-    // If has not gotten sets of questionnaire assigned yet, player is reminded
+    // If has not gotten sets of questionnaire assigned yet, player is given one automatically (for now)
     // $Stretch: to go talk to the questionnaire boss to get them
     if (!this.getProgressionData().questionnairesAssignedYet) {
       this.inPhase = 1;
-      console.log("Phase one");
       this.updateActiveQuest(true);
-      // this is the line of dialogues that the player can get
-      let key = "prePhaseOne";
-      let questPrompts = this.cache.json.get('chapters');
-      // Grab a random dialogue node among the options for that type of dialogue
-      let node = Math.floor(Math.random() * (questPrompts[0][key].length - 1));
-      let UI = this.scene.manager.getScene('UI');
-      // Display it through the dialogue factory and displayer of the UI scene
-      let dialogueData = questPrompts[0][key][node];
-      this.displayDialogue(dialogueData, UI);
-      // $Stretch: The player should get assigned questionnaires once he meets with the questionnaire boss
-      // Use the spawn pool with the World as context
-      let spawnPool = this.spawnPool();
-      spawnPool(this.areaConfig, this);
     }
+    // this is the line of dialogues that the player can get
+    let key = "prePhaseOne";
+    let questPrompts = this.cache.json.get('chapters');
+    // Grab a random dialogue node among the options for that type of dialogue
+    let node = Math.floor(Math.random() * (questPrompts[0][key].length - 1));
+    let UI = this.scene.manager.getScene('UI');
+    // Display it through the dialogue factory and displayer of the UI scene
+    let dialogueData = questPrompts[0][key][node];
+    this.displayDialogue(dialogueData, UI);
+    // $Stretch: The player should get assigned questionnaires once he meets with the questionnaire boss
+    // Use the spawn pool with the World as context
+    let spawnPool = this.spawnPool();
+    spawnPool(this.areaConfig, this);
   }
   // Update whether the player got a questionnaire assignment yet in localStorage
   updateActiveQuest(value) {
@@ -192,6 +193,18 @@ class World extends Phaser.Scene {
     this.courtSeanceCompleted = true;
     // Fade effect
     this.cameraFadeEffect();
+    // Show the current phase feedback to the player
+    let UI = this.scene.manager.getScene('UI');
+    let currentPhaseScreen = this.showCurrentPhaseFeedback(UI);
+    // Destroy it after 3 seconds
+    setTimeout(()=> {
+      currentPhaseScreen.destroy();
+    }, 3000);
+
+    // Freezes questionnaire interactions with the current area's actors
+    for(let i = 0; i < this.currentAreaActors.length; i++) {
+      this.currentAreaActors[i].questionedPlayerYet = true;
+    }
     // Set the player's sprite in a fixed tribunal room belonging to phase 2
     // this.scene.transition
     // let phaseTwoSpawnPoint = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("phaseTwoPlayerSpawnPoint"));
@@ -215,12 +228,12 @@ class World extends Phaser.Scene {
     seance = this.getMeans(seance, means);
     // Court Seance
     // Creates the screen from the DOM cache
-    let UI = this.scene.manager.getScene('UI');
     this.courtSeanceScreen = UI.add.dom().createFromCache('courtSeance');
     this.courtSeanceScreen.setVisible(true);
     this.courtSeanceScreen.setScale(0.5);
     this.courtSeanceScreen.setPosition(500, 320);
     this.enactCourtSeance(seance);
+
     // Phase 2 is over after every questionnaire was reviewed (or TODO user clicks the screen)
     setTimeout(() => {
       // Destroy the screen
@@ -229,6 +242,26 @@ class World extends Phaser.Scene {
       this.setupPhaseOneRoutine();
     }, 10000);
   }
+  
+  // showCurrentPhaseFeedback
+  //
+  // show the current phase to the player visually
+  showCurrentPhaseFeedback(UI) {
+    let currentPhaseScreen = UI.add.dom().createFromCache('currentPhaseScreen');
+    let value;
+    if(this.inPhase % 2 === 0) {
+      value = 1;
+    } else {
+      value = 2;
+    }
+    let text = "Current Phase: " + value + "!";
+    $('#menu--currentPhase').text(text);
+    currentPhaseScreen.setVisible(true);
+    currentPhaseScreen.setScale(0.75);
+    currentPhaseScreen.setPosition(320, 110);
+    return currentPhaseScreen;
+  }
+
   // Enact the court seance phase
   enactCourtSeance(seance) {
     let text = "";
@@ -254,8 +287,11 @@ class World extends Phaser.Scene {
       console.log("For peoples met during the last expedition, you were in FAVOR of their claims.");
       text = "For peoples met during the last expedition, you were in <span style=\"color: blue;\">FAVOR</span> of their claims.";
     }
+    // $Stretch scope
     $('#seance--people').html(text);
     $('#seance--people').click(() => {});
+    // More meaningful interactions in choices and simulation coming later
+    // ...
   }
   // getMeans
   //
@@ -327,7 +363,7 @@ class World extends Phaser.Scene {
     return areaConfig;
   }
   // spawnPool
-  // ...practicing functional style stuff
+  // ...practicing functional style stuff with private members
   // Function dealing with actor spawning in the world
   spawnPool = function () {
     // The enclosed function to use the areaConfig data privately
@@ -363,6 +399,7 @@ class World extends Phaser.Scene {
           // Consume new spawn points randomly for each actor to spawn in the world
           let newSpawnPoint = consumeSpawnPoint();
           let actor = actors[i];
+          console.log(actor);
           // The actor is a custom sprite that we created, the world is the context passed down in the function call
           let newActor = world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y, "NPC"));
           newActor.setName(newActor.type).setScale(0.25).setSize(32, 32);
@@ -382,12 +419,9 @@ class World extends Phaser.Scene {
         setupActorPhysics(questionnaireBoss);
 
         function setupActorPhysics(newActor) {
-          console.log(newActor.type)
           world.physics.world.enable([newActor]);
-          newActor.body.setCollideWorldBounds(true);
           world.physics.add.collider(newActor, world.aboveLayer);
           if (newActor.type === "Questionnaire Boss") {
-            world.physics.add.collider(newActor, world.globalPlayer);
             newActor.setScale(0.5).setSize(64, 64);
           }
           newActor.body.setBounce(0);
@@ -415,7 +449,7 @@ class World extends Phaser.Scene {
   // Start dialogue with facing actor on frontal collision
   startDialogue(player, actor) {
     if (actor.type === "Questionnaire Boss") {
-      alert("Boss dialogue");
+      this.updateActiveQuest(true);
     }
     // Talk if facing each other
     if (player.body.touching.up && actor.body.touching.down) {
@@ -551,15 +585,23 @@ class World extends Phaser.Scene {
     currentProgression.peopleQuestionsLikertA = [];
     currentProgression.animalQuestionsLikertA = [];
     currentProgression.inanimateQuestionsLikertA = [];
+    // Reset current area actors after destroying them and their mind spaces
+    for(let i = 0; i < this.currentAreaActors.length; i++) {
+      if(this.currentAreaActors[i].mindSpaceForm) {
+        this.currentAreaActors[i].mindSpaceForm.destroy();
+      }
+      this.currentAreaActors[i].destroy();      
+    }
+    this.currentAreaActors = null;
     // Reset player position
     this.globalPlayer.setPosition(this.spawnPointA.x, this.spawnPointA.y);
-    // Reset the area config after increasing the current area of the game
+    // Reset the area config after increasing current area flag
     ++this.currentArea;
     this.areaConfig = this.areaManager(this.currentArea);
     // Update number of questionnaires needed in next area / level 
     currentProgression.currentRoundQuestionnaires = this.areaConfig.nbQuestionnaires;
     localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
-    // Get the spawn points from the tilemap, by filtering through the Tiled layers
+    // Re-get the new added spawn points from the tilemap, by filtering through the Tiled layers
     this.areaConfig.actorSpawningPoints = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("actorSpawnPoint"));
     // Re-update the progress UI
     updateProgressUI(currentProgression);

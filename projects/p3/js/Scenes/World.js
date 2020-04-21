@@ -554,25 +554,20 @@ class World extends Phaser.Scene {
   // Calls the dialogueFactory for a certain dialogue to return and display
   displayDialogue(dialogueData, context) {
     // Return if already in a dialogue
-    if (context.dialogueLock) {
+    if (this.dialogueLock) {
       return;
     }
+    //Update the dialogue through the html DOM cached in the Hud scene
+    let dialogueText = `${dialogueData}`;
+    $('#game__hud--dialogue-body').text(dialogueText);
     console.log(dialogueData);
     console.log(context);
+    $('#game__hud--dialogue-body').click(()=>{
+      $('#game__hud--dialogue-body').text("");
+      this.dialogueLock = false;
+    });
     // Lock the player in the dialogue (reset on last page of pageEnd of textbox)
     context.dialogueLock = true;
-    try {
-      this.scene.manager.getScene('UI').load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI').once('complete', ()=>{
-        this.createTextBox(context, 50, 500, {
-          wrapWidth: 300,
-          fixedWidth: 310,
-          fixedHeight: 75,
-        }).start(dialogueData, 50);
-        return dialogueData;  
-      });
-    } catch (e) {
-      console.log(e.message);
-    }
   }
   // Reset the game after Phase 2 is over
   resetGame() {
@@ -605,92 +600,6 @@ class World extends Phaser.Scene {
     this.areaConfig.actorSpawningPoints = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("actorSpawnPoint"));
     // Re-update the progress UI
     updateProgressUI(currentProgression);
-  }
-  // Creates a textbox. From Mr. Rex Rainbow
-  createTextBox(scene, x, y, config) {
-    console.log(scene);
-    const GetValue = Phaser.Utils.Objects.GetValue;
-    let wrapWidth = GetValue(config, 'wrapWidth', 0);
-    let fixedWidth = GetValue(config, 'fixedWidth', 0);
-    let fixedHeight = GetValue(config, 'fixedHeight', 0);
-    this.textBoxCache = scene.rexUI.add.textBox({
-        x: x,
-        y: y,
-        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
-          .setStrokeStyle(2, COLOR_LIGHT),
-        text: this.getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
-        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
-        space: {
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 20,
-          icon: 10,
-          text: 10,
-        }
-      })
-      .setOrigin(0)
-      .layout();
-    this.textBoxCache
-      .setInteractive()
-      .on('pointerdown', function () {
-        // Play poing sound
-        scene.uiClickSound.play();
-        let icon = this.getElement('action').setVisible(false);
-        this.resetChildVisibleState(icon);
-        if (this.isTyping) {
-          this.stop(true);
-        } else {
-          this.typeNextPage();
-        }
-      }, this.textBoxCache)
-      .on('pageend', function () {
-        if (this.isLastPage) {
-          scene.scene.manager.getScene('UI').dialogueLock = false;
-          setTimeout(() => {
-            this.destroy()
-          }, 5000);
-          return;
-        }
-        let icon = this.getElement('action').setVisible(true);
-        this.resetChildVisibleState(icon);
-        icon.y -= 30;
-        let tween = scene.tweens.add({
-          targets: icon,
-          y: '+=30',
-          ease: 'Bounce',
-          duration: 500,
-          repeat: 0,
-          yoyo: false
-        });
-        1
-      }, this.textBoxCache);
-    return this.textBoxCache;
-  }
-  // Gets the Phaser native text game object for textbox creation. From Mr. Rex Rainbow
-  getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.add.text(0, 0, '', {
-        fontFamily: 'Press Start 2P',
-        fontSize: '40px',
-        wordWrap: {
-          width: wrapWidth
-        },
-        maxLines: 3
-      })
-      .setFixedSize(fixedWidth, fixedHeight);
-  }
-  // Gets the BBcode Phaser native text game object for textbox creation. From Mr. Rex Rainbow
-  getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.rexUI.add.BBCodeText(0, 0, '', {
-      fixedWidth: fixedWidth,
-      fixedHeight: fixedHeight,
-      fontSize: '20px',
-      wrap: {
-        mode: 'word',
-        width: wrapWidth
-      },
-      maxLines: 3
-    })
   }
 }
 // Game progression data (localStorage)

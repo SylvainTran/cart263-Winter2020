@@ -256,7 +256,7 @@ class World extends Phaser.Scene {
     let currentPhaseScreen = UI.add.dom().createFromCache('currentPhaseScreen');
     let value;
     // If not in a phase currently (null) is phase 1 as well. Otherwise if the remainder is 0 then its Phase 2
-    if(!this.inPhase || this.inPhase % 2 === 0) {
+    if(this.inPhase % 2 === 0) {
       value = 2;
     } else {
       value = 1;

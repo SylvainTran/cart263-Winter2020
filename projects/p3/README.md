@@ -32,12 +32,27 @@ Another development intent at the very end here was to follow Pippin's idea to t
 
 # Final thoughts post-mortem
 
-The most valuable thing out of this project for me was the learning experience. Because I changed direction at the end, something that I'm proud of, the thing is not as polished as I could have if I had stuck to one idea from the get go. But that's just how the process is. I think we're supposed to change our minds as we go. The analogy is clay shaping, which is another of my hobbies. In the end, the clay was shaped through code and as far as I'm concerned I think there's a clay pot on the table. I learned a lot about Javascript, refactorings, organization and project development, my personal flaws and style in code and design, the danger of being a wannabe engineer craftsman when still early in the learning curve, the problems of using existing technologies and plugins that fail you at the very end, the disillusionment behind not testing early on the feasibility of a technical idea with the technologies you have, and especially the knowledge you have, and the fact that some very simple solutions are better than complex ones. I like the end result of subconscious amalgation of ideas about interactivity and life moments into this weird idea about questionnaires, something that I think is worth to look into more deeply at some point.
+The most valuable thing out of this project for me was the learning experience. Because I changed direction at the end, something that I'm proud of, the thing is not as polished as I could have if I had stuck to one idea from the get go. But that's just how the process is. I think we're supposed to change our minds as we go. The analogy is clay shaping, which is another of my hobbies. In the end, the clay was shaped through code and as far as I'm concerned I think there's a clay pot on the table. I learned a lot about Javascript, refactorings, organization and project development, my personal flaws and style in code and design, the danger of being a wannabe engineer craftsman when still early in the learning curve, the problems of using existing technologies and plugins that fail you at the very end, the disillusionment behind not testing early on the feasibility of a technical idea with the technologies you have, and especially the knowledge you have, and the fact that some very simple solutions are better than complex ones. 
+
+Technically-wise, what I learned and used the most in this project is the DOM interaction with Phaser. All the menus and UI are html pages that were manipulated with javascript and the DOM. I'm liking how one can use simple HTML pages to do a lot of the UI work and the potential of using form data (radio button in this case) to handle logic is understated, even unto server-side stuff later on.
+
+I like the end result of the subconscious amalgation of ideas about interactivity and life moments into this weird idea about questionnaires, something that I think is worth to look into more deeply at some point.
 
 # Features and Scope
 
-In Phase 1, the player explores the land, meets (static) surrealistic NPCs and completes questionnaires based on his only interaction with them.
+In Phase 1, the player explores the land, meets (static) surrealistic NPCs and completes questionnaires
 
 In Phase 2, the player gets a review of what he answered with regards to people, animals and inanimate things he got questioned against. He must report back to court to with the new information.
 
-*Stretch in my dreams: Attitudes become more meaningful with regards to the game's story, but while staying true to the idea of the questionnaire making. Could the thing or effect be reversed against the NPC, making the player question the NPC and learn something about himself? In the end, it's the story that I seek...
+# Todo
+$Fix collision boxes to make it pixel perfect
+$Add signs and feedback for things
+$Add contextual action button to show interactions with game elements
+$Add more to Phase 2 of the game gameplay wise. Towards a simulator
+$Add people, inanimate and animal different interactions
+$Add animations, music and sounds to actors
+$Geographically distribute actors and create hubs to complete game loop
+$Actors evolve somewhat, game has a progression to it
+$Questionnaires become somewhat involved with a "combat" thing?
+
+*Stretch in my dreams: Attitudes become more meaningful with regards to the game's story, but while staying true to the idea of the questionnaire making. Could the thing or effect be reversed against the NPC, making the player question the NPC and learn something about himself?

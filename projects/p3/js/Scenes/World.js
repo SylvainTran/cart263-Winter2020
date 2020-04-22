@@ -63,6 +63,8 @@ class World extends Phaser.Scene {
     this.updateCurrentRoundQuestionnaires();
     // Start the phase routines - This is the main game loop
     this.setupGamePhase();
+    // Update initial UI
+    updateProgressUI(this.getProgressionData());
     // Event handler setup
     // To handle change scene events without always checking for it in update()
     changeToPhaseTwoEmmitter = new Phaser.Events.EventEmitter();
@@ -467,7 +469,6 @@ class World extends Phaser.Scene {
   }
   // Talk to the boss to get one
   startQuestAssignment(player, boss) {
-    alert("Talking to boss")
     boss.talk(this, dialogueNode);
   }
   // setupDrag
@@ -721,4 +722,5 @@ function updateProgressUI(currentProgression) {
   //Update the HUD
   let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered + 1}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);
+  console.log(stats_hud);
 }

@@ -1,4 +1,5 @@
 .game__currentPhase {
+    width: 750px;
     font-size: 40px;
     color: blue;
     font-family: 'Press Start 2P';

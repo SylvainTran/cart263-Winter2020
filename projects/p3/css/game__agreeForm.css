@@ -11,3 +11,7 @@
     line-height: 25px;
     padding-top: 1vw;
 }
+
+.game__agreeForm input element {
+    width: 10px;
+}

@@ -113,14 +113,19 @@ class World extends Phaser.Scene {
   }
   // Setup the two game phases (After deciding which one is the current phase)
   setupGamePhase() {
+    // Show the current Phase player is in
+    let UI = this.scene.manager.getScene('UI');
+    let currentPhaseScreen = this.showCurrentPhaseFeedback(UI);
+    // Destroy it after 3 seconds
+    setTimeout(()=> {
+      currentPhaseScreen.destroy();
+    }, 3000);
     // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
     if (!this.inPhase && !this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded()) {
       console.log("Picking up from Phase 1");
-      this.inPhase = 1;
       this.setupPhaseOneRoutine();
       // If the player was assigned a questionnaire and phase one was ended
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded()) {
-      this.inPhase = 2;
       this.setupPhaseTwoRoutine();
       // If the court seance was over and were restarting
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && this.courtSeanceCompleted) {
@@ -131,7 +136,6 @@ class World extends Phaser.Scene {
       // if the court seance was not over but were were in it, resume there
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && !this.courtSeanceCompleted) {
       console.log("The court seance was not over and we left the game before it did");
-      this.inPhase = 2;
       this.setupPhaseTwoRoutine();
     } else if (this.inPhase === 1 && !this.checkPhaseOneEnded()) {
       // We're in phase 1
@@ -141,15 +145,16 @@ class World extends Phaser.Scene {
       this.setupPhaseTwoRoutine();
     } else if(!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
       // We're in phase 1
-      console.log("Phase 1");
       this.setupPhaseOneRoutine();
     }
   }
   // Check if Phase one has ended yet
   checkPhaseOneEnded() {
     let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-    if(currentProgression) {
-      return currentProgression.questionnairesAnswered >= this.areaConfig.nbQuestionnaires;
+    if(currentProgression) { // -1 to count correctly
+      console.log("Questionnaires Answered: :" + currentProgression.questionnairesAnswered);
+      console.log("Questionnaires Total: :" + currentProgression.currentRoundQuestionnaires);
+      return currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires - 1;
     } else {
       return;
     }
@@ -163,6 +168,8 @@ class World extends Phaser.Scene {
       this.inPhase = 1;
       this.updateActiveQuest(true);
     }
+    // Update inPhase flag
+    this.inPhase = 1;
     // this is the line of dialogues that the player can get
     let key = "prePhaseOne";
     let questPrompts = this.cache.json.get('chapters');
@@ -186,10 +193,10 @@ class World extends Phaser.Scene {
   // Setup phase two
   setupPhaseTwoRoutine() {
     if (this.courtSeanceCompleted) {
-      // Toggle it to off for the next round
-      this.courtSeanceCompleted = false;
       return;
     }
+    // Update inPhase flag
+    this.inPhase = 2;
     this.courtSeanceCompleted = true;
     // Fade effect
     this.cameraFadeEffect();
@@ -242,17 +249,17 @@ class World extends Phaser.Scene {
       this.setupPhaseOneRoutine();
     }, 10000);
   }
-  
   // showCurrentPhaseFeedback
   //
   // show the current phase to the player visually
   showCurrentPhaseFeedback(UI) {
     let currentPhaseScreen = UI.add.dom().createFromCache('currentPhaseScreen');
     let value;
-    if(this.inPhase % 2 === 0) {
-      value = 1;
-    } else {
+    // If not in a phase currently (null) is phase 1 as well. Otherwise if the remainder is 0 then its Phase 2
+    if(!this.inPhase || this.inPhase % 2 === 0) {
       value = 2;
+    } else {
+      value = 1;
     }
     let text = "Current Phase: " + value + "!";
     $('#menu--currentPhase').text(text);
@@ -261,7 +268,6 @@ class World extends Phaser.Scene {
     currentPhaseScreen.setPosition(320, 110);
     return currentPhaseScreen;
   }
-
   // Enact the court seance phase
   enactCourtSeance(seance) {
     let text = "";
@@ -328,7 +334,6 @@ class World extends Phaser.Scene {
     let nbActors = 0;
     let actors = [];
     let nbQuestionnaires = 0;
-
     // The area parameter is the level progression
     // actor creation needs time, so for now they're all fishmen and rocks
     switch (area) {
@@ -338,14 +343,14 @@ class World extends Phaser.Scene {
         actors = [FishMan, Rock];
         break;
       case 1:
+        nbActors = 3;
+        nbQuestionnaires = 3;
+        actors = [FishMan, FishMan, Rock];
+        break;
+      case 2:
         nbActors = 4;
         nbQuestionnaires = 4;
         actors = [FishMan, FishMan, Rock, Rock];
-        break;
-      case 2:
-        nbActors = 8;
-        nbQuestionnaires = 8;
-        actors = [FishMan, FishMan, FishMan, FishMan, Rock, Rock, Rock, Rock];
         break;
       default:
         nbActors = 2;
@@ -426,6 +431,8 @@ class World extends Phaser.Scene {
           }
           newActor.body.setBounce(0);
           newActor.body.setImmovable();
+          // Set destroyable tag
+          newActor.setData('destroyableActor', true);
           // Update current area's actors array
           currentAreaActors.push(newActor);
         }
@@ -573,10 +580,12 @@ class World extends Phaser.Scene {
   resetGame() {
     // Reset in phase flag for conditional flow leading to phase 1 and 2
     this.inPhase = null;
+    // Reset court seance completed flag (cinematic)
+    this.courtSeanceCompleted = false;
     // Update the game progression in local storage
     let currentProgression = this.getProgressionData();
     currentProgression.questionnairesAssignedYet = false;
-    currentProgression.questionnairesAnswered = 0;
+    currentProgression.questionnairesAnswered = -1; // Start at -1 to sum correctly
     currentProgression.peopleQuestionsLikertA = [];
     currentProgression.animalQuestionsLikertA = [];
     currentProgression.inanimateQuestionsLikertA = [];
@@ -585,8 +594,18 @@ class World extends Phaser.Scene {
       if(this.currentAreaActors[i].mindSpaceForm) {
         this.currentAreaActors[i].mindSpaceForm.destroy();
       }
-      this.currentAreaActors[i].destroy();      
     }
+    // Remove all game objects from the scene adder
+    let allChildren = this.add.displayList.getChildren();
+    let destroyedActors = [];
+    for(let i = 0; i < allChildren.length; i++) {
+      // Destroy previous actors
+      if(allChildren[i].getData('destroyableActor') === true) {
+        destroyedActors.push(allChildren[i]);
+        allChildren[i].destroy();
+      } 
+    }
+    console.log(destroyedActors);
     this.currentAreaActors = null;
     // Reset player position
     this.globalPlayer.setPosition(this.spawnPointA.x, this.spawnPointA.y);
@@ -607,12 +626,12 @@ class World extends Phaser.Scene {
 // For each round, questionnaires answered and the total number of quests
 let gameProgression = {
   questionnairesAssignedYet: false,
-  questionnairesAnswered: 0,
+  questionnairesAnswered: -1, // Start at -1 to count properly
   currentRoundQuestionnaires: 0,
   peopleQuestionsLikertA: [],
   animalQuestionsLikertA: [],
   inanimateQuestionsLikertA: [],
-  questionsAnswered: 0,
+  totalQuestionsAnswered: 0,
   peopleDiscovered: 0,
   animalsDiscovered: 0,
   inanimateDiscovered: 0,
@@ -655,12 +674,9 @@ let changeToPhaseTwoEmmitter = null; // Event emitter to avoid always checking f
 // handles the form submission from questionnaires
 function handleFormSubmit(form) {
   let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-  console.log(currentProgression.questionnairesAnswered);
-  console.log(currentProgression.currentRoundQuestionnaires);
   let userAnswer;
   // Save the user's answer to local storage
   let answeredForm = form.elements["likert-a"];
-  console.log(currentProgression);
   for (let i = 0; i < answeredForm.length; i++) {
     if (answeredForm[i].checked) {
       userAnswer = answeredForm[i].value;
@@ -669,30 +685,40 @@ function handleFormSubmit(form) {
       // Todo push question as well
     }
   }
-  // Emit a change phase (from phase one to phase two) event if finished this round
-  if(currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires) {
+  // Refresh current progression
+  currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
+  // Emit a change phase (from phase one to phase two) event if finished this round. -1 to count properly
+  let q = currentProgression.currentRoundQuestionnaires;
+  let currentQTotal = q - 1;
+  // Expect currentProgression.questionnairesAnswered = 0
+  if(currentProgression.questionnairesAnswered >= currentQTotal) {
+    updateProgressUI(currentProgression);
     changeToPhaseTwoEmmitter.emit('changePhase');
   }  
   $(".game__agreeForm").remove();
+  // Re-update UI
+  updateProgressUI(currentProgression);
   return false;
 }
 // updateStatsQuestionsAnswered
 //
 // Setups the website's elements
 function updateStatsQuestionsAnswered(currentProgression) {
-  // If player answered a questionnaire update stats for it
-  ++currentProgression.questionsAnswered;
+  let thisCurrentProgression = currentProgression;
+  // If player answered a questionnaire update total progression stats for it
+  thisCurrentProgression.totalQuestionsAnswered++;
   // Update current round progression
-  ++currentProgression.questionnairesAnswered;
-  localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
-  updateProgressUI(currentProgression);
+  let q = thisCurrentProgression.questionnairesAnswered;
+  let currentQTotal = q + 1;
+  thisCurrentProgression.questionnairesAnswered = currentQTotal;
+  localStorage.setItem("gameProgression", JSON.stringify(thisCurrentProgression));
 }
 // Update the progress box UI
 function updateProgressUI(currentProgression) {
-  let stats_questionsAnsweredText = "Questions Answered (/10): ";
+  let stats_totalQuestionsAnsweredText = "Questions Answered (/10): ";
   //Update the progression tab menu
-  $('#stats--questionsAnswered').text(`${stats_questionsAnsweredText} ${currentProgression.questionsAnswered}`);
+  $('#stats--totalQuestionsAnswered').text(`${stats_totalQuestionsAnsweredText} ${currentProgression.totalQuestionsAnswered}`);
   //Update the HUD
-  let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered}/${currentProgression.currentRoundQuestionnaires})`;
+  let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered + 1}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);
 }

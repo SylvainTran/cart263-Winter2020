@@ -61,6 +61,8 @@ class World extends Phaser.Scene {
     this.cameraFadeEffect();
     // Get the local storage progression if there is one, or create it if not
     this.updateCurrentRoundQuestionnaires();
+    // Update current phase in
+    this.updateCurrentPhaseFlag();
     // Start the phase routines - This is the main game loop
     this.setupGamePhase();
     // Update initial UI
@@ -69,6 +71,15 @@ class World extends Phaser.Scene {
     // To handle change scene events without always checking for it in update()
     changeToPhaseTwoEmmitter = new Phaser.Events.EventEmitter();
     changeToPhaseTwoEmmitter.on('changePhase', this.setupPhaseTwoRoutine, this);
+  }
+  // update current phase flag for the UI
+  updateCurrentPhaseFlag() {
+    let currentProgression = this.getProgressionData();
+    if (currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires - 1) {
+      this.inPhase = 2;
+    } else {
+      this.inPhase = 1;
+    }
   }
   // Fade in and out to make it look cool
   cameraFadeEffect() {
@@ -119,7 +130,7 @@ class World extends Phaser.Scene {
     let UI = this.scene.manager.getScene('UI');
     let currentPhaseScreen = this.showCurrentPhaseFeedback(UI);
     // Destroy it after 3 seconds
-    setTimeout(()=> {
+    setTimeout(() => {
       currentPhaseScreen.destroy();
     }, 3000);
     // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
@@ -142,10 +153,10 @@ class World extends Phaser.Scene {
     } else if (this.inPhase === 1 && !this.checkPhaseOneEnded()) {
       // We're in phase 1
       this.setupPhaseOneRoutine();
-    } else if(this.inPhase === 2 && this.checkPhaseOneEnded()) {
+    } else if (this.inPhase === 2 && this.checkPhaseOneEnded()) {
       // We're in phase 2
       this.setupPhaseTwoRoutine();
-    } else if(!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
+    } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
       // We're in phase 1
       this.setupPhaseOneRoutine();
     }
@@ -153,7 +164,7 @@ class World extends Phaser.Scene {
   // Check if Phase one has ended yet
   checkPhaseOneEnded() {
     let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-    if(currentProgression) { // -1 to count correctly
+    if (currentProgression) { // -1 to count correctly
       console.log("Questionnaires Answered: :" + currentProgression.questionnairesAnswered);
       console.log("Questionnaires Total: :" + currentProgression.currentRoundQuestionnaires);
       return currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires - 1;
@@ -206,14 +217,10 @@ class World extends Phaser.Scene {
     let UI = this.scene.manager.getScene('UI');
     let currentPhaseScreen = this.showCurrentPhaseFeedback(UI);
     // Destroy it after 3 seconds
-    setTimeout(()=> {
+    setTimeout(() => {
       currentPhaseScreen.destroy();
     }, 3000);
 
-    // Freezes questionnaire interactions with the current area's actors
-    for(let i = 0; i < this.currentAreaActors.length; i++) {
-      this.currentAreaActors[i].questionedPlayerYet = true;
-    }
     // Set the player's sprite in a fixed tribunal room belonging to phase 2
     // this.scene.transition
     // let phaseTwoSpawnPoint = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("phaseTwoPlayerSpawnPoint"));
@@ -258,7 +265,7 @@ class World extends Phaser.Scene {
     let currentPhaseScreen = UI.add.dom().createFromCache('currentPhaseScreen');
     let value;
     // If not in a phase currently (null) is phase 1 as well. Otherwise if the remainder is 0 then its Phase 2
-    if(this.inPhase % 2 === 0) {
+    if (this.inPhase % 2 === 0) {
       value = 2;
     } else {
       value = 1;
@@ -570,7 +577,7 @@ class World extends Phaser.Scene {
     $('#game__hud--dialogue-body').text(dialogueText);
     console.log(dialogueData);
     console.log(context);
-    $('#game__hud--dialogue-body').click(()=>{
+    $('#game__hud--dialogue-body').click(() => {
       $('#game__hud--dialogue-body').text("");
       this.dialogueLock = false;
     });
@@ -580,7 +587,7 @@ class World extends Phaser.Scene {
   // Reset the game after Phase 2 is over
   resetGame() {
     // Reset in phase flag for conditional flow leading to phase 1 and 2
-    this.inPhase = null;
+    this.inPhase = 1;
     // Reset court seance completed flag (cinematic)
     this.courtSeanceCompleted = false;
     // Update the game progression in local storage
@@ -590,24 +597,26 @@ class World extends Phaser.Scene {
     currentProgression.peopleQuestionsLikertA = [];
     currentProgression.animalQuestionsLikertA = [];
     currentProgression.inanimateQuestionsLikertA = [];
-    // Reset current area actors after destroying them and their mind spaces
-    for(let i = 0; i < this.currentAreaActors.length; i++) {
-      if(this.currentAreaActors[i].mindSpaceForm) {
-        this.currentAreaActors[i].mindSpaceForm.destroy();
+    // If any actors (it's possible to have exited game in phase 2, so no spawns), reset current area actors after destroying them and their mind spaces
+    if (this.currentAreaActors) {
+      for (let i = 0; i < this.currentAreaActors.length; i++) {
+        if (this.currentAreaActors[i].mindSpaceForm) {
+          this.currentAreaActors[i].mindSpaceForm.destroy();
+        }
       }
+      // Remove all game objects from the scene adder
+      let allChildren = this.add.displayList.getChildren();
+      let destroyedActors = [];
+      for (let i = 0; i < allChildren.length; i++) {
+        // Destroy previous actors
+        if (allChildren[i].getData('destroyableActor') === true) {
+          destroyedActors.push(allChildren[i]);
+          allChildren[i].destroy();
+        }
+      }
+      console.log(destroyedActors);
+      this.currentAreaActors = null;
     }
-    // Remove all game objects from the scene adder
-    let allChildren = this.add.displayList.getChildren();
-    let destroyedActors = [];
-    for(let i = 0; i < allChildren.length; i++) {
-      // Destroy previous actors
-      if(allChildren[i].getData('destroyableActor') === true) {
-        destroyedActors.push(allChildren[i]);
-        allChildren[i].destroy();
-      } 
-    }
-    console.log(destroyedActors);
-    this.currentAreaActors = null;
     // Reset player position
     this.globalPlayer.setPosition(this.spawnPointA.x, this.spawnPointA.y);
     // Reset the area config after increasing current area flag
@@ -692,10 +701,10 @@ function handleFormSubmit(form) {
   let q = currentProgression.currentRoundQuestionnaires;
   let currentQTotal = q - 1;
   // Expect currentProgression.questionnairesAnswered = 0
-  if(currentProgression.questionnairesAnswered >= currentQTotal) {
+  if (currentProgression.questionnairesAnswered >= currentQTotal) {
     updateProgressUI(currentProgression);
     changeToPhaseTwoEmmitter.emit('changePhase');
-  }  
+  }
   $(".game__agreeForm").remove();
   // Re-update UI
   updateProgressUI(currentProgression);

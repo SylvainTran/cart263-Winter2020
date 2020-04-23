@@ -3,10 +3,13 @@
     color: white;
     border: 5px solid white;
     font-family: 'Press Start 2P';    
-    width: 320px;
-    height: 550px;
+    margin-left: 640px;
+    margin-top: 50px;
+    width: 860px;
+    height: 720px;
+    font-size: 320px;
     text-align: center;
-    line-height: 100px;
+    line-height: 150px;
     padding-top: 10px;
 }
 
@@ -24,8 +27,13 @@
 
 .seance--start-banner {
     font-family: 'Press Start 2P';   
-    margin-left: -70px;
-    font-size: 15px;
+    margin-left: 640px;
+    width: 860px;
+    font-size: 24px;
     text-align: center;
     color: blue;
+}
+
+.seance--container {
+    margin-top: 150px;
 }

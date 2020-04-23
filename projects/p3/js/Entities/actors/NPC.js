@@ -48,8 +48,7 @@ class NPC extends Phaser.GameObjects.Sprite {
         if (!this.mindSpaceForm && !this.questionnaire && !scene.dialogueLock) {
             // Create the questionnaire
             this.questionnaire = scene.add.dom().createFromCache('agreeForm');
-            this.questionnaire.setScale(0.25);
-            this.questionnaire.setPosition(scene.globalPlayer.x + 100, scene.globalPlayer.y + 75);
+            this.questionnaire.setPosition(this.scale.width/2.75, this.scale.height/2);
             // #JQuery
             $(".game__agreeForm").draggable();
             // Adds an onsubmit handler on the form

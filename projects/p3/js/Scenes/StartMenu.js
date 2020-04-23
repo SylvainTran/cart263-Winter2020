@@ -16,10 +16,10 @@ class StartMenu extends Phaser.Scene {
       this.tutorialMenu = this.add.dom().createFromCache('tutorialMenu');
       this.aboutMenu = this.add.dom().createFromCache('aboutMenu');        
       this.startMenu.setVisible(true);
-      this.startMenu.setPosition(320, 640);
-      this.tutorialMenu.setPosition(320, 640);
+      this.startMenu.setPosition(640, 640);
+      this.tutorialMenu.setPosition(640, 640);
       this.tutorialMenu.setVisible(false);
-      this.aboutMenu.setPosition(320, 640);
+      this.aboutMenu.setPosition(640, 640);
       this.aboutMenu.setVisible(false);
       // Add click event listeners to handle the menu
       // Stop start menu theme when starting controller

@@ -1,15 +1,17 @@
-.game__agreeForm{
-    font-family: 'Press Start 2P';
-    font-size: 15px;
-    width: 1100px; 
-    height: 200px; 
-    margin-left: -1000px;
-    margin-top: 100px;
-    background-color: black; 
+.game__agreeForm {
+    cursor: cell;
+    font-family: 'Press Start 2P';  
     color: white;
+    background-color: black;
+    border: 3px solid white;
+    margin-top: 400px;
+    margin-left: 200px;
+    width: 860px;
+    height: 100px;
+    font-size: 12px;
+    padding: 5px 4px 5px 4px;
+    border-color: white;
     text-align: center;
-    line-height: 25px;
-    padding-top: 1vw;
 }
 
 .game__agreeForm input element {

@@ -16,7 +16,7 @@ class Hud extends Phaser.Scene {
     create() {
         this.hudWindows = this.add.dom().createFromCache('hud');
         this.hudWindows.setVisible(true);
-        this.hudWindows.setPosition(0, 300);
-        $('#game__hud--dialogue').draggable();
+        this.hudWindows.setPosition(this.scale.width/2.75, this.scale.height/2.75);
+        // $('#game__hud--dialogue').draggable();
     }
 }

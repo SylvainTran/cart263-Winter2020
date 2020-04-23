@@ -38,8 +38,8 @@ let config = {
   scale: {
     parent: 'main__world-node-container',
     mode: Phaser.Scale.CENTER_BOTH,
-    width: 640,
-    height: 640
+    width: 1280,
+    height: 720
   },
   physics: {
     default: 'arcade',

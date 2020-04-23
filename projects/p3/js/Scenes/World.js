@@ -523,6 +523,8 @@ class World extends Phaser.Scene {
     this.belowLayer.setCollisionByProperty({
       collides: true
     });
+    // Change the blend mode of the world layers to add
+    this.worldLayer.setBlendMode(Phaser.BlendModes.ADD);
   }
   // createPlayer
   //

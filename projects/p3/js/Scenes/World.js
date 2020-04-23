@@ -133,31 +133,26 @@ class World extends Phaser.Scene {
     setTimeout(() => {
       currentPhaseScreen.destroy();
     }, 3000);
-    // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
-    if (!this.inPhase && !this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded()) {
-      console.log("Picking up from Phase 1");
+    // Phase one, still missing questionnaires
+    if(this.inPhase === 1 && !this.checkPhaseOneEnded()) {
+      this.setupPhaseOneRoutine();
+      // Phase 2, finished questionnaires
+    } else if (this.inPhase === 2 && this.checkPhaseOneEnded()) {
+      this.setupPhaseTwoRoutine();
+      // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
+    } else if (!this.inPhase && !this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded()) {
       this.setupPhaseOneRoutine();
       // If the player was assigned a questionnaire and phase one was ended
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded()) {
       this.setupPhaseTwoRoutine();
       // If the court seance was over and were restarting
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && this.courtSeanceCompleted) {
-      console.log("The court seance was over and we were restarting");
       this.recreateWorld();
-      this.inPhase = 1;
       this.setupPhaseOneRoutine();
       // if the court seance was not over but were were in it, resume there
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && !this.courtSeanceCompleted) {
-      console.log("The court seance was not over and we left the game before it did");
-      this.setupPhaseTwoRoutine();
-    } else if (this.inPhase === 1 && !this.checkPhaseOneEnded()) {
-      // We're in phase 1
-      this.setupPhaseOneRoutine();
-    } else if (this.inPhase === 2 && this.checkPhaseOneEnded()) {
-      // We're in phase 2
-      this.setupPhaseTwoRoutine();
+      this.setupPhaseTwoRoutine(); 
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
-      // We're in phase 1
       this.setupPhaseOneRoutine();
     }
   }

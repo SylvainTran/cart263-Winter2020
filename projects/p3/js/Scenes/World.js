@@ -720,8 +720,9 @@ function updateStatsQuestionsAnswered(currentProgression) {
 // Update the progress box UI
 function updateProgressUI(currentProgression) {
   let stats_totalQuestionsAnsweredText = "Questions Answered (/10): ";
+  console.log(currentProgression.totalQuestionsAnswered);
   //Update the progression tab menu
-  $('#stats--totalQuestionsAnswered').text(`${stats_totalQuestionsAnsweredText} ${currentProgression.totalQuestionsAnswered}`);
+  $('#stats--questionsAnswered').text(`${stats_totalQuestionsAnsweredText} ${currentProgression.totalQuestionsAnswered}`);
   //Update the HUD
   let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered + 1}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);

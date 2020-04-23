@@ -29,8 +29,8 @@ class UI extends Phaser.Scene {
         if(!currentGameProgression) {
             localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
         } else {
-        // Update the current progression from local storage
-        updateProgressUI(currentGameProgression);
+            // Update the current progression from local storage
+            updateProgressUI(currentGameProgression);
         }
         $(".game__progressTabMenu").draggable();
         this.uiClickSound = this.sound.add('ui-poing');

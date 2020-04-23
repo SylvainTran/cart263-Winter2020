@@ -411,7 +411,7 @@ class World extends Phaser.Scene {
           console.log(actor);
           // The actor is a custom sprite that we created, the world is the context passed down in the function call
           let newActor = world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y, "NPC"));
-          newActor.setName(newActor.type).setScale(0.25).setSize(32, 32);
+          newActor.setName(newActor.type);
           // Setup collision physics with the tilemap for the new actor
           setupActorPhysics(newActor);
         }
@@ -430,9 +430,6 @@ class World extends Phaser.Scene {
         function setupActorPhysics(newActor) {
           world.physics.world.enable([newActor]);
           world.physics.add.collider(newActor, world.aboveLayer);
-          if (newActor.type === "Questionnaire Boss") {
-            newActor.setScale(0.5).setSize(64, 64);
-          }
           newActor.body.setBounce(0);
           newActor.body.setImmovable();
           // Set destroyable tag
@@ -505,7 +502,7 @@ class World extends Phaser.Scene {
   // Setup the cameras for the game view
   setupCameras() {
     this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    this.cameras.main.setZoom(1.5);
+    // this.cameras.main.setZoom(1.5);
     // this.cameras.main.setBounds(0, 0, this.scale.width, this.scale.height);
   }
   // Setup the tilemap

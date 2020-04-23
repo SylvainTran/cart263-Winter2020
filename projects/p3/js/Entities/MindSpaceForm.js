@@ -3,8 +3,8 @@ class MindSpaceForm extends Phaser.GameObjects.Sprite {
         super(scene, x, y);
         this.setTexture('mindSpaceForm');
         this.setPosition(x, y - this.height/2);
+        this.setScale(0.75);
         this.setInteractive();
         this.parent = parent;
-        console.log("Created mind space");
     }
 }

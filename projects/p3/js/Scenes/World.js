@@ -98,8 +98,10 @@ class World extends Phaser.Scene {
   // Recreate the game by restarting it and setting up its things
   recreateWorld() {
     this.cameraFadeEffect();
+    // Reset the current round game data and destroy old actors
     this.resetGame();
-    this.setupGamePhase();
+    // Restart the scene so the current scene's display queue can be processed
+    this.scene.restart();
   }
   // Set the current round's total needed questionnaires in localStorage
   updateCurrentRoundQuestionnaires() {
@@ -160,8 +162,8 @@ class World extends Phaser.Scene {
   checkPhaseOneEnded() {
     let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
     if (currentProgression) { // -1 to count correctly
-      console.log("Questionnaires Answered: :" + currentProgression.questionnairesAnswered);
-      console.log("Questionnaires Total: :" + currentProgression.currentRoundQuestionnaires);
+      console.log("Questionnaires Answered: " + currentProgression.questionnairesAnswered);
+      console.log("Questionnaires Total: " + currentProgression.currentRoundQuestionnaires);
       return currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires - 1;
     } else {
       return;
@@ -250,7 +252,6 @@ class World extends Phaser.Scene {
       // Destroy the screen
       this.courtSeanceScreen.destroy();
       this.recreateWorld();
-      this.setupPhaseOneRoutine();
     }, 10000);
   }
   // showCurrentPhaseFeedback
@@ -608,13 +609,12 @@ class World extends Phaser.Scene {
           allChildren[i].destroy();
         }
       }
-      console.log(destroyedActors);
       this.currentAreaActors = null;
     }
     // Reset player position
     this.globalPlayer.setPosition(this.spawnPointA.x, this.spawnPointA.y);
     // Reset the area config after increasing current area flag
-    ++this.currentArea;
+    this.currentArea++;
     this.areaConfig = this.areaManager(this.currentArea);
     // Update number of questionnaires needed in next area / level 
     currentProgression.currentRoundQuestionnaires = this.areaConfig.nbQuestionnaires;
@@ -720,11 +720,9 @@ function updateStatsQuestionsAnswered(currentProgression) {
 // Update the progress box UI
 function updateProgressUI(currentProgression) {
   let stats_totalQuestionsAnsweredText = "Questions Answered (/10): ";
-  console.log(currentProgression.totalQuestionsAnswered);
   //Update the progression tab menu
   $('#stats--questionsAnswered').text(`${stats_totalQuestionsAnsweredText} ${currentProgression.totalQuestionsAnswered}`);
   //Update the HUD
   let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered + 1}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);
-  console.log(stats_hud);
 }

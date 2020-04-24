@@ -45,7 +45,7 @@ In Phase 1, the player explores the land, meets (static) surrealistic NPCs and c
 In Phase 2, the player gets a review of what he answered with regards to people, animals and inanimate things he got questioned against. He must report back to court to with the new information.
 
 # Todo
-$Fix Actors not destroyed on new phase 1
+$̶F̶i̶x̶ A̶c̶t̶o̶r̶s̶ n̶o̶t̶ d̶e̶s̶t̶r̶o̶y̶e̶d̶ o̶n̶ n̶e̶w̶ p̶h̶a̶s̶e̶ 1̶
 $Fix dialogues, make them meaningful somehow by type?
 $Fix collision boxes to make it pixel perfect
 $Add signs and feedback for things

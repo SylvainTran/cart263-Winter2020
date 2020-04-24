@@ -250,8 +250,8 @@ class World extends Phaser.Scene {
     // Phase 2 is over after every questionnaire was reviewed (or TODO user clicks the screen)
     setTimeout(() => {
       // Destroy the screen
-      //this.courtSeanceScreen.destroy();
-      //this.recreateWorld();
+      this.courtSeanceScreen.destroy();
+      this.recreateWorld();
     }, 10000);
   }
   // showCurrentPhaseFeedback

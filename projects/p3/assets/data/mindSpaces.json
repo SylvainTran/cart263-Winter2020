@@ -5,17 +5,17 @@
             {
                 "secretGrief": "solitude",
                 "griefResolve": "george",
-                "question": ["Solitude is not about being alone.", "People who abandon their friends are not considerate of others feelings."]
+                "question": ["Solitude is not about being alone."]
             }
         ]
     },
     {
-        "type": "animal",
+        "type": "person",
         "data": [
             {
                 "secretGrief": "feedChildren",
                 "griefResolve": "acorn",
-                "question": ["Even if food is available, some people have no hands."]
+                "question": ["Some people have no hands, even if they seem to have hands."]
             }
         ]
     },
@@ -25,7 +25,7 @@
             {
                 "secretGrief": "invisible",
                 "griefResolve": "take",
-                "question": ["If you were a stone, would you be happier?"]
+                "question": ["Life would be better if you were a rock."]
             }
         ]
     },
@@ -45,7 +45,7 @@
             {
                 "secretGrief": "anger",
                 "griefResolve": "brother",
-                "question": ["If you were a person that was looked up by someone, how would you act right now?"]
+                "question": ["You try to make amends, even when it seems useless to talk."]
             }
         ]
     },
@@ -55,7 +55,7 @@
             {
                 "secretGrief": "sour",
                 "griefResolve": "candy",
-                "question": ["Consider yourself lucky. Questionnaires are rare these days."]
+                "question": ["You are living someone else's dream."]
             }
         ]
     }

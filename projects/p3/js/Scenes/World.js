@@ -61,12 +61,25 @@ class World extends Phaser.Scene {
     this.cameraFadeEffect();
     // Get the local storage progression if there is one, or create it if not
     this.updateCurrentRoundQuestionnaires();
+    // Update current phase in
+    this.updateCurrentPhaseFlag();
     // Start the phase routines - This is the main game loop
     this.setupGamePhase();
+    // Update initial UI
+    updateProgressUI(this.getProgressionData());
     // Event handler setup
     // To handle change scene events without always checking for it in update()
     changeToPhaseTwoEmmitter = new Phaser.Events.EventEmitter();
     changeToPhaseTwoEmmitter.on('changePhase', this.setupPhaseTwoRoutine, this);
+  }
+  // update current phase flag for the UI
+  updateCurrentPhaseFlag() {
+    let currentProgression = this.getProgressionData();
+    if (currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires - 1) {
+      this.inPhase = 2;
+    } else {
+      this.inPhase = 1;
+    }
   }
   // Fade in and out to make it look cool
   cameraFadeEffect() {
@@ -85,8 +98,10 @@ class World extends Phaser.Scene {
   // Recreate the game by restarting it and setting up its things
   recreateWorld() {
     this.cameraFadeEffect();
+    // Reset the current round game data and destroy old actors
     this.resetGame();
-    this.setupGamePhase();
+    // Restart the scene so the current scene's display queue can be processed
+    this.scene.restart();
   }
   // Set the current round's total needed questionnaires in localStorage
   updateCurrentRoundQuestionnaires() {
@@ -113,43 +128,43 @@ class World extends Phaser.Scene {
   }
   // Setup the two game phases (After deciding which one is the current phase)
   setupGamePhase() {
-    // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
-    if (!this.inPhase && !this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded()) {
-      console.log("Picking up from Phase 1");
-      this.inPhase = 1;
+    // Show the current Phase player is in
+    let UI = this.scene.manager.getScene('UI');
+    let currentPhaseScreen = this.showCurrentPhaseFeedback(UI);
+    // Destroy it after 3 seconds
+    setTimeout(() => {
+      currentPhaseScreen.destroy();
+    }, 3000);
+    // Phase one, still missing questionnaires
+    if(this.inPhase === 1 && !this.checkPhaseOneEnded()) {
+      this.setupPhaseOneRoutine();
+      // Phase 2, finished questionnaires
+    } else if (this.inPhase === 2 && this.checkPhaseOneEnded()) {
+      this.setupPhaseTwoRoutine();
+      // If not in a phase, and has not been assigned questionnaires yet, then in phase 1
+    } else if (!this.inPhase && !this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded()) {
       this.setupPhaseOneRoutine();
       // If the player was assigned a questionnaire and phase one was ended
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded()) {
-      this.inPhase = 2;
       this.setupPhaseTwoRoutine();
       // If the court seance was over and were restarting
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && this.courtSeanceCompleted) {
-      console.log("The court seance was over and we were restarting");
       this.recreateWorld();
-      this.inPhase = 1;
       this.setupPhaseOneRoutine();
       // if the court seance was not over but were were in it, resume there
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && !this.courtSeanceCompleted) {
-      console.log("The court seance was not over and we left the game before it did");
-      this.inPhase = 2;
-      this.setupPhaseTwoRoutine();
-    } else if (this.inPhase === 1 && !this.checkPhaseOneEnded()) {
-      // We're in phase 1
-      this.setupPhaseOneRoutine();
-    } else if(this.inPhase === 2 && this.checkPhaseOneEnded()) {
-      // We're in phase 2
-      this.setupPhaseTwoRoutine();
-    } else if(!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
-      // We're in phase 1
-      console.log("Phase 1");
+      this.setupPhaseTwoRoutine(); 
+    } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
       this.setupPhaseOneRoutine();
     }
   }
   // Check if Phase one has ended yet
   checkPhaseOneEnded() {
     let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-    if(currentProgression) {
-      return currentProgression.questionnairesAnswered >= this.areaConfig.nbQuestionnaires;
+    if (currentProgression) { // -1 to count correctly
+      console.log("Questionnaires Answered: " + currentProgression.questionnairesAnswered);
+      console.log("Questionnaires Total: " + currentProgression.currentRoundQuestionnaires);
+      return currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires - 1;
     } else {
       return;
     }
@@ -163,6 +178,8 @@ class World extends Phaser.Scene {
       this.inPhase = 1;
       this.updateActiveQuest(true);
     }
+    // Update inPhase flag
+    this.inPhase = 1;
     // this is the line of dialogues that the player can get
     let key = "prePhaseOne";
     let questPrompts = this.cache.json.get('chapters');
@@ -186,10 +203,10 @@ class World extends Phaser.Scene {
   // Setup phase two
   setupPhaseTwoRoutine() {
     if (this.courtSeanceCompleted) {
-      // Toggle it to off for the next round
-      this.courtSeanceCompleted = false;
       return;
     }
+    // Update inPhase flag
+    this.inPhase = 2;
     this.courtSeanceCompleted = true;
     // Fade effect
     this.cameraFadeEffect();
@@ -197,14 +214,10 @@ class World extends Phaser.Scene {
     let UI = this.scene.manager.getScene('UI');
     let currentPhaseScreen = this.showCurrentPhaseFeedback(UI);
     // Destroy it after 3 seconds
-    setTimeout(()=> {
+    setTimeout(() => {
       currentPhaseScreen.destroy();
     }, 3000);
 
-    // Freezes questionnaire interactions with the current area's actors
-    for(let i = 0; i < this.currentAreaActors.length; i++) {
-      this.currentAreaActors[i].questionedPlayerYet = true;
-    }
     // Set the player's sprite in a fixed tribunal room belonging to phase 2
     // this.scene.transition
     // let phaseTwoSpawnPoint = this.worldTilemap.filterObjects("GameObjects", (obj) => obj.name.includes("phaseTwoPlayerSpawnPoint"));
@@ -239,20 +252,19 @@ class World extends Phaser.Scene {
       // Destroy the screen
       this.courtSeanceScreen.destroy();
       this.recreateWorld();
-      this.setupPhaseOneRoutine();
     }, 10000);
   }
-  
   // showCurrentPhaseFeedback
   //
   // show the current phase to the player visually
   showCurrentPhaseFeedback(UI) {
     let currentPhaseScreen = UI.add.dom().createFromCache('currentPhaseScreen');
     let value;
-    if(this.inPhase % 2 === 0) {
-      value = 1;
-    } else {
+    // If not in a phase currently (null) is phase 1 as well. Otherwise if the remainder is 0 then its Phase 2
+    if (this.inPhase % 2 === 0) {
       value = 2;
+    } else {
+      value = 1;
     }
     let text = "Current Phase: " + value + "!";
     $('#menu--currentPhase').text(text);
@@ -261,7 +273,6 @@ class World extends Phaser.Scene {
     currentPhaseScreen.setPosition(320, 110);
     return currentPhaseScreen;
   }
-
   // Enact the court seance phase
   enactCourtSeance(seance) {
     let text = "";
@@ -328,7 +339,6 @@ class World extends Phaser.Scene {
     let nbActors = 0;
     let actors = [];
     let nbQuestionnaires = 0;
-
     // The area parameter is the level progression
     // actor creation needs time, so for now they're all fishmen and rocks
     switch (area) {
@@ -338,14 +348,14 @@ class World extends Phaser.Scene {
         actors = [FishMan, Rock];
         break;
       case 1:
+        nbActors = 3;
+        nbQuestionnaires = 3;
+        actors = [FishMan, FishMan, Rock];
+        break;
+      case 2:
         nbActors = 4;
         nbQuestionnaires = 4;
         actors = [FishMan, FishMan, Rock, Rock];
-        break;
-      case 2:
-        nbActors = 8;
-        nbQuestionnaires = 8;
-        actors = [FishMan, FishMan, FishMan, FishMan, Rock, Rock, Rock, Rock];
         break;
       default:
         nbActors = 2;
@@ -402,7 +412,7 @@ class World extends Phaser.Scene {
           console.log(actor);
           // The actor is a custom sprite that we created, the world is the context passed down in the function call
           let newActor = world.add.existing(new actor(world, newSpawnPoint[0].x, newSpawnPoint[0].y, "NPC"));
-          newActor.setName(newActor.type).setScale(0.25).setSize(32, 32);
+          newActor.setName(newActor.type);
           // Setup collision physics with the tilemap for the new actor
           setupActorPhysics(newActor);
         }
@@ -421,11 +431,10 @@ class World extends Phaser.Scene {
         function setupActorPhysics(newActor) {
           world.physics.world.enable([newActor]);
           world.physics.add.collider(newActor, world.aboveLayer);
-          if (newActor.type === "Questionnaire Boss") {
-            newActor.setScale(0.5).setSize(64, 64);
-          }
           newActor.body.setBounce(0);
           newActor.body.setImmovable();
+          // Set destroyable tag
+          newActor.setData('destroyableActor', true);
           // Update current area's actors array
           currentAreaActors.push(newActor);
         }
@@ -460,7 +469,6 @@ class World extends Phaser.Scene {
   }
   // Talk to the boss to get one
   startQuestAssignment(player, boss) {
-    alert("Talking to boss")
     boss.talk(this, dialogueNode);
   }
   // setupDrag
@@ -495,7 +503,7 @@ class World extends Phaser.Scene {
   // Setup the cameras for the game view
   setupCameras() {
     this.cameras.main.startFollow(this.globalPlayer, true, 0.05, 0.05);
-    this.cameras.main.setZoom(1.5);
+    // this.cameras.main.setZoom(1.5);
     // this.cameras.main.setBounds(0, 0, this.scale.width, this.scale.height);
   }
   // Setup the tilemap
@@ -516,6 +524,8 @@ class World extends Phaser.Scene {
     this.belowLayer.setCollisionByProperty({
       collides: true
     });
+    // Change the blend mode of the world layers to add
+    this.worldLayer.setBlendMode(Phaser.BlendModes.ADD);
   }
   // createPlayer
   //
@@ -554,49 +564,57 @@ class World extends Phaser.Scene {
   // Calls the dialogueFactory for a certain dialogue to return and display
   displayDialogue(dialogueData, context) {
     // Return if already in a dialogue
-    if (context.dialogueLock) {
+    if (this.dialogueLock) {
       return;
     }
+    //Update the dialogue through the html DOM cached in the Hud scene
+    let dialogueText = `${dialogueData}`;
+    $('#game__hud--dialogue-body').text(dialogueText);
     console.log(dialogueData);
     console.log(context);
+    $('#game__hud--dialogue-body').click(() => {
+      $('#game__hud--dialogue-body').text("");
+      this.dialogueLock = false;
+    });
     // Lock the player in the dialogue (reset on last page of pageEnd of textbox)
     context.dialogueLock = true;
-    try {
-      this.scene.manager.getScene('UI').load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI').once('complete', ()=>{
-        this.createTextBox(context, 50, 500, {
-          wrapWidth: 300,
-          fixedWidth: 310,
-          fixedHeight: 75,
-        }).start(dialogueData, 50);
-        return dialogueData;  
-      });
-    } catch (e) {
-      console.log(e.message);
-    }
   }
   // Reset the game after Phase 2 is over
   resetGame() {
     // Reset in phase flag for conditional flow leading to phase 1 and 2
-    this.inPhase = null;
+    this.inPhase = 1;
+    // Reset court seance completed flag (cinematic)
+    this.courtSeanceCompleted = false;
     // Update the game progression in local storage
     let currentProgression = this.getProgressionData();
     currentProgression.questionnairesAssignedYet = false;
-    currentProgression.questionnairesAnswered = 0;
+    currentProgression.questionnairesAnswered = -1; // Start at -1 to sum correctly
     currentProgression.peopleQuestionsLikertA = [];
     currentProgression.animalQuestionsLikertA = [];
     currentProgression.inanimateQuestionsLikertA = [];
-    // Reset current area actors after destroying them and their mind spaces
-    for(let i = 0; i < this.currentAreaActors.length; i++) {
-      if(this.currentAreaActors[i].mindSpaceForm) {
-        this.currentAreaActors[i].mindSpaceForm.destroy();
+    // If any actors (it's possible to have exited game in phase 2, so no spawns), reset current area actors after destroying them and their mind spaces
+    if (this.currentAreaActors) {
+      for (let i = 0; i < this.currentAreaActors.length; i++) {
+        if (this.currentAreaActors[i].mindSpaceForm) {
+          this.currentAreaActors[i].mindSpaceForm.destroy();
+        }
       }
-      this.currentAreaActors[i].destroy();      
+      // Remove all game objects from the scene adder
+      let allChildren = this.add.displayList.getChildren();
+      let destroyedActors = [];
+      for (let i = 0; i < allChildren.length; i++) {
+        // Destroy previous actors
+        if (allChildren[i].getData('destroyableActor') === true) {
+          destroyedActors.push(allChildren[i]);
+          allChildren[i].destroy();
+        }
+      }
+      this.currentAreaActors = null;
     }
-    this.currentAreaActors = null;
     // Reset player position
     this.globalPlayer.setPosition(this.spawnPointA.x, this.spawnPointA.y);
     // Reset the area config after increasing current area flag
-    ++this.currentArea;
+    this.currentArea++;
     this.areaConfig = this.areaManager(this.currentArea);
     // Update number of questionnaires needed in next area / level 
     currentProgression.currentRoundQuestionnaires = this.areaConfig.nbQuestionnaires;
@@ -606,104 +624,18 @@ class World extends Phaser.Scene {
     // Re-update the progress UI
     updateProgressUI(currentProgression);
   }
-  // Creates a textbox. From Mr. Rex Rainbow
-  createTextBox(scene, x, y, config) {
-    console.log(scene);
-    const GetValue = Phaser.Utils.Objects.GetValue;
-    let wrapWidth = GetValue(config, 'wrapWidth', 0);
-    let fixedWidth = GetValue(config, 'fixedWidth', 0);
-    let fixedHeight = GetValue(config, 'fixedHeight', 0);
-    this.textBoxCache = scene.rexUI.add.textBox({
-        x: x,
-        y: y,
-        background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK)
-          .setStrokeStyle(2, COLOR_LIGHT),
-        text: this.getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
-        action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
-        space: {
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 20,
-          icon: 10,
-          text: 10,
-        }
-      })
-      .setOrigin(0)
-      .layout();
-    this.textBoxCache
-      .setInteractive()
-      .on('pointerdown', function () {
-        // Play poing sound
-        scene.uiClickSound.play();
-        let icon = this.getElement('action').setVisible(false);
-        this.resetChildVisibleState(icon);
-        if (this.isTyping) {
-          this.stop(true);
-        } else {
-          this.typeNextPage();
-        }
-      }, this.textBoxCache)
-      .on('pageend', function () {
-        if (this.isLastPage) {
-          scene.scene.manager.getScene('UI').dialogueLock = false;
-          setTimeout(() => {
-            this.destroy()
-          }, 5000);
-          return;
-        }
-        let icon = this.getElement('action').setVisible(true);
-        this.resetChildVisibleState(icon);
-        icon.y -= 30;
-        let tween = scene.tweens.add({
-          targets: icon,
-          y: '+=30',
-          ease: 'Bounce',
-          duration: 500,
-          repeat: 0,
-          yoyo: false
-        });
-        1
-      }, this.textBoxCache);
-    return this.textBoxCache;
-  }
-  // Gets the Phaser native text game object for textbox creation. From Mr. Rex Rainbow
-  getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.add.text(0, 0, '', {
-        fontFamily: 'Press Start 2P',
-        fontSize: '40px',
-        wordWrap: {
-          width: wrapWidth
-        },
-        maxLines: 3
-      })
-      .setFixedSize(fixedWidth, fixedHeight);
-  }
-  // Gets the BBcode Phaser native text game object for textbox creation. From Mr. Rex Rainbow
-  getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
-    return scene.rexUI.add.BBCodeText(0, 0, '', {
-      fixedWidth: fixedWidth,
-      fixedHeight: fixedHeight,
-      fontSize: '20px',
-      wrap: {
-        mode: 'word',
-        width: wrapWidth
-      },
-      maxLines: 3
-    })
-  }
 }
 // Game progression data (localStorage)
 // Whether the player got his questionnaires from phase 1 yet
 // For each round, questionnaires answered and the total number of quests
 let gameProgression = {
   questionnairesAssignedYet: false,
-  questionnairesAnswered: 0,
+  questionnairesAnswered: -1, // Start at -1 to count properly
   currentRoundQuestionnaires: 0,
   peopleQuestionsLikertA: [],
   animalQuestionsLikertA: [],
   inanimateQuestionsLikertA: [],
-  questionsAnswered: 0,
+  totalQuestionsAnswered: 0,
   peopleDiscovered: 0,
   animalsDiscovered: 0,
   inanimateDiscovered: 0,
@@ -746,12 +678,9 @@ let changeToPhaseTwoEmmitter = null; // Event emitter to avoid always checking f
 // handles the form submission from questionnaires
 function handleFormSubmit(form) {
   let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
-  console.log(currentProgression.questionnairesAnswered);
-  console.log(currentProgression.currentRoundQuestionnaires);
   let userAnswer;
   // Save the user's answer to local storage
   let answeredForm = form.elements["likert-a"];
-  console.log(currentProgression);
   for (let i = 0; i < answeredForm.length; i++) {
     if (answeredForm[i].checked) {
       userAnswer = answeredForm[i].value;
@@ -760,30 +689,40 @@ function handleFormSubmit(form) {
       // Todo push question as well
     }
   }
-  // Emit a change phase (from phase one to phase two) event if finished this round
-  if(currentProgression.questionnairesAnswered >= currentProgression.currentRoundQuestionnaires) {
+  // Refresh current progression
+  currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
+  // Emit a change phase (from phase one to phase two) event if finished this round. -1 to count properly
+  let q = currentProgression.currentRoundQuestionnaires;
+  let currentQTotal = q - 1;
+  // Expect currentProgression.questionnairesAnswered = 0
+  if (currentProgression.questionnairesAnswered >= currentQTotal) {
+    updateProgressUI(currentProgression);
     changeToPhaseTwoEmmitter.emit('changePhase');
-  }  
+  }
   $(".game__agreeForm").remove();
+  // Re-update UI
+  updateProgressUI(currentProgression);
   return false;
 }
 // updateStatsQuestionsAnswered
 //
 // Setups the website's elements
 function updateStatsQuestionsAnswered(currentProgression) {
-  // If player answered a questionnaire update stats for it
-  ++currentProgression.questionsAnswered;
+  let thisCurrentProgression = currentProgression;
+  // If player answered a questionnaire update total progression stats for it
+  thisCurrentProgression.totalQuestionsAnswered++;
   // Update current round progression
-  ++currentProgression.questionnairesAnswered;
-  localStorage.setItem("gameProgression", JSON.stringify(currentProgression));
-  updateProgressUI(currentProgression);
+  let q = thisCurrentProgression.questionnairesAnswered;
+  let currentQTotal = q + 1;
+  thisCurrentProgression.questionnairesAnswered = currentQTotal;
+  localStorage.setItem("gameProgression", JSON.stringify(thisCurrentProgression));
 }
 // Update the progress box UI
 function updateProgressUI(currentProgression) {
-  let stats_questionsAnsweredText = "Questions Answered (/10): ";
+  let stats_totalQuestionsAnsweredText = "Questions Answered (/10): ";
   //Update the progression tab menu
-  $('#stats--questionsAnswered').text(`${stats_questionsAnsweredText} ${currentProgression.questionsAnswered}`);
+  $('#stats--questionsAnswered').text(`${stats_totalQuestionsAnsweredText} ${currentProgression.totalQuestionsAnswered}`);
   //Update the HUD
-  let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered}/${currentProgression.currentRoundQuestionnaires})`;
+  let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered + 1}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);
 }

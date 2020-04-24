@@ -65,8 +65,7 @@ class Controller extends Phaser.Scene {
     this.momentHeight = 50;
     // Launch these scenes in parallel to this one  
     this.scene.launch('UI');        
-    this.scene.launch('Hud');      
-    this.scene.launch('World');    
+    this.scene.launch('Hud');       
   }
 
   // create

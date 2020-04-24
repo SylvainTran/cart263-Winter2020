@@ -1,14 +1,13 @@
-.game__hud {
+#game__hud--questionnaires {
     font-family: 'Press Start 2P';  
     color: white;
     background-color: black;
     border: 1px solid white;
-    width: 150px;
-    font-size: 8px;
-    margin-top: 128px;
-    margin-left: 300px;
-    padding: 5px 2px 5px 2px;
-    border-radius: 5%;
+    width: 640px;
+    font-size: 14px;
+    margin-top: 150px;
+    margin-left: 640px;
+    padding: 20px 7px 20px 7px;
     border-color: white;
     text-align: center;
     vertical-align: middle;
@@ -17,5 +16,25 @@
 #game__hud--info {
     color:white;
     text-align: center;
-    font-size: 0.5em;
+    font-size: 7px;
+}
+
+#game__hud--dialogue {
+    cursor: cell;
+    font-family: 'Press Start 2P';  
+    color: white;
+    background-color: black;
+    border: 3px solid white;
+    margin-top: 350px;
+    margin-left: 320px;
+    width: 1200px;
+    height: 100px;
+    font-size: 12px;
+    padding: 5px 4px 5px 4px;
+    border-color: white;
+    text-align: center;
+}
+
+#game__hud--dialogue-body {
+    padding-top: 25px;
 }

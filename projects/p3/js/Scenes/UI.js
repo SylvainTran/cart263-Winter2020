@@ -10,15 +10,6 @@ class UI extends Phaser.Scene {
         this.openProgressTabKey = null; // The keyboard input to open the progress tab DOM object (Enter for now)
         this.uiClickSound = null; // UI click sound on dialogue boxes
     }
-    
-    // preload
-    //
-    // Preloads stuff, mainly the dialogue stuff (DEPRECATED, WILL CHANGE TO JQUERY STUFF)
-    preload() {
-        // Dialogue plugin
-        this.load.script('rexuiplugin', 'js/Libraries/rexuiplugin.min.js');
-        this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
-    }
 
     // create
     //
@@ -38,11 +29,12 @@ class UI extends Phaser.Scene {
         if(!currentGameProgression) {
             localStorage.setItem("gameProgression", JSON.stringify(gameProgression));
         } else {
-        // Update the current progression from local storage
-        updateProgressUI(currentGameProgression);
+            // Update the current progression from local storage
+            updateProgressUI(currentGameProgression);
         }
         $(".game__progressTabMenu").draggable();
         this.uiClickSound = this.sound.add('ui-poing');
+        this.scene.launch('World');
     }
 
     // update

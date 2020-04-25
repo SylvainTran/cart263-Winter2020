@@ -38,3 +38,21 @@
 #game__hud--dialogue-body {
     padding-top: 25px;
 }
+
+#game__hud--inventory {
+    font-family: 'Press Start 2P';  
+    text-align: center;
+    height: 50px;
+    width: 250px;
+    font-size: 14px;
+    padding: 5px;
+    margin-top: 50px;
+    margin-left: 320px;
+    background-color: black;
+    color: white;   
+}
+
+#game__hud--inventory--gold {
+    color: gold;
+    line-height: 50px;
+}

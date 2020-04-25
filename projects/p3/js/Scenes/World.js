@@ -632,6 +632,7 @@ let gameProgression = {
   peopleDiscovered: 0,
   animalsDiscovered: 0,
   inanimateDiscovered: 0,
+  gold: 0,
   bookCompletion: 0
 }
 $('document').ready(setup);
@@ -712,6 +713,9 @@ function updateStatsQuestionsAnswered(currentProgression) {
   let q = thisCurrentProgression.questionnairesAnswered;
   let currentQTotal = q + 1;
   thisCurrentProgression.questionnairesAnswered = currentQTotal;
+  // Add gold reward to the player
+  let goldAmount = 10;
+  thisCurrentProgression.gold += goldAmount;
   localStorage.setItem("gameProgression", JSON.stringify(thisCurrentProgression));
 }
 // Update the progress box UI
@@ -722,4 +726,12 @@ function updateProgressUI(currentProgression) {
   //Update the HUD
   let stats_hud = `Questionnaires Filled: (${currentProgression.questionnairesAnswered + 1}/${currentProgression.currentRoundQuestionnaires})`;
   $('#game__hud--score').text(stats_hud);
+  //Updated gold earned
+  let goldEarnedText;
+  if(currentProgression.gold >= 0) {
+    goldEarnedText = `Gold Earned: ${currentProgression.gold}`;
+  } else {
+    goldEarnedText = `Gold Earned: 0 (Fill questionnaires to get gold.)`;
+  }
+  $('#game__hud--inventory--gold').text(goldEarnedText);
 }

@@ -457,6 +457,10 @@ class World extends Phaser.Scene {
   }
   // Start dialogue with facing actor on frontal collision
   startDialogue(player, actor) {
+    // if already locked in a dialogue, return
+    if(this.dialogueLock) {
+      return;
+    }
     if (actor.type === "Questionnaire Boss") {
       this.updateActiveQuest(true);
     }
@@ -563,10 +567,6 @@ class World extends Phaser.Scene {
   }
   // Calls the dialogueFactory for a certain dialogue to return and display
   displayDialogue(dialogueData, context) {
-    // Return if already in a dialogue
-    if (this.dialogueLock) {
-      return;
-    }
     //Update the dialogue through the html DOM cached in the Hud scene
     let dialogueText = `${dialogueData}`;
     $('#game__hud--dialogue-body').text(dialogueText);
@@ -677,6 +677,8 @@ let changeToPhaseTwoEmmitter = null; // Event emitter to avoid always checking f
 //
 // handles the form submission from questionnaires
 function handleFormSubmit(form) {
+  // Remove dialogue lock
+  this.dialogueLock = false;
   // Remove actor portrait 
   $('#game__agreeForm-actor-portrait').remove();
   let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));

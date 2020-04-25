@@ -27,7 +27,7 @@ class Preloader extends Phaser.Scene {
     // Actors sprites
     this.load.image('p_001', 'assets/images/sprites/actors/p_001.png');
     this.load.image('i_001', 'assets/images/sprites/actors/i_001.png');
-    this.load.image('questionnaireBoss', 'assets/images/sprites/actors/QuestionnaireBoss.png');
+    this.load.image('questionnaireBoss', 'assets/images/sprites/actors/questionnaireBoss-idle.png');
     // Mind space form sprite
     this.load.image('mindSpaceForm', 'assets/images/sprites/mindSpaceForm.png');
     // UI

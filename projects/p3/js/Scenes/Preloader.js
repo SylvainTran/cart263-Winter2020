@@ -25,9 +25,9 @@ class Preloader extends Phaser.Scene {
     // Player sprite
     this.load.atlas('hero', './assets/images/spritesheets/hero/walk/heroSpriteSheet.png', './assets/images/spritesheets/hero/walk/heroSpriteSheet.json');
     // Actors sprites
-    this.load.image('p_001', 'assets/images/sprites/actors/persons/actors_person_fishman_A_single.png');
-    this.load.image('i_001', 'assets/images/sprites/actors/inanimate/actors_inanimate_rock_A_single.png');
-    this.load.image('questionnaireBoss', 'assets/images/sprites/actors/persons/QuestionnaireBoss.png');
+    this.load.image('p_001', 'assets/images/sprites/actors/p_001.png');
+    this.load.image('i_001', 'assets/images/sprites/actors/i_001.png');
+    this.load.image('questionnaireBoss', 'assets/images/sprites/actors/QuestionnaireBoss.png');
     // Mind space form sprite
     this.load.image('mindSpaceForm', 'assets/images/sprites/mindSpaceForm.png');
     // UI
@@ -76,6 +76,8 @@ class Preloader extends Phaser.Scene {
     this.load.html('courtSeance', 'assets/courtSeance.html');
     // Current phase screen
     this.load.html('currentPhaseScreen', 'assets/menus/currentPhase.html');
+    // Actor's portrait during dialogue
+    this.load.html('actorPortrait', 'assets/actorPortrait.html');
   }
 
   // load webfont google api

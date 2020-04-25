@@ -15,6 +15,8 @@ class NPC extends Phaser.GameObjects.Sprite {
         this.questionedPlayerYet = false;
         // flag to check if currently questioning player
         this.isQuestioning = false;
+        // Actor portrait that shows up in dialogues -- may be used for animation
+        this.actorPortrait = null;
     }
 
     // getName
@@ -49,11 +51,15 @@ class NPC extends Phaser.GameObjects.Sprite {
             // Create the questionnaire
             this.questionnaire = scene.add.dom().createFromCache('agreeForm');
             this.questionnaire.setPosition(this.scale.width/2.75, this.scale.height/2);
-            // #JQuery
             $(".game__agreeForm").draggable();
             // Adds an onsubmit handler on the form
-            // #JQuery
-            $('#agreeForm').attr("onsubmit", "return handleFormSubmit(this)")
+            $('#agreeForm').attr("onsubmit", "return handleFormSubmit(this)");
+            // Display actor portrait 
+            // TODO high res version of this actor texture
+            this.actorPortrait = scene.add.dom().createFromCache('actorPortrait');
+            this.actorPortrait.setPosition(this.scale.width/2.75, this.scale.height/2);
+            let portraitDiv = $('#portrait');
+            portraitDiv.attr("src", `assets/images/sprites/actors/${this.texture.key}.png`);
             // Create the weird mindspaceform that cues the NPC's secret desire             
             this.mindSpaceForm = scene.add.existing(new MindSpaceForm(scene, this.x, this.y, this));
             this.mindSpaceForm.setScale(0.5);

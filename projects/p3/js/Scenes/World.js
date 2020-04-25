@@ -731,7 +731,7 @@ function updateProgressUI(currentProgression) {
   if(currentProgression.gold >= 0) {
     goldEarnedText = `Gold Earned: ${currentProgression.gold}`;
   } else {
-    goldEarnedText = `Gold Earned: 0 (Fill questionnaires to get gold.)`;
+    goldEarnedText = `Gold Earned: 0`;
   }
   $('#game__hud--inventory--gold').text(goldEarnedText);
 }

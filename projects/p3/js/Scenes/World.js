@@ -677,9 +677,11 @@ let changeToPhaseTwoEmmitter = null; // Event emitter to avoid always checking f
 //
 // handles the form submission from questionnaires
 function handleFormSubmit(form) {
+  // Remove actor portrait 
+  $('#game__agreeForm-actor-portrait').remove();
   let currentProgression = JSON.parse(localStorage.getItem("gameProgression"));
   let userAnswer;
-  // Save the user's answer to local storage
+  // Save the user's answer to local storage -- gets form's elements by their name
   let answeredForm = form.elements["likert-a"];
   for (let i = 0; i < answeredForm.length; i++) {
     if (answeredForm[i].checked) {

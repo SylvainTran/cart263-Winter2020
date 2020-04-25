@@ -291,6 +291,8 @@ class World extends Phaser.Scene {
     } else if (seance[0] < 3) {
       // Player agreed more than not on this chapter's topic
       text = "You were in <span style=\"color: blue;\">FAVOR</span> for most claims.";
+    } else {
+      text = "You were indifferent to most claims.";
     }
     // $Stretch scope
     $('#seance--people').html(text);
@@ -303,7 +305,8 @@ class World extends Phaser.Scene {
   // Get the all the averages in one array if they're actually numbers
   getMeans(array, means) {
     for (let i = 0; i < means.length; i++) {
-      if (Number.isInteger(means[i])) {
+      // For now inanimate and animals will pass on NaN because their means are NaN. They're not part of the game yet.
+      if (means[i]) {
         array.push(means[i]);
       }
     }

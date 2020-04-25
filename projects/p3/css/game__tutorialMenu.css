@@ -7,13 +7,16 @@
     min-width: 1280px;
     width: 1280px;
     height: 720px;
-    text-align: center;
     line-height: 50px;
 }
 
 #menu--tutorialInfo {
     padding-left: 20px;
     padding-right: 20px;
+}
+
+#menu--tutorialStartMenu {
+    text-align: center;   
 }
 
 .game__tutorialMenu div:hover {

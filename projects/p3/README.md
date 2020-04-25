@@ -58,3 +58,7 @@ $Actors evolve somewhat, game has a progression to it
 $Questionnaires become somewhat involved with a "combat" thing?
 
 *Stretch in my dreams: Attitudes become more meaningful with regards to the game's story, but while staying true to the idea of the questionnaire making. Could the thing or effect be reversed against the NPC, making the player question the NPC and learn something about himself?
+
+$Existing structures about JRPGs
+$Health mechanics <-> Losing health if don't respond in time? If disagree with actor?
+$Character development 

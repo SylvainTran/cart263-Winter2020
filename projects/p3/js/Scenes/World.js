@@ -136,7 +136,7 @@ class World extends Phaser.Scene {
       currentPhaseScreen.destroy();
     }, 3000);
     // Phase one, still missing questionnaires
-    if(this.inPhase === 1 && !this.checkPhaseOneEnded()) {
+    if (this.inPhase === 1 && !this.checkPhaseOneEnded()) {
       this.setupPhaseOneRoutine();
       // Phase 2, finished questionnaires
     } else if (this.inPhase === 2 && this.checkPhaseOneEnded()) {
@@ -153,7 +153,7 @@ class World extends Phaser.Scene {
       this.setupPhaseOneRoutine();
       // if the court seance was not over but were were in it, resume there
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && this.checkPhaseOneEnded() && !this.courtSeanceCompleted) {
-      this.setupPhaseTwoRoutine(); 
+      this.setupPhaseTwoRoutine();
     } else if (!this.inPhase && this.getProgressionData().questionnairesAssignedYet && !this.checkPhaseOneEnded) {
       this.setupPhaseOneRoutine();
     }
@@ -185,10 +185,8 @@ class World extends Phaser.Scene {
     let questPrompts = this.cache.json.get('chapters');
     // Grab a random dialogue node among the options for that type of dialogue
     let node = Math.floor(Math.random() * (questPrompts[0][key].length - 1));
-    let UI = this.scene.manager.getScene('UI');
-    // Display it through the dialogue factory and displayer of the UI scene
     let dialogueData = questPrompts[0][key][node];
-    this.displayDialogue(dialogueData, UI);
+    this.displayDialogue(dialogueData);
     // $Stretch: The player should get assigned questionnaires once he meets with the questionnaire boss
     // Use the spawn pool with the World as context
     let spawnPool = this.spawnPool();
@@ -279,24 +277,20 @@ class World extends Phaser.Scene {
     if (seance[0] > 3) {
       // Player disagreed more than not on this chapter's topic
       // He is in favor/disfavor of a {TO BE DESIGNED} ruling over people of the previous chapter
-      console.log("For peoples met during the last expedition, you were in DISFAVOR of their claims.");
-      text = "For peoples met during the last expedition, you were in <span style=\"color: blue;\">DISFAVOR</span> of their claims.";
+      text = "You were in <span style=\"color: blue;\">DISFAVOR</span> for most claims.";
     } else if (seance[0] === 3) {
       // Player was neutral
       // He is not in favor of much regarding this chapter's topic, decision will be weighted randomly or by 
       // considering other bonus factors. Taking the remainder for now
       let randomFavor = Math.floor(Math.random(5, 10)) % 2;
       if (randomFavor > 0) {
-        console.log("For peoples met during the last expedition, you were in FAVOR to their claims.");
-        text = "For peoples met during the last expedition, you were in <span style=\"color: blue;\">FAVOR</span> to their claims.";
+        text = "You were in <span style=\"color: blue;\">FAVOR</span> for most claims.";
       } else {
-        console.log("For peoples met during the last expedition, you were indifferent to their claims.");
-        text = "For peoples met during the last expedition, you were in <span style=\"color: blue;\">indifferent</span> to their claims."
+        text = "You were <span style=\"color: blue;\">indifferent</span> to most claims."
       }
     } else if (seance[0] < 3) {
       // Player agreed more than not on this chapter's topic
-      console.log("For peoples met during the last expedition, you were in FAVOR of their claims.");
-      text = "For peoples met during the last expedition, you were in <span style=\"color: blue;\">FAVOR</span> of their claims.";
+      text = "You were in <span style=\"color: blue;\">FAVOR</span> for most claims.";
     }
     // $Stretch scope
     $('#seance--people').html(text);
@@ -458,7 +452,7 @@ class World extends Phaser.Scene {
   // Start dialogue with facing actor on frontal collision
   startDialogue(player, actor) {
     // if already locked in a dialogue, return
-    if(this.dialogueLock) {
+    if (this.dialogueLock) {
       return;
     }
     if (actor.type === "Questionnaire Boss") {
@@ -566,18 +560,14 @@ class World extends Phaser.Scene {
     this.cameras.resize(width, height);
   }
   // Calls the dialogueFactory for a certain dialogue to return and display
-  displayDialogue(dialogueData, context) {
+  displayDialogue(dialogueData) {
     //Update the dialogue through the html DOM cached in the Hud scene
     let dialogueText = `${dialogueData}`;
     $('#game__hud--dialogue-body').text(dialogueText);
-    console.log(dialogueData);
-    console.log(context);
     $('#game__hud--dialogue-body').click(() => {
-      $('#game__hud--dialogue-body').text("");
+      $('#game__hud--dialogue-body').text("End of conversation");
       this.dialogueLock = false;
     });
-    // Lock the player in the dialogue (reset on last page of pageEnd of textbox)
-    context.dialogueLock = true;
   }
   // Reset the game after Phase 2 is over
   resetGame() {

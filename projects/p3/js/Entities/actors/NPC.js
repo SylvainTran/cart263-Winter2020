@@ -48,6 +48,8 @@ class NPC extends Phaser.GameObjects.Sprite {
         let UI = scene.scene.manager.getScene('UI');
         // Show the questionnaire if none exists yet and if not in a dialogue yet
         if (!this.mindSpaceForm && !this.questionnaire && !scene.dialogueLock) {
+            // Lock player in dialogue while he's yet to have answered the questionnaire
+            scene.dialogueLock = true;
             // Create the questionnaire
             this.questionnaire = scene.add.dom().createFromCache('agreeForm');
             this.questionnaire.setPosition(this.scale.width/2.75, this.scale.height/2);
@@ -121,7 +123,6 @@ class NPC extends Phaser.GameObjects.Sprite {
         // Can retalk after 5 seconds. $Stretch: other dialogue than questionnaire
         setTimeout(() => {
             this.isQuestioning = false;
-            scene.dialogueLock = false;
         }, 5000);
     }
 }

@@ -78,6 +78,8 @@ class Preloader extends Phaser.Scene {
     this.load.html('currentPhaseScreen', 'assets/menus/currentPhase.html');
     // Actor's portrait during dialogue
     this.load.html('actorPortrait', 'assets/actorPortrait.html');
+    // Battle menu
+    this.load.html('battleMenu', 'assets/menus/battle.html');
   }
 
   // load webfont google api

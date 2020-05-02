@@ -1,0 +1,12 @@
+
+.game__battle-menu {
+    background-color: midnightblue;
+    color: white;
+    text-align: center;
+    width: 350px;
+}
+
+.game__battle-menu > div {
+    cursor: crosshair;
+    border: 1px solid gold;
+}

@@ -46,6 +46,7 @@ In Phase 2, the player gets a review of what he answered with regards to people,
 
 # Todo
 $̶F̶i̶x̶ A̶c̶t̶o̶r̶s̶ n̶o̶t̶ d̶e̶s̶t̶r̶o̶y̶e̶d̶ o̶n̶ n̶e̶w̶ p̶h̶a̶s̶e̶ 1̶
+$Research on questionnaires
 $Fix dialogues, make them meaningful somehow by type? <-> Questionnaires to push reflection at 
 certain points of the story? (Catherine confession room style)
 $Fix collision boxes to make it pixel perfect
@@ -61,5 +62,5 @@ $Questionnaires become somewhat involved with a "combat" thing?
 *Stretch in my dreams: Attitudes become more meaningful with regards to the game's story, but while staying true to the idea of the questionnaire making. Could the thing or effect be reversed against the NPC, making the player question the NPC and learn something about himself?
 
 $Existing structures about JRPGs
-$Health mechanics <-> Losing health if don't respond in time? If disagree with actor?
+$Health mechanics <-> Some actors are hostile? Losing health if don't respond in time? If disagree with actor?
 $Character development <-> G̶o̶l̶d̶ m̶e̶c̶h̶a̶n̶i̶c̶s̶?̶

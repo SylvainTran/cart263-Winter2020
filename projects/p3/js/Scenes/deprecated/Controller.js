@@ -127,9 +127,27 @@ class Controller extends Phaser.Scene {
     // Update the player's input FSM
     if(this.World.globalPlayer) {
       this.World.globalPlayer.PlayerFSM.step([this, this.World.globalPlayer]);
+      // May trigger a random battle
+      this.headOrTail();
     }
   }
 
+  // Decide whether a battle scene may start or not
+  headOrTail() {
+    let result;
+    Math.random() < 0.001? result = "head": result = "tail";
+    if(result === "head" && !this.World.dialogueLock) {
+      // Lock the player in a combat
+      this.World.dialogueLock = true;
+      // trigger battle (launches a battle scene);
+      let battleMenu = this.scene.manager.getScene('UI').add.dom().createFromCache('battleMenu');
+      battleMenu.setPosition(this.scale.width / 2, this.scale.height / 2);
+      // Adds an onsubmit handler on each options of the battle menu
+      $('#battle-menu--attack').click(() => {
+          console.log("attacking");
+      });
+    }
+  }
   // perlinMovement
   // 
   // Pippin's lectures on perlin movement from last year. Does it for scenes even

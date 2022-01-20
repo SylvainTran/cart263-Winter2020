@@ -125,11 +125,11 @@ class Controller extends Phaser.Scene {
     // for each scene that exists in the level, perlin noise movement
     // this.perlinMovement();    
     // Update the player's input FSM
-    if(this.World.globalPlayer) {
-      this.World.globalPlayer.PlayerFSM.step([this, this.World.globalPlayer]);
+    //if(this.World.globalPlayer) {
+      // this.World.globalPlayer.PlayerFSM.step([this, this.World.globalPlayer]);
       // May trigger a random battle
-      this.headOrTail();
-    }
+      // this.headOrTail();
+    //}
   }
 
   // Decide whether a battle scene may start or not
